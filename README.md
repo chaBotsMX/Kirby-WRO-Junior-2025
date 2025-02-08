@@ -1,1 +1,1 @@
-# WRO-Junior-2025
+# WRO Junior 2025
