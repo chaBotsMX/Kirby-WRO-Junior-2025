@@ -11,9 +11,11 @@ class Kirby:
         self.hub = PrimeHub(top_side=Axis.X, front_side=-Axis.Y)
 
         self.leftDriveMotor = Motor(Port.B, Direction.COUNTERCLOCKWISE)
+        self.leftDriveMotor.reset_angle()
         #self.leftDriveMotor.control.limits()
 
         self.rightDriveMotor = Motor(Port.A, Direction.CLOCKWISE)
+        self.rightDriveMotor.reset_angle()
         #self.rightDriveMotor.control.limits()
 
         self.backMotor = Motor(Port.E, Direction.CLOCKWISE)
@@ -38,7 +40,7 @@ class Kirby:
         self.colorSensor.detectable_colors(self.sensorColors)
 
     def getCurrentPos(self):
-        pos = (self.leftDriveMotor.angle() + self.rightDriveMotor.angle()) / 2
+        pos = (abs(self.leftDriveMotor.angle()) + abs(self.rightDriveMotor.angle())) / 2
         return pos
 
     def getAngle(self, heading):
@@ -63,19 +65,30 @@ class Kirby:
             derivative = (error - lastError) / dt if dt > 0 else 0
             watch.reset()
 
-            correction = (error * kP + kD * derivative) + errorDegrees * kPdegrees
+            #correction = (error * kP + kD * derivative) + errorDegrees * kPdegrees
+            correction = (error * kP) + (derivative * kD)
 
-            correction = max(min(correction, 100), -100)
+            #correction = max(min(correction, 100), -100)
 
             lastError = error
 
-            self.leftDriveMotor.dc(power - correction)
-            self.rightDriveMotor.dc(power + correction)
+            self.leftDriveMotor.dc(power + correction)
+            self.rightDriveMotor.dc(power - correction)
 
-            if abs(currentDegrees - targetDegrees) < 3:
+            print(abs(currentDegrees - targetDegrees))
+            print("left", self.leftDriveMotor.angle())
+            print("right", self.rightDriveMotor.angle())
+            print("average", self.getCurrentPos())
+
+            if abs(errorDegrees) < 15:
                 break
 
-            wait(5)
+            #wait(1)
+
+            #print("error", error)
+            #print("correction", correction)
+            #print("current angle", currentAngle)
+            #print("target", targetAngle)
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
@@ -133,9 +146,9 @@ class Kirby:
             derivative = (error - lastError) /dt if dt > 0 else 0
             watch.reset()
 
-            correction = error * kP + kD * derivative
+            correction = (error * kP) + (kD * derivative)
 
-            correction = max(min(correction, 100), -100)
+            #correction = max(min(correction, 100), -100)
 
             lastError = error
 
@@ -145,7 +158,7 @@ class Kirby:
             if abs(error) < 1:
                 break
 
-            wait(5)
+            #wait(5)
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
