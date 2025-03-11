@@ -5,17 +5,19 @@ from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 
 VALUE_BLACK = 10
+VALUE_WHITE = 100
+VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 
 class Kirby:
     def __init__(self):
         self.hub = PrimeHub(top_side=Axis.X, front_side=-Axis.Y)
 
         self.leftDriveMotor = Motor(Port.B, Direction.COUNTERCLOCKWISE)
-        self.leftDriveMotor.reset_angle()
+        self.leftDriveMotor.reset_angle(0)
         #self.leftDriveMotor.control.limits()
 
         self.rightDriveMotor = Motor(Port.A, Direction.CLOCKWISE)
-        self.rightDriveMotor.reset_angle()
+        self.rightDriveMotor.reset_angle(0)
         #self.rightDriveMotor.control.limits()
 
         self.backMotor = Motor(Port.E, Direction.CLOCKWISE)
@@ -47,8 +49,8 @@ class Kirby:
         return (heading + 180) % 360 - 180
 
     def driveStraightDegrees(self, targetDegrees, power, kP, kD):
-        self.leftDriveMotor.reset_angle()
-        self.rightDriveMotor.reset_angle()
+        self.leftDriveMotor.reset_angle(0)
+        self.rightDriveMotor.reset_angle(0)
 
         targetAngle = self.hub.imu.heading()
         lastError = 0
@@ -80,10 +82,13 @@ class Kirby:
             print("right", self.rightDriveMotor.angle())
             print("average", self.getCurrentPos())
 
-            if abs(errorDegrees) < 15:
+            #if abs(errorDegrees) < 15:
+                #break
+
+            if currentDegrees > targetDegrees:
                 break
 
-            #wait(1)
+            wait(1)
 
             #print("error", error)
             #print("correction", correction)
@@ -92,8 +97,9 @@ class Kirby:
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
+        wait(10)
 
-    
+    '''
     def driveStraightUntilReflection(self, reflection, power, kP, kD):
         targetAngle = self.hub.imu.heading()
         targetReflection = reflection
@@ -130,13 +136,16 @@ class Kirby:
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
+        '''
 
-    def turnInPlace (self, angle, power, kP, kD):
-        targetAngle = self.getAngle(self.hub.imu.heading() + angle)
+    def turnInPlace (self, angle, power, kP, kD, timeLimit=1200):
+        targetAngle = angle
 
         lastError = 0
 
         watch = StopWatch()
+
+        watch2 = StopWatch()
 
         while True:
             currentAngle = self.getAngle(self.hub.imu.heading())
@@ -147,25 +156,40 @@ class Kirby:
             watch.reset()
 
             correction = (error * kP) + (kD * derivative)
+            #correction = (error * kP)
 
-            #correction = max(min(correction, 100), -100)
+            correction = max(min(correction, power), -power)
 
             lastError = error
 
-            self.leftDriveMotor.dc(-power - correction)
-            self.rightDriveMotor.dc(power + correction)
+            self.leftDriveMotor.dc(correction)
+            self.rightDriveMotor.dc(-correction)
 
-            if abs(error) < 1:
+            #print("error", error)
+            #print("correction", correction)
+            #print("current angle", currentAngle)
+            #print("target", targetAngle)
+            #print("time", watch2.time())
+            #print('\n')
+
+            if watch2.time() > timeLimit:
+                print("time limit exceeded", watch2.time())
                 break
 
-            #wait(5)
+            if abs(error) < 0.2:
+                print("correction made succesfully")
+                break
+
+            wait(1)
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
+        wait(10)
 
+    '''
     def lineFollowDegrees(self, targetDegrees, power, kP, kD):
-        self.leftDriveMotor.reset_angle()
-        self.rightDriveMotor.reset_angle()
+        self.leftDriveMotor.reset_angle(0)
+        self.rightDriveMotor.reset_angle(0)
 
         targetReflection = VALUE_BLACK
         lastError = 0
@@ -199,16 +223,17 @@ class Kirby:
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
+        '''
 
     def moveLeftDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
-        self.leftDriveMotor.run_target(speed, degrees, then, wait)
+        self.leftDriveMotor.run_angle(speed, degrees, then, wait)
 
     def moveLeftDriveMotorTime(self, time, speed, then = Stop.HOLD, wait = True):
         self.leftDriveMotor.run_time(speed, time, then, wait)
 
 
     def moveRightDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
-        self.rightDriveMotor.run_target(speed, degrees, then, wait)
+        self.rightDriveMotor.run_angle(speed, degrees, then, wait)
 
     def moveRightDriveMotorTime(self, time, speed, then = Stop.HOLD, wait = True):
         self.rightDriveMotor.run_time(speed, time, then, wait)
