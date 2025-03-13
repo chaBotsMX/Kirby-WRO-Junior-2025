@@ -43,50 +43,71 @@ kirby.turnInPlace(270, 60, 10, 0.1)
 kirby.turnInPlace(360, 60, 10, 0.1)
 '''
 
-kirby.lineFollowDegrees(10000, 60, 1, 1)
+#kirby.lineFollowDegrees(10000, 60, 1, 1)
 
+#ROVER
 kirby.frontMotor.brake()
-
-kirby.driveStraightDegrees(770, -60, 1.5, 0.1)
+kirby.driveStraightDegrees(780, -60, 1.5, 0.1)
 kirby.turnInPlace(-90, 60, 10, 0.1)
-
 #kirby.driveStraightDegrees(500, 60, 1.5, 0.1)
 kirby.driveStraightTime(1300, 60)
 kirby.hub.imu.reset_heading(-90)
 wait(400)
-
-kirby.driveStraightDegrees(670, -60, 1.5, 0.1)
+kirby.driveStraightDegrees(673, -60, 1.5, 0.1)
 wait(200)
 kirby.moveFrontMotorDegrees(-90,200)
 kirby.turnInPlace(0, 40, 10, 0.1)
-
 kirby.moveBackMotorDegrees(185, 300)
 wait(500)
-kirby.moveFrontMotorDegrees(0,200)
+kirby.moveFrontMotorDegrees(0,500)
 kirby.turnInPlace(0,60,10,0.1)
-kirby.driveStraightDegrees(340, 60, 1.5, 0.1)
+#TOMAR PELOTAS
+
+
+kirby.driveStraightDegrees(350, 60, 1.5, 0.1)
 kirby.turnInPlace(0,60,10,0.1)
 wait(200)
 kirby.driveStraightDegrees(100, -60,1.5,0.1)
 wait(200)
 kirby.driveStraightDegrees(150, 60, 1.5, 0.1)
 wait(400)
-kirby.driveStraightDegrees(200, -60,1.5,0.1)
+kirby.driveStraightDegrees(210, -60,1.5,0.1)
 kirby.moveBackMotorDegrees(0, 200)
 kirby.turnInPlace(0, 60, 10, 0.1)
 kirby.driveStraightDegrees(100,60,1.5,0.1)
 kirby.turnInPlace(90,60,10,0.1)
+#kirby.lineFollowDegrees(900, 60, 0.6, 1)
+wait(100)
 kirby.driveStraightDegrees(900,80,1.5,0.1)
 kirby.driveStraightTime(1500, 60)
 kirby.driveStraightDegrees(350,-60,1.5,0.1)
 kirby.turnInPlace(0, 60, 10, 0.1)
 kirby.driveStraightDegrees(100,-60,1.5,0.1)
-kirby.moveBackMotorDegrees(185, 300)
+kirby.moveBackMotorDegrees(187, 300)
 wait(200)
+kirby.driveStraightDegrees(88,60,1.5,0.1)
+kirby.moveBackMotorDegrees(120, 500)
 kirby.driveStraightDegrees(85,60,1.5,0.1)
-kirby.moveBackMotorDegrees(120, 350)
-kirby.driveStraightDegrees(90,60,1.5,0.1)
 kirby.driveStraightDegrees(100,-60,1.5,0.1)
+#DEJAR PELOTAS
+
+kirby.moveFrontMotorDegrees(-300,600)
+kirby.turnInPlace(200, 60, 10, 0.1)
+kirby.driveStraightDegrees(150,-60,1.5,0.1)
+wait(500)
+kirby.moveFrontMotorDegrees(-390,300)
+wait(500)
+kirby.moveFrontMotorDegrees(-270,300)
+wait(500)
+kirby.moveFrontMotorDegrees(-420,300)
+wait(500)
+kirby.driveStraightDegrees(100,60,1.5,0.1)
+kirby.turnInPlace(90, 60, 10, 0.1)
+kirby.moveFrontMotorDegrees(0,200)
+kirby.moveBackMotorDegrees(0, 200)
+kirby.driveStraightTime(1300, 60)
+
+
 
 
 
