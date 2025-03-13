@@ -12,7 +12,7 @@ if(Button.BLUETOOTH in kirby.hub.buttons.pressed()):
         #print("color sensor: ", kirby.colorSensor.hsv())
         #print("heading: ", kirby.getAngle(kirby.hub.imu.heading()))
         #print("battery voltage", kirby.hub.battery.voltage())
-        kirby.hub.display.text(str(round(kirby.hub.battery.voltage()/1000, 2)))
+        #kirby.hub.display.text(str(round(kirby.hub.battery.voltage()/1000, 2)))
 
 wait(100) #comentar en competencia
 
@@ -32,12 +32,76 @@ kp = 0.8
 kd = 0.1
 '''
 
-kirby.driveStraightDegrees(720, 60, 0.8, 0.1)
-kirby.turnInPlace(90, 60, 5.5, 0)
-kirby.driveStraightDegrees(373, -60, 0.8, 0.1)
-kirby.turnInPlace(0, 60, 5.5, 0)
-kirby.moveBackMotorDegrees(190, 300)
-kirby.driveStraightDegrees(290, -85, 0.8, 0.1)
+#kirby.driveStraightDegrees(600, 80, 1.5, 0.1)
+#kirby.turnInPlace(90, 70, 5.5, 0.1)
+#kirby.driveStraightDegrees(600, 80, 1.5, 0.1)
+
+'''
+kirby.turnInPlace(90, 60, 10, 0.1)
+kirby.turnInPlace(180, 60, 10, 0.1)
+kirby.turnInPlace(270, 60, 10, 0.1)
+kirby.turnInPlace(360, 60, 10, 0.1)
+'''
+
+kirby.lineFollowDegrees(10000, 60, 1, 1)
+
+kirby.frontMotor.brake()
+
+kirby.driveStraightDegrees(770, -60, 1.5, 0.1)
+kirby.turnInPlace(-90, 60, 10, 0.1)
+
+#kirby.driveStraightDegrees(500, 60, 1.5, 0.1)
+kirby.driveStraightTime(1300, 60)
+kirby.hub.imu.reset_heading(-90)
+wait(400)
+
+kirby.driveStraightDegrees(670, -60, 1.5, 0.1)
+wait(200)
+kirby.moveFrontMotorDegrees(-90,200)
+kirby.turnInPlace(0, 40, 10, 0.1)
+
+kirby.moveBackMotorDegrees(185, 300)
 wait(500)
-kirby.driveStraightDegrees(290, 60, 0.8, 0.1)
-kirby.moveBackMotorDegrees(-190, 100)
+kirby.moveFrontMotorDegrees(0,200)
+kirby.turnInPlace(0,60,10,0.1)
+kirby.driveStraightDegrees(340, 60, 1.5, 0.1)
+kirby.turnInPlace(0,60,10,0.1)
+wait(200)
+kirby.driveStraightDegrees(100, -60,1.5,0.1)
+wait(200)
+kirby.driveStraightDegrees(150, 60, 1.5, 0.1)
+wait(400)
+kirby.driveStraightDegrees(200, -60,1.5,0.1)
+kirby.moveBackMotorDegrees(0, 200)
+kirby.turnInPlace(0, 60, 10, 0.1)
+kirby.driveStraightDegrees(100,60,1.5,0.1)
+kirby.turnInPlace(90,60,10,0.1)
+kirby.driveStraightDegrees(900,80,1.5,0.1)
+kirby.driveStraightTime(1500, 60)
+kirby.driveStraightDegrees(350,-60,1.5,0.1)
+kirby.turnInPlace(0, 60, 10, 0.1)
+kirby.driveStraightDegrees(100,-60,1.5,0.1)
+kirby.moveBackMotorDegrees(185, 300)
+wait(200)
+kirby.driveStraightDegrees(85,60,1.5,0.1)
+kirby.moveBackMotorDegrees(120, 350)
+kirby.driveStraightDegrees(90,60,1.5,0.1)
+kirby.driveStraightDegrees(100,-60,1.5,0.1)
+
+
+
+
+
+#kirby.moveFrontMotorDegrees(-90,200)
+#kirby.driveStraightDegrees(200, 60, 1.5, 0.1)
+
+
+'''
+wait(100)
+kirby.turnInPlace(0, 40, 8.5, 0)
+kirby.moveBackMotorDegrees(190, 300)
+kirby.driveStraightDegrees(290, 85, 1.5, 0.1)
+wait(500)
+kirby.driveStraightDegrees(290, -60, 1.5, 0.1)
+kirby.moveBackMotorTime(800, -200)
+'''

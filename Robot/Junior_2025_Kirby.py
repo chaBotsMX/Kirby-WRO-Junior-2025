@@ -4,15 +4,15 @@ from pybricks.pupdevices import ColorSensor, Motor
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 
-VALUE_BLACK = 10
-VALUE_WHITE = 100
+VALUE_BLACK = 6
+VALUE_WHITE = 36
 VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 
 class Kirby:
     def __init__(self):
         self.hub = PrimeHub(top_side=Axis.X, front_side=-Axis.Y)
 
-        self.leftDriveMotor = Motor(Port.B, Direction.COUNTERCLOCKWISE)
+        self.leftDriveMotor = Motor(Port.E, Direction.COUNTERCLOCKWISE)
         self.leftDriveMotor.reset_angle(0)
         #self.leftDriveMotor.control.limits()
 
@@ -20,7 +20,7 @@ class Kirby:
         self.rightDriveMotor.reset_angle(0)
         #self.rightDriveMotor.control.limits()
 
-        self.backMotor = Motor(Port.E, Direction.CLOCKWISE)
+        self.backMotor = Motor(Port.B, Direction.CLOCKWISE)
         self.backMotor.reset_angle(0)
         #self.backMotor.control.limits()
 
@@ -99,13 +99,20 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    '''
+    def driveStraightTime(self, time, power):
+        self.leftDriveMotor.dc(power)
+        self.rightDriveMotor.dc(power)
+        wait(time)
+        self.leftDriveMotor.brake()
+        self.rightDriveMotor.brake()
+        wait(10)
+
+
     def driveStraightUntilReflection(self, reflection, power, kP, kD):
         targetAngle = self.hub.imu.heading()
         targetReflection = reflection
 
         lastError = 0
-        kPrelfection = 0.8
 
         watch = StopWatch()
 
@@ -114,14 +121,12 @@ class Kirby:
             currentReflection = self.lineSensor.reflection()
 
             error = targetAngle - currentAngle
-            errorReflection = targetReflection - currentReflection
 
             dt = watch.time() / 1000
             derivative = (error - lastError) / dt if dt > 0 else 0
             watch.reset()
 
-            correction = (error * kP + kD * derivative) + errorReflection * kPrelfection
-
+            correction = (error * kP) + (kD * derivative)
             correction = max(min(correction, 100), -100)
 
             lastError = error
@@ -129,16 +134,15 @@ class Kirby:
             self.leftDriveMotor.dc(power - correction)
             self.rightDriveMotor.dc(power + correction)
 
-            if abs(currentReflection - targetReflection) < 3:
+            if currentReflection < targetReflection:
                 break
 
-            wait(5)
+            wait(1)
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
-        '''
 
-    def turnInPlace (self, angle, power, kP, kD, timeLimit=1200):
+    def turnInPlace (self, angle, power, kP, kD, timeLimit=1500):
         targetAngle = angle
 
         lastError = 0
@@ -148,7 +152,8 @@ class Kirby:
         watch2 = StopWatch()
 
         while True:
-            currentAngle = self.getAngle(self.hub.imu.heading())
+            #currentAngle = self.getAngle(self.hub.imu.heading())
+            currentAngle = self.hub.imu.heading()
             error = targetAngle - currentAngle
 
             dt = watch.time() / 1000
@@ -165,18 +170,18 @@ class Kirby:
             self.leftDriveMotor.dc(correction)
             self.rightDriveMotor.dc(-correction)
 
-            #print("error", error)
-            #print("correction", correction)
-            #print("current angle", currentAngle)
-            #print("target", targetAngle)
-            #print("time", watch2.time())
-            #print('\n')
+            print("error", error)
+            print("correction", correction)
+            print("current angle", currentAngle)
+            print("target", targetAngle)
+            print("time", watch2.time())
+            print('\n')
 
             if watch2.time() > timeLimit:
                 print("time limit exceeded", watch2.time())
                 break
 
-            if abs(error) < 0.2:
+            if abs(error) < 0.1:
                 print("correction made succesfully")
                 break
 
@@ -186,14 +191,12 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    '''
     def lineFollowDegrees(self, targetDegrees, power, kP, kD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
-        targetReflection = VALUE_BLACK
+        targetReflection = VALUE_LINE
         lastError = 0
-        kPdegrees = 0.8
         watch = StopWatch()
 
         while True:
@@ -201,13 +204,12 @@ class Kirby:
             currentDegrees = self.getCurrentPos()
 
             error = currentReflection - targetReflection
-            errorDegrees = targetDegrees - currentDegrees
 
             dt = watch.time() / 1000
             derivative = (error - lastError) / dt if dt > 0 else 0
             watch.reset()
 
-            correction = (error * kP + kD * derivative) + errorDegrees * kPdegrees
+            correction = (error * kP) + (kD * derivative)
 
             correction = max(min(correction, 100), -100)
 
@@ -216,14 +218,13 @@ class Kirby:
             self.leftDriveMotor.dc(power - correction)
             self.rightDriveMotor.dc(power + correction)
 
-            if abs(currentDegrees - targetDegrees) < 3:
+            if currentDegrees > targetDegrees:
                 break
 
-            wait(5)
+            wait(1)
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
-        '''
 
     def moveLeftDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
         self.leftDriveMotor.run_angle(speed, degrees, then, wait)
@@ -251,5 +252,3 @@ class Kirby:
 
     def moveFrontMotorTime(self, time, speed, then = Stop.HOLD, wait = True):
         self.frontMotor.run_time(speed, time, then, wait)
-
-    #holA Poncho
