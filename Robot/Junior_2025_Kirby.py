@@ -4,7 +4,10 @@ from pybricks.pupdevices import ColorSensor, Motor
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 
-VALUE_BLACK = 6
+MAX_LIGHT = 0
+MIN_LIGHT = 100
+
+VALUE_BLACK = 5
 VALUE_WHITE = 36
 VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 
@@ -54,7 +57,6 @@ class Kirby:
 
         targetAngle = self.hub.imu.heading()
         lastError = 0
-        kPdegrees = 0.8
         watch = StopWatch()
         while True:
             currentAngle = self.hub.imu.heading()
@@ -67,7 +69,6 @@ class Kirby:
             derivative = (error - lastError) / dt if dt > 0 else 0
             watch.reset()
 
-            #correction = (error * kP + kD * derivative) + errorDegrees * kPdegrees
             correction = (error * kP) + (derivative * kD)
 
             #correction = max(min(correction, 100), -100)
@@ -82,18 +83,10 @@ class Kirby:
             print("right", self.rightDriveMotor.angle())
             print("average", self.getCurrentPos())
 
-            #if abs(errorDegrees) < 15:
-                #break
-
             if currentDegrees > targetDegrees:
                 break
 
             wait(1)
-
-            #print("error", error)
-            #print("correction", correction)
-            #print("current angle", currentAngle)
-            #print("target", targetAngle)
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
@@ -107,13 +100,12 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
+    def driveStraightUntilReflection(self, targetReflection, power, kP, kD):
+        self.leftDriveMotor.reset_angle(0)
+        self.rightDriveMotor.reset_angle(0)
 
-    def driveStraightUntilReflection(self, reflection, power, kP, kD):
         targetAngle = self.hub.imu.heading()
-        targetReflection = reflection
-
         lastError = 0
-
         watch = StopWatch()
 
         while True:
@@ -121,18 +113,25 @@ class Kirby:
             currentReflection = self.lineSensor.reflection()
 
             error = targetAngle - currentAngle
+            errorReflection = targetReflection - currentReflection
 
             dt = watch.time() / 1000
             derivative = (error - lastError) / dt if dt > 0 else 0
             watch.reset()
 
-            correction = (error * kP) + (kD * derivative)
-            correction = max(min(correction, 100), -100)
+            correction = (error * kP) + (derivative * kD)
+
+            #correction = max(min(correction, 100), -100)
 
             lastError = error
 
-            self.leftDriveMotor.dc(power - correction)
-            self.rightDriveMotor.dc(power + correction)
+            self.leftDriveMotor.dc(power + correction)
+            self.rightDriveMotor.dc(power - correction)
+
+            print(abs(currentReflection - targetReflection))
+            print("left", self.leftDriveMotor.angle())
+            print("right", self.rightDriveMotor.angle())
+            print("average", self.getCurrentPos())
 
             if currentReflection < targetReflection:
                 break
@@ -141,6 +140,7 @@ class Kirby:
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
+        wait(10)
 
     def turnInPlace (self, angle, power, kP, kD, timeLimit=1500):
         targetAngle = angle
