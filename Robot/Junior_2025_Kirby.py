@@ -78,10 +78,54 @@ class Kirby:
             self.leftDriveMotor.dc(power + correction)
             self.rightDriveMotor.dc(power - correction)
 
-            print(abs(currentDegrees - targetDegrees))
-            print("left", self.leftDriveMotor.angle())
-            print("right", self.rightDriveMotor.angle())
-            print("average", self.getCurrentPos())
+            #print(abs(currentDegrees - targetDegrees))
+            #print("left", self.leftDriveMotor.angle())
+            #print("right", self.rightDriveMotor.angle())
+            #print("average", self.getCurrentPos())
+
+            if currentDegrees > targetDegrees:
+                break
+
+            wait(1)
+
+        self.leftDriveMotor.brake()
+        self.rightDriveMotor.brake()
+        wait(10)
+
+    def driveStraightDegreesAndMoveMotor(self, targetDegrees, power, kP, kD):
+        self.leftDriveMotor.reset_angle(0)
+        self.rightDriveMotor.reset_angle(0)
+
+        targetAngle = self.hub.imu.heading()
+        lastError = 0
+        watch = StopWatch()
+        i = 0
+        while True:
+            i-=1
+            currentAngle = self.hub.imu.heading()
+            currentDegrees = self.getCurrentPos()
+
+            error = targetAngle - currentAngle
+            errorDegrees = targetDegrees - currentDegrees
+
+            dt = watch.time() / 1000
+            derivative = (error - lastError) / dt if dt > 0 else 0
+            watch.reset()
+
+            correction = (error * kP) + (derivative * kD)
+
+            #correction = max(min(correction, 100), -100)
+
+            lastError = error
+
+            self.leftDriveMotor.dc(power + correction)
+            self.rightDriveMotor.dc(power - correction)
+            self.backMotor.dc(-60)
+
+            #print(abs(currentDegrees - targetDegrees))
+            #print("left", self.leftDriveMotor.angle())
+            #print("right", self.rightDriveMotor.angle())
+            #print("average", self.getCurrentPos())
 
             if currentDegrees > targetDegrees:
                 break
@@ -128,12 +172,13 @@ class Kirby:
             self.leftDriveMotor.dc(power + correction)
             self.rightDriveMotor.dc(power - correction)
 
-            print(abs(currentReflection - targetReflection))
-            print("left", self.leftDriveMotor.angle())
-            print("right", self.rightDriveMotor.angle())
-            print("average", self.getCurrentPos())
+            #print(abs(currentReflection - targetReflection))
+            #print("left", self.leftDriveMotor.angle())
+            #print("right", self.rightDriveMotor.angle())
+            #print("average", self.getCurrentPos())
 
             if currentReflection < targetReflection:
+                self.hub.speaker.beep(400, 200)
                 break
 
             wait(1)
@@ -170,12 +215,12 @@ class Kirby:
             self.leftDriveMotor.dc(correction)
             self.rightDriveMotor.dc(-correction)
 
-            print("error", error)
-            print("correction", correction)
-            print("current angle", currentAngle)
-            print("target", targetAngle)
-            print("time", watch2.time())
-            print('\n')
+            #print("error", error)
+            #print("correction", correction)
+            #print("current angle", currentAngle)
+            #print("target", targetAngle)
+            #print("time", watch2.time())
+            #print('\n')
 
             if watch2.time() > timeLimit:
                 print("time limit exceeded", watch2.time())
@@ -225,6 +270,11 @@ class Kirby:
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
+
+    def brake(self, time):
+        self.leftDriveMotor.brake()
+        self.rightDriveMotor.brake()
+        wait(time)
 
     def moveLeftDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
         self.leftDriveMotor.run_angle(speed, degrees, then, wait)
