@@ -15,11 +15,11 @@ class Kirby:
     def __init__(self):
         self.hub = PrimeHub(top_side=Axis.X, front_side=-Axis.Y)
 
-        self.leftDriveMotor = Motor(Port.E, Direction.COUNTERCLOCKWISE)
+        self.leftDriveMotor = Motor(Port.A, Direction.COUNTERCLOCKWISE)
         self.leftDriveMotor.reset_angle(0)
         #self.leftDriveMotor.control.limits()
 
-        self.rightDriveMotor = Motor(Port.A, Direction.CLOCKWISE)
+        self.rightDriveMotor = Motor(Port.E, Direction.CLOCKWISE)
         self.rightDriveMotor.reset_angle(0)
         #self.rightDriveMotor.control.limits()
 
@@ -34,10 +34,10 @@ class Kirby:
         self.lineSensor = ColorSensor(Port.C)
         self.colorSensor = ColorSensor(Port.F)
 
-        Color.WHITE = Color(h=0, s=5, v=19)
-        Color.RED = Color(h=354, s=93, v=7)
-        Color.YELLOW = Color(h=47, s=69, v=22)
-        Color.GREEN = Color(h=150, s=64, v=5)
+        Color.WHITE = Color(h=200, s=3, v=86)
+        Color.RED = Color(h=350, s=89, v=83)
+        Color.YELLOW = Color(h=52, s=69, v=99)
+        Color.GREEN = Color(h=158, s=71, v=42)
         Color.NONE = Color(h=0, s=0, v=0)
 
         self.sensorColors = (Color.WHITE, Color.RED, Color.YELLOW, Color.GREEN, Color.NONE)
@@ -51,7 +51,7 @@ class Kirby:
     def getAngle(self, heading):
         return (heading + 180) % 360 - 180
 
-    def driveStraightDegrees(self, targetDegrees, power, kP, kD):
+    def driveStraightDegrees(self, targetDegrees, power, kP=6, kD=0.5):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -92,7 +92,7 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    def driveStraightDegreesAndMoveMotor(self, targetDegrees, power, kP, kD):
+    def driveStraightDegreesAndMoveMotor(self, targetDegrees, power, kP=6, kD=0.5):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -144,7 +144,7 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    def driveStraightUntilReflection(self, targetReflection, power, kP, kD):
+    def driveStraightUntilReflection(self, targetReflection, power, kP=6, kD=0.5):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -187,7 +187,7 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    def turnInPlace (self, angle, power, kP, kD, timeLimit=1500):
+    def turnInPlace (self, angle, power, kP=8, kD=0.5, timeLimit=2500):
         targetAngle = angle
 
         lastError = 0
@@ -215,18 +215,21 @@ class Kirby:
             self.leftDriveMotor.dc(correction)
             self.rightDriveMotor.dc(-correction)
 
-            #print("error", error)
-            #print("correction", correction)
-            #print("current angle", currentAngle)
-            #print("target", targetAngle)
-            #print("time", watch2.time())
-            #print('\n')
+            print("error", error)
+            print("correction", correction)
+            print("current angle", currentAngle)
+            print("target", targetAngle)
+            print("time", watch2.time())
+            print('\n')
+
+            if abs(error) < 3:
+                kP *= 1.02
 
             if watch2.time() > timeLimit:
                 print("time limit exceeded", watch2.time())
                 break
 
-            if abs(error) < 0.1:
+            if abs(error) < 0.08:
                 print("correction made succesfully")
                 break
 
@@ -236,7 +239,7 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    def lineFollowDegrees(self, targetDegrees, power, kP, kD):
+    def lineFollowDegrees(self, targetDegrees, power, kP=10, kD=0.5):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
