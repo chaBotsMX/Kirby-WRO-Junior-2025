@@ -11,6 +11,12 @@ VALUE_BLACK = 5
 VALUE_WHITE = 36
 VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 
+KP_FORWARD = 5  #4
+KD_FORWARD = 0.1
+
+KP_TURNING = 18       #12
+KD_TURNING = 0.4
+
 class Kirby:
     def __init__(self):
         self.hub = PrimeHub(top_side=Axis.X, front_side=-Axis.Y)
@@ -34,10 +40,10 @@ class Kirby:
         self.lineSensor = ColorSensor(Port.C)
         self.colorSensor = ColorSensor(Port.F)
 
-        Color.WHITE = Color(h=200, s=3, v=86)
-        Color.RED = Color(h=350, s=89, v=83)
-        Color.YELLOW = Color(h=52, s=69, v=99)
-        Color.GREEN = Color(h=158, s=71, v=42)
+        Color.WHITE = Color(h=300, s=0, v=9)
+        Color.RED = Color(h=350, s=93, v=5)
+        Color.YELLOW = Color(h=52, s=71, v=13)
+        Color.GREEN = Color(h=140, s=66, v=3)
         Color.NONE = Color(h=0, s=0, v=0)
 
         self.sensorColors = (Color.WHITE, Color.RED, Color.YELLOW, Color.GREEN, Color.NONE)
@@ -51,7 +57,7 @@ class Kirby:
     def getAngle(self, heading):
         return (heading + 180) % 360 - 180
 
-    def driveStraightDegrees(self, targetDegrees, power, kP=6, kD=0.5):
+    def driveStraightDegrees(self, targetDegrees, power, kP = KP_FORWARD, kD = KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -92,7 +98,7 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    def driveStraightDegreesAndMoveMotor(self, targetDegrees, power, kP=6, kD=0.5):
+    def driveStraightDegreesAndMoveMotor(self, targetDegrees, power, kP = KP_FORWARD, kD = KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -144,7 +150,7 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    def driveStraightUntilReflection(self, targetReflection, power, kP=6, kD=0.5):
+    def driveStraightUntilReflection(self, targetReflection, power, kP = KP_FORWARD, kD = KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -187,7 +193,7 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    def turnInPlace (self, angle, power, kP=8, kD=0.5, timeLimit=2500):
+    def turnInPlace (self, angle, power, kP = KP_TURNING, kD = KD_TURNING, timeLimit=2500):
         targetAngle = angle
 
         lastError = 0
@@ -206,7 +212,6 @@ class Kirby:
             watch.reset()
 
             correction = (error * kP) + (kD * derivative)
-            #correction = (error * kP)
 
             correction = max(min(correction, power), -power)
 
@@ -215,23 +220,18 @@ class Kirby:
             self.leftDriveMotor.dc(correction)
             self.rightDriveMotor.dc(-correction)
 
-            print("error", error)
-            print("correction", correction)
-            print("current angle", currentAngle)
-            print("target", targetAngle)
-            print("time", watch2.time())
-            print('\n')
-
-            if abs(error) < 3:
-                kP *= 1.02
+            #if abs(error) < 3:
+                #kP *= 1.05
 
             if watch2.time() > timeLimit:
                 print("time limit exceeded", watch2.time())
                 break
 
-            if abs(error) < 0.08:
+            if abs(error) < 0.05:
                 print("correction made succesfully")
                 break
+
+            print (error)
 
             wait(1)
 

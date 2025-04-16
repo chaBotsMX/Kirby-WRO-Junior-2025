@@ -8,12 +8,10 @@ wait(100)
 kirby.hub.speaker.beep(200, 100)
 
 start()
-rover()
+rover() 
 takeWaterTanks()
 goToBox()
-'''
 leaveWaterTanks()
 goToSamples()
 samples()
-'''
-
+dron()
