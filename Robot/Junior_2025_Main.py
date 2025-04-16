@@ -72,11 +72,9 @@ def takeWaterTanks():
     wait(100)
     kirby.driveStraightTime(800,-60)
     kirby.driveStraightDegrees(140, 60)
-    kirby.turnInPlace(0, 50)
     
     #kirby.moveBackMotorDegrees(70, 40)
-    wait(200)
-    
+   
     #kirby.moveBackMotorTime(500,150)
     kirby.moveBackMotorTime(100,700)
     kirby.driveStraightTime(700,-60)
