@@ -11,7 +11,7 @@ def checkBluetoothButton():
             #print("Color sensor:", kirby.colorSensor.color())
             #print("color sensor: ", kirby.colorSensor.hsv())
             #print("heading: ", kirby.getAngle(kirby.hub.imu.heading()))
-            #print("battery voltage", kirby.hub.battery.voltage())
+            print("battery voltage", kirby.hub.battery.voltage())
             #kirby.hub.display.text(str(round(kirby.hub.battery.voltage()/1000, 2)))
 
 def checkLeftButton():
@@ -27,9 +27,7 @@ def checkLeftButton():
         print("black: ", MIN_LIGHT)
         print("white: ", MAX_LIGHT)
 
-def start():
-    #kirby.frontMotor.brake()
-    
+def start():    
     kirby.driveStraightDegrees(320, 60)
     kirby.brake(1)
     kirby.driveStraightUntilReflection(10,50)
@@ -51,7 +49,6 @@ def rover():
     kirby.driveStraightDegrees(170,70)
     kirby.moveFrontMotorDegrees(130,700)
     wait(100)
-    #kirby.turnInPlace(0,60)
 
 def takeWaterTanks():
     kirby.driveStraightDegrees(170, -70)
@@ -73,9 +70,6 @@ def takeWaterTanks():
     kirby.driveStraightTime(800,-60)
     kirby.driveStraightDegrees(140, 60)
     
-    #kirby.moveBackMotorDegrees(70, 40)
-   
-    #kirby.moveBackMotorTime(500,150)
     kirby.moveBackMotorTime(100,700)
     kirby.driveStraightTime(700,-60)
     kirby.turnInPlace(0, 50)
@@ -93,8 +87,6 @@ def goToBox():
     kirby.brake(100)
     kirby.driveStraightUntilReflection(10, -50)
     
-    kirby.brake
-
     kirby.turnInPlace(-180, 60)
     kirby.moveFrontMotorDegrees(190,700)
     #avancedetanquesito
@@ -125,60 +117,28 @@ def leaveWaterTanks():
     kirby.moveBackMotorDegrees(0,370)
   
 def goToSamples():
-    kirby.driveStraightDegrees(400,-60,1.5,0.1)
+    kirby.driveStraightDegrees(400,-60)
     kirby.turnInPlace(-90,60)
-    kirby.driveStraightDegrees(100,60,1.5,0.1)
+    kirby.driveStraightDegrees(100,60)
     kirby.turnInPlace(0,60)
     
-    kirby.turnInPlace(0,60,10,0.1)
-    kirby.driveStraightDegrees(400,60,1.5,0.1)
-    kirby.driveStraightUntilReflection(10,70,10,0.1)
-    kirby.driveStraightDegrees(100,60,1.5,0.1)
+    kirby.driveStraightDegrees(400,60)
 
-    kirby.turnInPlace(90,60,10,0.1)
+def readSamples():
+    kirby.driveStraightUntilReflection(10, 40)
+    kirby.driveStraightDegrees(200, 60)
+    kirby.turnInPlace(90,60)
     kirby.driveStraightTime(1300, -80)
+    kirby.driveStraightDegrees(515, 60)
+    kirby.brake(100)
 
-def samples():
-    wait(500)
-    kirby.moveFrontMotorDegrees(0,700)
-    kirby.driveStraightDegrees(515,70)
-    kirby.brake(200)
-    mov=165
+    for i in range(6):
+        print(kirby.colorSensor.hsv())
+        kirby.determineSamples()
+        kirby.driveStraightDegrees(165, 60)
+        kirby.brake(100)
 
-    print(kirby.colorSensor.color())
-
-    for i in range (6):    
-        if kirby.colorSensor.color() == Color.RED:
-            print("red")
-            kirby.driveStraightDegrees(mov,50)
-            kirby.brake(0)
-            kirby.hub.speaker.beep(400, 200)
-            wait(200)
-        elif kirby.colorSensor.color() == Color.WHITE:
-            print("white")
-            kirby.driveStraightDegrees(mov,50)
-            kirby.brake(0)
-            kirby.hub.speaker.beep(400, 200)
-            wait(200)
-        elif kirby.colorSensor.color() == Color.YELLOW:
-            print("yellow")
-            kirby.driveStraightDegrees(mov,50)
-            kirby.brake(0)
-            kirby.hub.speaker.beep(400, 200)
-            wait(200)
-        elif kirby.colorSensor.color() == Color.GREEN:
-            print("green")
-            kirby.driveStraightDegrees(mov,50)
-            kirby.brake(0)
-            kirby.hub.speaker.beep(400, 200)
-            wait(200)
-        else:
-            print("none")
-            kirby.driveStraightDegrees(mov,50)
-            kirby.brake(0)
-
-
-def dron ():
+def drone():
     kirby.turnInPlace(-90,70)
     kirby.driveStraightTime(500,-70)
     kirby.driveStraightDegrees(50,70)
@@ -186,4 +146,3 @@ def dron ():
     kirby.moveBackMotorDegrees(50,500)
     kirby.moveFrontMotorDegrees(150,400)
     kirby.driveStraightUntilReflection(10,100)
-#def detectSamples():
