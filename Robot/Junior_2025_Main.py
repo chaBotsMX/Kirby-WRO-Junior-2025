@@ -267,9 +267,9 @@ def letsamples():
         kirby.driveStraightDegrees(80,70)
         kirby.moveFrontMotorDegrees(130,60)
         kirby.driveStraightDegrees(50,-70)
-        kirby.driveStraightDegrees(30,70)
         kirby.moveFrontMotorDegrees(30,-60)
         kirby.turnInPlace(0,50)
+        
     else:
         kirby.turnInPlace(30,50)
         kirby.driveStraightDegrees(80,70)
@@ -284,6 +284,5 @@ def letsamples():
         kirby.driveStraightDegrees(40,70)
         kirby.moveFrontMotorDegrees(130,60)
         kirby.driveStraightDegrees(40,-70)
-        kirby.moveFrontMotorDegrees(30,-60)
         kirby.turnInPlace(0,50)
     
