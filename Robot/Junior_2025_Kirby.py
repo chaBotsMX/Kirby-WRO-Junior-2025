@@ -236,6 +236,7 @@ class Kirby:
         wait(time)
 
     def determineSamples(self):
+        '''
         if self.colorSensor.color() == Color.RED:
             print("red")
             self.hub.speaker.beep(100, 200)
@@ -252,6 +253,32 @@ class Kirby:
             print("green")
             self.hub.speaker.beep(400, 200)
             samples.append("green")
+        else:
+            print("blank")
+            self.hub.speaker.beep(500, 200)
+            samples.append("blank")
+            '''
+        
+        if self.colorSensor.hsv().s > 85 and self.colorSensor.hsv().s < 100:
+            print("red")
+            self.hub.speaker.beep(100, 200)
+            samples.append("red")
+
+        elif self.colorSensor.hsv().s > 2 and self.colorSensor.hsv().s < 15:
+            print("white")
+            self.hub.speaker.beep(200, 200)
+            samples.append("white")
+
+        elif (self.colorSensor.hsv().s > 60 and self.colorSensor.hsv().s < 71) and self.colorSensor.hsv().h < 100:
+            print("yellow")
+            self.hub.speaker.beep(300, 200)
+            samples.append("yellow")
+
+        elif self.colorSensor.hsv().s > 70 and self.colorSensor.hsv().s < 80:
+            print("green")
+            self.hub.speaker.beep(400, 200)
+            samples.append("green")
+
         else:
             print("blank")
             self.hub.speaker.beep(500, 200)

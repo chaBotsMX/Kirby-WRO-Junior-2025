@@ -5,13 +5,21 @@ checkLeftButton()
 
 print(kirby.hub.battery.voltage(), "mv") #bateria de kirby en miliVolts
 wait(100)
-kirby.hub.speaker.beep(200, 100)
 
+
+'''
 start()
 rover() 
 takeWaterTanks()
 goToBox()
 leaveWaterTanks()
-goToSamples()
+
+goToSamples() 
+
+'''
 readSamples()
 drone()
+takeFirstSamples()
+returnToWall()
+
+letsamples()
