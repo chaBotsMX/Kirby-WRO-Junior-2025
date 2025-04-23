@@ -147,7 +147,7 @@ def drone():
     kirby.moveBackMotorDegrees(20,500)
     kirby.moveFrontMotorDegrees(150,400)
     kirby.driveStraightDegrees(1700,70)
-    kirby.driveStraightDegrees(1790,-70)
+    kirby.driveStraightDegrees(1700,-70)
     kirby.turnInPlace(270,70)
     kirby.driveStraightTime(500,-70)
 
@@ -188,17 +188,19 @@ def takesamples():
     kirby.turnInPlace(270,40)
 
 def grabRedYellowSample(pos):
+    global frontPositionToSamples
+
     kirby.driveStraightDegrees(160 * pos, 60)
     kirby.turnInPlace(180, 50)
-    kirby.moveFrontMotorDegrees(135, 70)
-    kirby.driveStraightDegrees(160, 60)
-    kirby.moveFrontMotorDegrees(40, 70)
-    kirby.driveStraightDegrees(160, -60)
+    kirby.moveFrontMotorDegrees(frontPositionToSamples, 70)
+    kirby.driveStraightDegrees(100, 60)
+    kirby.moveFrontMotorDegrees(20, 70)
+    kirby.driveStraightDegrees(100, -60)
     kirby.turnInPlace(270, 60)
     kirby.brake(100)
 
 def takeFirstSamples():
-    global isRedFirst
+    global isRedFirst, frontPositionToSamples, POSITION_TO_RED, POSITION_TO_YELLOW
     kirby.driveStraightDegrees(500,60)
 
     samples.reverse()
@@ -212,15 +214,20 @@ def takeFirstSamples():
     if pr < py:
         isRedFirst = True
         #recoger rojo
-        grabSample(pr)
+        frontPositionToSamples = POSITION_TO_RED
+        grabRedYellowSample(pr)
+
         #recoger anarillo
-        grabSample(py-pr)
+        frontPositionToSamples = POSITION_TO_YELLOW
+        grabRedYellowSample(py-pr)
         kirby.driveStraightDegrees(160 * (5-py), 60)
 
     else:
         isRedFirst = False
-        grabSample(py)
-        grabSample(pr-py)
+        frontPositionToSamples = POSITION_TO_YELLOW
+        grabRedYellowSample(py)
+        frontPositionToSamples = POSITION_TO_RED
+        grabRedYellowSample(pr-py)
         kirby.driveStraightDegrees(160 * (5-pr), 60)
 
 def returnToWall():
@@ -238,13 +245,13 @@ def grabGreenWhiteSamples(pos):
     kirby.turnInPlace(180, 50)
     kirby.moveBackMotorDegrees(clawPositionToSamples, 200)
     if samplesState == 1:
-        kirby.driveStraightDegrees(300, 60)
+        kirby.driveStraightDegrees(500, 60)
         kirby.moveBackMotorDegrees(0, 300)
-        kirby.driveStraightDegrees(300, -60)
+        kirby.driveStraightDegrees(500, -60)
     else:
-        kirby.driveStraightDegrees(180, 60)
+        kirby.driveStraightDegrees(400, 60)
         kirby.moveBackMotorDegrees(0, 300)
-        kirby.driveStraightDegrees(180, -60)
+        kirby.driveStraightDegrees(400, -60)
     kirby.turnInPlace(90, 60)
     kirby.brake(100)
 
@@ -271,7 +278,7 @@ def takeSecondSamples():
         else:
             print("else")
             grabGreenWhiteSamples(pg)
-            grabGreenWhiteSamples(pw - pg)
+            grabGreenWhiteSamples((pw - pg) + 1)
         
         kirby.driveStraightDegrees(160 * (5-pw), 60)
 
@@ -314,17 +321,17 @@ def letsamples():
         
 
         kirby.turnInPlace(30,50)
-        kirby.driveStraightDegrees(80,70)
+        kirby.driveStraightDegrees(60,70)
         kirby.moveFrontMotorDegrees(130,60)
-        kirby.driveStraightDegrees(50,-70)
+        kirby.driveStraightDegrees(40,-70)
         kirby.moveFrontMotorDegrees(30,-60)
         kirby.turnInPlace(0,50)
         
     else:
         kirby.turnInPlace(30,50)
-        kirby.driveStraightDegrees(80,70)
+        kirby.driveStraightDegrees(60,70)
         kirby.moveFrontMotorDegrees(130,60)
-        kirby.driveStraightDegrees(50,-70)
+        kirby.driveStraightDegrees(40,-70)
         kirby.driveStraightDegrees(30,70)
         kirby.moveFrontMotorDegrees(30,-60)
         kirby.turnInPlace(0,50)
@@ -335,4 +342,27 @@ def letsamples():
         kirby.moveFrontMotorDegrees(130,60)
         kirby.driveStraightDegrees(40,-70)
         kirby.turnInPlace(0,50)
+        
+
+
+
+def letsamples2():
+    kirby.driveStraightUntilReflection(10,-70)
+    kirby.driveStraightDegrees(350,-70)
+    kirby.turnInPlace(-90,70)
+    kirby.driveStraightUntilReflection(10,70)
+    
+    kirby.driveStraightDegrees(300,50)
+    kirby.turnInPlace(-270,70)
+    kirby.driveStraightTime(1000,-80)
+    kirby.driveStraightDegrees(200,60)
+    kirby.turnInPlace(360,60)
+    kirby.driveStraightUntilReflection(10,60)
+    kirby.driveStraightDegrees(350,50)
+    kirby.turnInPlace(20,60)
+    kirby.moveBackMotorDegrees(90,500)
+    kirby.driveStraightDegrees(100,70)
+    kirby.driveStraightDegrees(100,-70)
+    kirby.turnInPlace(0,70)
+
     

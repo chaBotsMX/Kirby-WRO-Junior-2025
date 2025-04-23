@@ -16,13 +16,12 @@ leaveWaterTanks()
 
 goToSamples() 
 '''
-
+'''
 readSamples()
 drone()
 takeFirstSamples()
 returnToWall()
 takeSecondSamples()
-kirby.turnInPlace(-90, 60)
-kirby.driveStraightDegrees(400, -60)
-kirby.driveStraightTime(300, -60)
 letsamples()
+'''
+letsamples2()

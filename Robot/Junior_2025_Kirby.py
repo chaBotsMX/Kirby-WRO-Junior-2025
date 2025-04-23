@@ -32,6 +32,11 @@ clawPositionToSamples = CLAW_DEFAULT
 
 samplesState = 0
 
+POSITION_TO_RED = 120
+POSITION_TO_YELLOW = 140
+
+frontPositionToSamples = POSITION_TO_RED
+
 class Kirby:
     def __init__(self):
         self.hub = PrimeHub(top_side=Axis.X, front_side=-Axis.Y)
@@ -285,7 +290,7 @@ class Kirby:
             self.hub.speaker.beep(300, 200)
             samples.append("yellow")
 
-        elif self.colorSensor.hsv().s > 70 and self.colorSensor.hsv().s < 80:
+        elif self.colorSensor.hsv().s > 65 and self.colorSensor.hsv().s < 80:
             print("green")
             self.hub.speaker.beep(400, 200)
             samples.append("green")
