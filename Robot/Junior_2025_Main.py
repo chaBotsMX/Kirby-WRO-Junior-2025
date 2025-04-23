@@ -2,8 +2,6 @@ from Junior_2025_Kirby import *
 
 kirby = Kirby()
 
-isRedFirst = False
-
 def checkBluetoothButton():
     if(Button.BLUETOOTH in kirby.hub.buttons.pressed()):
         kirby.hub.speaker.beep(500, 500)
@@ -189,14 +187,14 @@ def takesamples():
     kirby.driveStraightDegrees(170,-60)
     kirby.turnInPlace(270,40)
 
-def grabSample(pos):
+def grabRedYellowSample(pos):
     kirby.driveStraightDegrees(160 * pos, 60)
     kirby.turnInPlace(180, 50)
     kirby.moveFrontMotorDegrees(135, 70)
     kirby.driveStraightDegrees(160, 60)
     kirby.moveFrontMotorDegrees(40, 70)
     kirby.driveStraightDegrees(160, -60)
-    kirby.turnInPlace(270, 40)
+    kirby.turnInPlace(270, 60)
     kirby.brake(100)
 
 def takeFirstSamples():
@@ -230,6 +228,58 @@ def returnToWall():
     kirby.driveStraightDegrees(400, -60)
     kirby.driveStraightTime(300, -60)
     print(isRedFirst)
+
+def grabGreenWhiteSamples(pos):
+    global clawPositionToSamples, areSamplesInOrder
+    if(clawPositionToSamples == CLAW_THREE):
+        kirby.driveStraightDegrees((160 * pos) + 80, 60)
+    else:
+        kirby.driveStraightDegrees(160 * pos, 60)
+    kirby.turnInPlace(180, 50)
+    kirby.moveBackMotorDegrees(clawPositionToSamples, 200)
+    if samplesState == 1:
+        kirby.driveStraightDegrees(300, 60)
+        kirby.moveBackMotorDegrees(0, 300)
+        kirby.driveStraightDegrees(300, -60)
+    else:
+        kirby.driveStraightDegrees(180, 60)
+        kirby.moveBackMotorDegrees(0, 300)
+        kirby.driveStraightDegrees(180, -60)
+    kirby.turnInPlace(90, 60)
+    kirby.brake(100)
+
+def takeSecondSamples():
+    global areSamplesInOrder, clawPositionToSamples, CLAW_THREE
+    kirby.driveStraightDegrees(350,60)
+
+    #samples.reverse()
+    pg=samples.index("green")
+    pw=samples.index("white")
+   
+    print(pg)
+    print(pw)
+
+    if pg < pw:
+        areSamplesInOrder = True
+        if abs(pw - pg) == 1:
+            print("if")
+            grabGreenWhiteSamples(pw)
+        elif abs(pw - pg) == 2:
+            print("elif")
+            clawPositionToSamples = CLAW_THREE
+            grabGreenWhiteSamples(pg + 1)
+        else:
+            print("else")
+            grabGreenWhiteSamples(pg)
+            grabGreenWhiteSamples(pw - pg)
+        
+        kirby.driveStraightDegrees(160 * (5-pw), 60)
+
+    else:
+        grabGreenWhiteSamples(pw)
+        samplesState = 1
+        grabGreenWhiteSamples(pg - pw)
+        kirby.driveStraightDegrees(160 * (5-pg), 60)
 
 def detectgreen_white():
     pg=samples.index("green")

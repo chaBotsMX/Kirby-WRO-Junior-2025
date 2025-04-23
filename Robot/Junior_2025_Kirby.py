@@ -21,6 +21,17 @@ samples = []
 
 DETECTION_INTERVAL = 900
 
+CLAW_DEFAULT = 60
+CLAW_THREE = 90
+
+isRedFirst = False
+
+areSamplesInOrder = False
+
+clawPositionToSamples = CLAW_DEFAULT
+
+samplesState = 0
+
 class Kirby:
     def __init__(self):
         self.hub = PrimeHub(top_side=Axis.X, front_side=-Axis.Y)
