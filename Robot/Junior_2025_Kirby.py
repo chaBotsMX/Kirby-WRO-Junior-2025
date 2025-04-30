@@ -32,8 +32,8 @@ clawPositionToSamples = CLAW_DEFAULT
 
 samplesState = 0
 
-POSITION_TO_RED = 130
-POSITION_TO_YELLOW = 130
+POSITION_TO_RED = 135
+POSITION_TO_YELLOW = 145
 
 frontPositionToSamples = POSITION_TO_RED
 
@@ -300,6 +300,7 @@ class Kirby:
             self.hub.speaker.beep(500, 200)
             samples.append("blank")
         '''
+        '''
         #amarillo 51, verde 163, blanco 180-240, rojo 347 
         if self.colorSensor.hsv().h > 300 and self.colorSensor.hsv().h < 360:
             print("red")
@@ -326,6 +327,42 @@ class Kirby:
             self.hub.speaker.beep(500, 200)
             self.hub.speaker.beep(500, 200)
             samples.append("blank")
+        '''
+        #amarillo 51, verde 163, blanco 180-240, rojo 347 
+        lectura=0
+        for i in range(10):
+            lectura=self.colorSensor.hsv().h+lectura
+            wait(10)
+        lectura=lectura/10
+        print(lectura)
+
+        if lectura > 300 and lectura < 360:
+            print("red")
+            self.hub.speaker.beep(100, 100)
+            samples.append("red")
+
+        elif lectura > 175 and lectura < 235:
+            print("white")
+            self.hub.speaker.beep(200, 100)
+            samples.append("white")
+
+        elif (lectura > 45 and lectura < 55):
+            print("yellow")
+            self.hub.speaker.beep(300, 100)
+            samples.append("yellow")
+
+        elif lectura > 145 and lectura < 170:
+            print("green")
+            self.hub.speaker.beep(400, 100)
+            samples.append("green")
+
+        else:
+            print("blank")
+            self.hub.speaker.beep(500, 100)
+            self.hub.speaker.beep(500, 100)
+            samples.append("blank")
+
+
 
 
     def moveLeftDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):

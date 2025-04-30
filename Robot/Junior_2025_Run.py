@@ -6,7 +6,7 @@ checkLeftButton()
 print(kirby.hub.battery.voltage(), "mv") #bateria de kirby en miliVolts
 wait(100)
 
-
+tiempo=StopWatch()
 
 start()
 rover() 
@@ -30,3 +30,5 @@ letsamples()
 letsamples2()
 
 finish()
+
+print("Tiempo transcurrido:", tiempo.time()/1000, "s")
