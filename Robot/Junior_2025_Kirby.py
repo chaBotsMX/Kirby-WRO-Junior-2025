@@ -33,7 +33,7 @@ clawPositionToSamples = CLAW_DEFAULT
 samplesState = 0
 
 POSITION_TO_RED = 135
-POSITION_TO_YELLOW = 145
+POSITION_TO_YELLOW = 135
 
 frontPositionToSamples = POSITION_TO_RED
 
@@ -341,7 +341,7 @@ class Kirby:
             self.hub.speaker.beep(100, 100)
             samples.append("red")
 
-        elif lectura > 175 and lectura < 235:
+        elif lectura > 170 and lectura < 235:
             print("white")
             self.hub.speaker.beep(200, 100)
             samples.append("white")
