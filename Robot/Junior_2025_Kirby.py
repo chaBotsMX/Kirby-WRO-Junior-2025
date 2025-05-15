@@ -77,13 +77,14 @@ class Kirby:
     def getAngle(self, heading):
         return (heading + 180) % 360 - 180
 
-    def driveStraightDegrees(self, targetDegrees, power, kP = KP_FORWARD, kD = KD_FORWARD):
+    def driveDegrees(self, targetDegrees, power, kP = KP_FORWARD, kD = KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
         targetAngle = self.hub.imu.heading()
         lastError = 0
         watch = StopWatch()
+
         while True:
             currentAngle = self.hub.imu.heading()
             currentDegrees = self.getCurrentPos()
@@ -97,17 +98,10 @@ class Kirby:
 
             correction = (error * kP) + (derivative * kD)
 
-            #correction = max(min(correction, 100), -100)
-
             lastError = error
 
             self.leftDriveMotor.dc(power + correction)
             self.rightDriveMotor.dc(power - correction)
-
-            #print(abs(currentDegrees - targetDegrees))
-            #print("left", self.leftDriveMotor.angle())
-            #print("right", self.rightDriveMotor.angle())
-            #print("average", self.getCurrentPos())
 
             if currentDegrees > targetDegrees:
                 break
@@ -118,7 +112,7 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    def driveStraightTime(self, time, power):
+    def driveTime(self, time, power):
         self.leftDriveMotor.dc(power)
         self.rightDriveMotor.dc(power)
         wait(time)
@@ -126,7 +120,7 @@ class Kirby:
         self.rightDriveMotor.brake()
         wait(10)
 
-    def driveStraightUntilReflection(self, targetReflection, power, kP = KP_FORWARD, kD = KD_FORWARD):
+    def driveUntilReflection(self, targetReflection, power, kP = KP_FORWARD, kD = KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -147,17 +141,10 @@ class Kirby:
 
             correction = (error * kP) + (derivative * kD)
 
-            #correction = max(min(correction, 100), -100)
-
             lastError = error
 
             self.leftDriveMotor.dc(power + correction)
             self.rightDriveMotor.dc(power - correction)
-
-            #print(abs(currentReflection - targetReflection))
-            #print("left", self.leftDriveMotor.angle())
-            #print("right", self.rightDriveMotor.angle())
-            #print("average", self.getCurrentPos())
 
             if currentReflection < targetReflection:
                 self.hub.speaker.beep(400, 200)
@@ -168,7 +155,7 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    def turnInPlace (self, angle, power, kP = KP_TURNING, kD = KD_TURNING, timeLimit=1500):
+    def turnInPlace (self, angle, power = 60, kP = KP_TURNING, kD = KD_TURNING, timeLimit=1500):
         targetAngle = angle
 
         lastError = 0
@@ -204,13 +191,12 @@ class Kirby:
                 print("correction made succesfully")
                 break
 
-            #print (error)
-
             wait(1)
 
         self.brake(10)
         wait(10)
 
+    '''
     def lineFollowDegrees(self, targetDegrees, power, kP=10, kD=0.5):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
@@ -245,6 +231,7 @@ class Kirby:
 
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
+    '''
 
     def brake(self, time):
         self.leftDriveMotor.brake()
@@ -252,28 +239,6 @@ class Kirby:
         wait(time)
 
     def determineSamples(self):
-        '''
-        if self.colorSensor.color() == Color.RED:
-            print("red")
-            self.hub.speaker.beep(100, 200)
-            samples.append("red")
-        elif self.colorSensor.color() == Color.WHITE:
-            print("white")
-            self.hub.speaker.beep(200, 200)
-            samples.append("white")
-        elif self.colorSensor.color() == Color.YELLOW:
-            print("yellow")
-            self.hub.speaker.beep(300, 200)
-            samples.append("yellow")
-        elif self.colorSensor.color() == Color.GREEN:
-            print("green")
-            self.hub.speaker.beep(400, 200)
-            samples.append("green")
-        else:
-            print("blank")
-            self.hub.speaker.beep(500, 200)
-            samples.append("blank")
-        '''
         '''     
         if self.colorSensor.hsv().s > 85 and self.colorSensor.hsv().s < 100:
             print("red")
@@ -361,8 +326,6 @@ class Kirby:
             self.hub.speaker.beep(500, 100)
             self.hub.speaker.beep(500, 100)
             samples.append("blank")
-
-
 
 
     def moveLeftDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
