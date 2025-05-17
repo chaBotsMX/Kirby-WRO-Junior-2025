@@ -32,4 +32,4 @@ dropSecondSamples()
 
 parking()
 
-print("Tiempo:", timer.time() / 1000, "s")
+print("Tiempo:", timer.time() / 1000, "s") 

@@ -11,11 +11,11 @@ VALUE_BLACK = 5
 VALUE_WHITE = 36
 VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 
-KP_FORWARD = 5  #4
+KP_FORWARD = 6  #4
 KD_FORWARD = 0.1
 
-KP_TURNING = 18       #12
-KD_TURNING = 0.4
+KP_TURNING = 10       #12
+KD_TURNING = 0.5
 
 samples = []
 
@@ -162,6 +162,9 @@ class Kirby:
 
         watch = StopWatch()
         watch2 = StopWatch()
+        angleDebounce = StopWatch()
+
+        time = 0
 
         while True:
             currentAngle = self.hub.imu.heading()
@@ -177,6 +180,10 @@ class Kirby:
 
             lastError = error
 
+            print("angle", currentAngle)
+            print("error", error)
+            print("time", time)
+
             self.leftDriveMotor.dc(correction)
             self.rightDriveMotor.dc(-correction)
 
@@ -187,9 +194,12 @@ class Kirby:
                 print("time limit exceeded", watch2.time())
                 break
 
-            if abs(error) < 0.05:
-                print("correction made succesfully")
-                break
+            if abs(error) < 0.1:
+                if(angleDebounce.time() > 300):
+                    print("correction made succesfully")
+                    break
+                else:
+                    angleDebounce.reset()
 
             wait(1)
 
