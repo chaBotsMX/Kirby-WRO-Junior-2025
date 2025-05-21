@@ -11,7 +11,7 @@ VALUE_BLACK = 5
 VALUE_WHITE = 36
 VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 
-KP_FORWARD = 6  #4
+KP_FORWARD = 10 #6
 KD_FORWARD = 0.1
 
 KP_TURNING = 10       #12
@@ -155,7 +155,7 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    def turnInPlace (self, angle, power = 60, kP = KP_TURNING, kD = KD_TURNING, timeLimit=1500):
+    def turnInPlace (self, angle, power = 60, kP = KP_TURNING, kD = KD_TURNING, timeLimit=1200):
         targetAngle = angle
 
         lastError = 0
@@ -180,9 +180,11 @@ class Kirby:
 
             lastError = error
 
+            '''
             print("angle", currentAngle)
             print("error", error)
             print("time", time)
+            '''
 
             self.leftDriveMotor.dc(correction)
             self.rightDriveMotor.dc(-correction)
@@ -195,7 +197,7 @@ class Kirby:
                 break
 
             if abs(error) < 0.1:
-                if(angleDebounce.time() > 300):
+                if(angleDebounce.time() > 150):
                     print("correction made succesfully")
                     break
                 else:
@@ -249,59 +251,6 @@ class Kirby:
         wait(time)
 
     def determineSamples(self):
-        '''     
-        if self.colorSensor.hsv().s > 85 and self.colorSensor.hsv().s < 100:
-            print("red")
-            self.hub.speaker.beep(100, 200)
-            samples.append("red")
-
-        elif self.colorSensor.hsv().s > 2 and self.colorSensor.hsv().s < 15:
-            print("white")
-            self.hub.speaker.beep(200, 200)
-            samples.append("white")
-
-        elif (self.colorSensor.hsv().s > 60 and self.colorSensor.hsv().s < 71) and self.colorSensor.hsv().h < 100:
-            print("yellow")
-            self.hub.speaker.beep(300, 200)
-            samples.append("yellow")
-
-        elif self.colorSensor.hsv().s > 65 and self.colorSensor.hsv().s < 80:
-            print("green")
-            self.hub.speaker.beep(400, 200)
-            samples.append("green")
-
-        else:
-            print("blank")
-            self.hub.speaker.beep(500, 200)
-            samples.append("blank")
-        '''
-        '''
-        #amarillo 51, verde 163, blanco 180-240, rojo 347 
-        if self.colorSensor.hsv().h > 300 and self.colorSensor.hsv().h < 360:
-            print("red")
-            self.hub.speaker.beep(100, 200)
-            samples.append("red")
-
-        elif self.colorSensor.hsv().h > 175 and self.colorSensor.hsv().h < 235:
-            print("white")
-            self.hub.speaker.beep(200, 200)
-            samples.append("white")
-
-        elif (self.colorSensor.hsv().h > 45 and self.colorSensor.hsv().h < 55):
-            print("yellow")
-            self.hub.speaker.beep(300, 200)
-            samples.append("yellow")
-
-        elif self.colorSensor.hsv().h > 145 and self.colorSensor.hsv().h < 170:
-            print("green")
-            self.hub.speaker.beep(400, 200)
-            samples.append("green")
-
-        else:
-            print("blank")
-            self.hub.speaker.beep(500, 200)
-            self.hub.speaker.beep(500, 200)
-            samples.append("blank")
         '''
         #amarillo 51, verde 163, blanco 180-240, rojo 347 
         lectura=0
@@ -336,6 +285,53 @@ class Kirby:
             self.hub.speaker.beep(500, 100)
             self.hub.speaker.beep(500, 100)
             samples.append("blank")
+        '''
+
+        h_total = 0
+        s_total = 0
+        v_total = 0
+
+        for i in range(10):
+            h = self.colorSensor.hsv().h
+            s = self.colorSensor.hsv().s
+            v = self.colorSensor.hsv().v
+
+            h_total += h
+            s_total += s
+            v_total += v
+            wait(10)
+
+        h_avg = h_total / 10
+        s_avg = s_total / 10
+        v_avg = v_total / 10
+
+        print("HSV Avg:", h_avg, s_avg, v_avg)
+
+        if (h_avg >= 330 or h_avg <= 30) and s_avg > 20:
+            print("red")
+            self.hub.speaker.beep(100, 100)
+            samples.append("red")
+
+        elif 40 <= h_avg <= 70 and s_avg > 30:
+            print("yellow")
+            self.hub.speaker.beep(300, 100)
+            samples.append("yellow")
+
+        elif 100 <= h_avg <= 160 and s_avg > 30:
+            print("green")
+            self.hub.speaker.beep(400, 100)
+            samples.append("green")
+
+        elif h_avg < 5 and s_avg < 5 and v_avg < 5:
+            print("blank")
+            self.hub.speaker.beep(500, 100)
+            self.hub.speaker.beep(500, 100)
+            samples.append("blank")
+
+        else:
+            print("white")
+            self.hub.speaker.beep(200, 100)
+            samples.append("white")
 
 
     def moveLeftDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
