@@ -317,7 +317,7 @@ class Kirby:
             self.hub.speaker.beep(300, 100)
             samples.append("yellow")
 
-        elif 100 <= h_avg <= 160 and s_avg > 30:
+        elif 100 <= h_avg <= 170 and s_avg > 30:
             print("green")
             self.hub.speaker.beep(400, 100)
             samples.append("green")
