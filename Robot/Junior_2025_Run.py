@@ -6,6 +6,7 @@ checkLeftButton()
 print(kirby.hub.battery.voltage(), "mv") #bateria de kirby en miliVolts
 wait(100)
 
+
 timer = StopWatch()
 
 

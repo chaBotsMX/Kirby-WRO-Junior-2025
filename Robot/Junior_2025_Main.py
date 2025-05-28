@@ -2,6 +2,8 @@ from Junior_2025_Kirby import *
 
 kirby = Kirby()
 
+print(kirby.hub.battery.voltage(), "mv") #bateria de kirby en miliVolts
+
 BLACK = 10 #valor de reflexion en linea
 
 MAX_SPEED = 90 #velocidad maxima
@@ -63,8 +65,8 @@ def rover():
     kirby.turnInPlace(EAST) #girar hacia el este
     wait(50)
 
-    kirby.driveDegrees(120, MID_SPEED)#adelante
-    kirby.moveFrontMotorDegrees(130, 700) #bajar mecanismo atras
+    kirby.driveDegrees(115, MID_SPEED)#adelante
+    kirby.moveFrontMotorDegrees(130, 700) #bajar mecanismo adelante
     wait(50)
 
 def takeWaterTanks():
@@ -75,7 +77,7 @@ def takeWaterTanks():
     wait(50)
 
     kirby.driveUntilReflection(BLACK, -MIN_SPEED) #linea 4
-    wait(50)
+    kirby.brake(50)
 
     kirby.driveDegrees(50, MIN_SPEED) #adelante
 
@@ -161,15 +163,15 @@ def goToSamples():
     kirby.brake(100)
 
 def readSamples():
-    kirby.driveDegrees(420, MID_SPEED) #adelante
-    kirby.driveDegrees(110, MIN_SPEED) #adelante
-    kirby.brake(100)
+    kirby.driveDegrees(415, MID_SPEED) #adelante
+    kirby.driveDegrees(105, MIN_SPEED) #adelante
+    kirby.brake(90)
 
     for i in range(6):
         print(kirby.colorSensor.hsv())
         kirby.determineSamples() #detectar samples
 
-        kirby.driveDegrees(162, MID_SPEED) #adelante
+        kirby.driveDegrees(160, MID_SPEED) #adelante
         kirby.brake(60)
 
 def drone():
@@ -205,8 +207,8 @@ def grabRedYellowSample(pos):
 
     kirby.moveFrontMotorDegrees(frontPositionToSamples, 300) #mover motor delantero x grados
 
-    kirby.driveDegrees(100, MID_SPEED) #adelante
-    kirby.driveDegrees(60, 35) #adelante
+    kirby.driveDegrees(70, MID_SPEED) #adelante
+    kirby.driveDegrees(70, 35) #adelante
     kirby.moveFrontMotorDegrees(20, 700) #subir motor delantero
     kirby.driveDegrees(145, -MID_SPEED) #atras
 
@@ -214,7 +216,7 @@ def grabRedYellowSample(pos):
     kirby.brake(100)
 
 def takeFirstSamples():
-    global isRedFirst, frontPositionToSamples, POSITION_TO_RED, POSITION_TO_YELLOW
+    global isRedFirst, frontPositionToSamples, POSTION_TO_RED, POSITION_TO_YELLOW
     kirby.driveDegrees(470, MID_SPEED) #adelante 480
 
     samples.reverse() #se cambia el orden de la lista de samples
@@ -236,7 +238,7 @@ def takeFirstSamples():
         frontPositionToSamples = POSITION_TO_YELLOW
         grabRedYellowSample(posYellow - posRed) #posicion de diferencia
 
-        kirby.driveDegrees(161 * (5 - posYellow), MAX_SPEED) #avanzar hasta la ultima posicion
+        kirby.driveDegrees(160 * (5 - posYellow), MAX_SPEED) #avanzar hasta la ultima posicion
 
     #si el amarillo es primero que el rojo
     else:
@@ -266,20 +268,20 @@ def grabGreenWhiteSample():
     kirby.turnInPlace(WEST) #oeste
 
     kirby.moveBackMotorDegrees(55, 700) #abrir garra
-    kirby.driveDegrees(400, MID_SPEED) #avanzar a muestra
+    kirby.driveDegrees(340, MID_SPEED) #avanzar a muestra
     kirby.driveDegrees(130, 35) #avanzar a muestra
     kirby.moveBackMotorDegrees(0,500) #cerrar garra
-    kirby.driveDegrees(530, -MIN_SPEED) #regresar
+    kirby.driveDegrees(470, -MIN_SPEED) #regresar
 
 def grabGreenWhiteSample2():
     kirby.turnInPlace(WEST) #oeste
 
     kirby.moveBackMotorDegrees(55, 700) #abrir garra
-    kirby.driveDegrees(400, MID_SPEED) #avanzar a muestra
-    kirby.driveDegrees(100, 35) #avanzar a muestra
+    kirby.driveDegrees(340, MID_SPEED) #avanzar a muestra
+    kirby.driveDegrees(130, 35) #avanzar a muestra
 
     kirby.moveBackMotorDegrees(0,500) #cerrar garra
-    kirby.driveDegrees(510, -MIN_SPEED) #regresar
+    kirby.driveDegrees(370, -MIN_SPEED) #regresar
 
 def takeSecondSamples():
     global areSamplesInOrder, clawPositionToSamples, CLAW_THREE
@@ -316,7 +318,7 @@ def takeSecondSamples():
             grabGreenWhiteSample2() #tomar muestra verde
 
             kirby.turnInPlace(90)
-            kirby.driveDegrees(spacingDegrees * (posWhite - posGreen - 1), MID_SPEED) #avanzar hasta blanco
+            kirby.driveDegrees(spacingDegrees * (posWhite - posGreen - 1.3), MID_SPEED) #avanzar hasta blanco
 
             grabGreenWhiteSample() #tomar muestra blanca
 
@@ -328,7 +330,7 @@ def takeSecondSamples():
         grabGreenWhiteSample() #tomar muestra blanca
 
         kirby.turnInPlace(SOUTH) #SUR
-        kirby.driveDegrees(spacingDegrees * (posGreen - posWhite + 1) + 100, MID_SPEED) #avanzar hasta verde
+        kirby.driveDegrees(spacingDegrees * (posGreen - posWhite + 1) + 60, MID_SPEED) #avanzar hasta verde
         
         grabGreenWhiteSample() #tomar muestra verde
 
