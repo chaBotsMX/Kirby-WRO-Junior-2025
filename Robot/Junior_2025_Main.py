@@ -437,7 +437,7 @@ def dropSecondSamples():
 
     kirby.moveRightDriveMotorDegrees(150, 500) #atras motor DERECHO
     kirby.moveRightDriveMotorDegrees(-150, 500) #atras motor DERECHO
-    
+
     kirby.driveDegrees(60, -MAX_SPEED) #atras
     kirby.turnInPlace(EAST) #este
 
