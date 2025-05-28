@@ -4,8 +4,8 @@ checkBluetoothButton()
 checkLeftButton()
 
 print(kirby.hub.battery.voltage(), "mv") #bateria de kirby en miliVolts
-wait(100)
-
+wait(10)
+#ickkdura
 
 timer = StopWatch()
 
