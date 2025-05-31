@@ -8,14 +8,14 @@ wait(10)
 
 timer = StopWatch()
 
-
+'''
 start()
 rover()
 
 takeWaterTanks()
 goToBox()
 leaveWaterTanks()
-
+'''
 goToSamples() 
 readSamples()
 drone()

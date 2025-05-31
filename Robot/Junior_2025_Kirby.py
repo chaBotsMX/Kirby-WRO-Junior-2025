@@ -69,7 +69,6 @@ class Kirby:
     def getAngle(self, heading):
         return (heading + 180) % 360 - 180
 
-    '''
     def driveDegrees(self, targetDegrees, power, kP = KP_FORWARD, kD = KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
@@ -104,7 +103,6 @@ class Kirby:
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
         wait(10)
-    '''
 
     '''
     def driveDegrees(self, targetDegrees, maxPower, accel=20, basePower = 22, kP=KP_FORWARD, kD=KD_FORWARD):
@@ -171,7 +169,7 @@ class Kirby:
         self.brake(10)
     '''
 
-    def driveDegrees(self, targetDegrees, maxPower, accel=10, basePower=30, kP=KP_FORWARD, kD=KD_FORWARD):
+    def driveDegreesAccelDecel(self, targetDegrees, maxPower, accel=10, basePower=30, kP=KP_FORWARD, kD=KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -214,8 +212,8 @@ class Kirby:
             currentDegrees = abs(self.getCurrentPos())
             remainingDegrees = targetDegrees - currentDegrees
 
-            print("curr degs", currentDegrees)
-            print("acc dist", accelDistance)
+            #print("curr degs", currentDegrees)
+            #print("acc dist", accelDistance)
 
             # Compute power based on position in motion profile
             if currentDegrees < accelDistance:
@@ -231,7 +229,7 @@ class Kirby:
             # Clamp to max power
             currentPower = min(currentPower, maxPower)
 
-            print("curr pow", currentPower)
+            #print("curr pow", currentPower)
 
             # PD correction
             error = self.getAngle(targetAngle - currentAngle)
