@@ -4,6 +4,8 @@ from pybricks.pupdevices import ColorSensor, Motor
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 
+import umath
+
 MAX_LIGHT = 0
 MIN_LIGHT = 100
 
@@ -11,10 +13,10 @@ VALUE_BLACK = 5
 VALUE_WHITE = 36
 VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 
-KP_FORWARD = 10 #6
-KD_FORWARD = 0.1
+KP_FORWARD = 6.5 #6
+KD_FORWARD = 0.01
 
-KP_TURNING = 10       #12
+KP_TURNING = 11       #12
 KD_TURNING = 0.5
 
 samples = []
@@ -60,16 +62,6 @@ class Kirby:
         self.lineSensor = ColorSensor(Port.C)
         self.colorSensor = ColorSensor(Port.F)
 
-        Color.WHITE = Color(h=180, s=7, v=15)
-        Color.GREEN = Color(h=156, s=75, v=5)
-        Color.YELLOW = Color(h=52, s=69, v=24)
-        Color.RED = Color(h=355, s=95, v=9)
-        Color.NONE = Color(h=0, s=0, v=0)
-
-        self.sensorColors = (Color.WHITE, Color.GREEN, Color.YELLOW, Color.RED, Color.NONE)
-
-        self.colorSensor.detectable_colors(self.sensorColors)
-
     def getCurrentPos(self):
         pos = (abs(self.leftDriveMotor.angle()) + abs(self.rightDriveMotor.angle())) / 2
         return pos
@@ -77,6 +69,7 @@ class Kirby:
     def getAngle(self, heading):
         return (heading + 180) % 360 - 180
 
+    '''
     def driveDegrees(self, targetDegrees, power, kP = KP_FORWARD, kD = KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
@@ -111,14 +104,163 @@ class Kirby:
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
         wait(10)
+    '''
+
+    '''
+    def driveDegrees(self, targetDegrees, maxPower, accel=20, basePower = 22, kP=KP_FORWARD, kD=KD_FORWARD):
+        self.leftDriveMotor.reset_angle(0)
+        self.rightDriveMotor.reset_angle(0)
+
+        # Get the initial heading for PD correction
+        targetAngle = self.hub.imu.heading()
+        lastError = 0
+        watch = StopWatch()
+
+        # (1 for forward, -1 for backward)
+        direction = 1 if targetDegrees >= 0 else -1
+        targetDegrees = abs(targetDegrees)  # Work with positive distance for math
+
+        # Formula: s = v² / (2a), from kinematics
+        accelDistance = decelDistance = (maxPower * maxPower) / (2 * accel)
+
+        cruiseDistance = max(0, targetDegrees - accelDistance - decelDistance)
+
+        while True:
+            currentAngle = self.hub.imu.heading()
+            currentDegrees = abs(self.getCurrentPos())
+            remainingDegrees = targetDegrees - currentDegrees
+
+            print("curr degs", currentDegrees)
+            print("acc dist", accelDistance)
+
+            # speed based on position in the motion profile
+            if currentDegrees < accelDistance:
+                # acceleration: v = sqrt(2as)
+                currentPower = basePower + umath.sqrt(2 * accel * (currentDegrees+1))
+            elif currentDegrees < accelDistance + cruiseDistance:
+                # cruise: constant max power
+                currentPower = maxPower
+            else:
+                # deceleration: v = sqrt(2a * remaining distance)
+                currentPower = basePower + umath.sqrt(2 * accel * max(remainingDegrees, 0))
+
+            currentPower = min(currentPower, maxPower)
+
+            print("curr pow", currentPower)
+
+            # PD control
+            error = self.getAngle(targetAngle - currentAngle)
+            dt = watch.time() / 1000
+            derivative = (error - lastError) / dt if dt > 0 else 0
+            watch.reset()
+
+            correction = (error * kP) + (derivative * kD)
+            lastError = error
+
+            # Apply motor powers, considering direction
+            self.leftDriveMotor.dc(direction * currentPower + correction)
+            self.rightDriveMotor.dc(direction * currentPower - correction)
+
+            # Exit when target distance is reached
+            if currentDegrees >= targetDegrees:
+                break
+
+            wait(1)  # 1 ms delay to prevent overloading the CPU
+
+        # Stop motors
+        self.brake(10)
+    '''
+
+    def driveDegrees(self, targetDegrees, maxPower, accel=10, basePower=30, kP=KP_FORWARD, kD=KD_FORWARD):
+        self.leftDriveMotor.reset_angle(0)
+        self.rightDriveMotor.reset_angle(0)
+
+        # Get the initial heading for PD correction
+        targetAngle = self.hub.imu.heading()
+        lastError = 0
+        watch = StopWatch()
+
+        # Direction of movement: 1 for forward, -1 for backward
+        direction = 1 if targetDegrees >= 0 else -1
+        targetDegrees = abs(targetDegrees)
+
+        # Ratios for profile shape
+        accelRatio = 0.3
+        decelRatio = 0.5
+        cruiseRatio = 1 - accelRatio - decelRatio
+
+        # Calculate raw accel/decel distances
+        accelDistance = targetDegrees * accelRatio
+        decelDistance = targetDegrees * decelRatio
+
+        # Minimum distances to ensure effectiveness
+        minAccelDistance = 30
+        minDecelDistance = 30
+
+        accelDistance = max(minAccelDistance, accelDistance)
+        decelDistance = max(minDecelDistance, decelDistance)
+
+        # Scale down if accel+decel > total
+        totalAD = accelDistance + decelDistance
+        if totalAD > targetDegrees:
+            scale = targetDegrees / totalAD
+            accelDistance *= scale
+            decelDistance *= scale
+
+        cruiseDistance = max(0, targetDegrees - accelDistance - decelDistance)
+
+        while True:
+            currentAngle = self.hub.imu.heading()
+            currentDegrees = abs(self.getCurrentPos())
+            remainingDegrees = targetDegrees - currentDegrees
+
+            print("curr degs", currentDegrees)
+            print("acc dist", accelDistance)
+
+            # Compute power based on position in motion profile
+            if currentDegrees < accelDistance:
+                # Accelerating: v = basePower + sqrt(2as)
+                currentPower = basePower + umath.sqrt(2 * accel * currentDegrees)
+            elif currentDegrees < accelDistance + cruiseDistance:
+                # Cruising at maxPower
+                currentPower = maxPower
+            else:
+                # Decelerating: v = basePower + sqrt(2a * remaining)
+                currentPower = (basePower-10) + umath.sqrt(2 * accel * max(remainingDegrees, 0))
+
+            # Clamp to max power
+            currentPower = min(currentPower, maxPower)
+
+            print("curr pow", currentPower)
+
+            # PD correction
+            error = self.getAngle(targetAngle - currentAngle)
+            dt = watch.time() / 1000
+            derivative = (error - lastError) / dt if dt > 0 else 0
+            watch.reset()
+
+            correction = (error * kP) + (derivative * kD)
+            lastError = error
+
+            # Apply power with correction and direction
+            self.leftDriveMotor.dc(direction * currentPower + correction)
+            self.rightDriveMotor.dc(direction * currentPower - correction)
+
+            # Exit condition
+            if currentDegrees >= targetDegrees:
+                break
+
+            wait(1)  # small delay
+
+        self.brake(10)
 
     def driveTime(self, time, power):
         self.leftDriveMotor.dc(power)
         self.rightDriveMotor.dc(power)
+
         wait(time)
-        self.leftDriveMotor.brake()
-        self.rightDriveMotor.brake()
-        wait(10)
+
+        self.brake(10)
 
     def driveUntilReflection(self, targetReflection, power, kP = KP_FORWARD, kD = KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
@@ -155,7 +297,7 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    def turnInPlace (self, angle, power = 60, kP = KP_TURNING, kD = KD_TURNING, timeLimit=1200):
+    def turnInPlace (self, angle, power = 60, kP = KP_TURNING, kD = KD_TURNING, timeLimit=1000):
         targetAngle = angle
 
         lastError = 0
@@ -197,7 +339,7 @@ class Kirby:
                 break
 
             if abs(error) < 0.1:
-                if(angleDebounce.time() > 150):
+                if(angleDebounce.time() > 100):
                     print("correction made succesfully")
                     break
                 else:
@@ -208,85 +350,12 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    '''
-    def lineFollowDegrees(self, targetDegrees, power, kP=10, kD=0.5):
-        self.leftDriveMotor.reset_angle(0)
-        self.rightDriveMotor.reset_angle(0)
-
-        targetReflection = VALUE_LINE
-        lastError = 0
-        watch = StopWatch()
-
-        while True:
-            currentReflection = self.lineSensor.reflection()
-            currentDegrees = self.getCurrentPos()
-
-            error = currentReflection - targetReflection
-
-            dt = watch.time() / 1000
-            derivative = (error - lastError) / dt if dt > 0 else 0
-            watch.reset()
-
-            correction = (error * kP) + (kD * derivative)
-
-            correction = max(min(correction, 100), -100)
-
-            lastError = error
-
-            self.leftDriveMotor.dc(power - correction)
-            self.rightDriveMotor.dc(power + correction)
-
-            if currentDegrees > targetDegrees:
-                break
-
-            wait(1)
-
-        self.leftDriveMotor.brake()
-        self.rightDriveMotor.brake()
-    '''
-
     def brake(self, time):
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
         wait(time)
 
     def determineSamples(self):
-        '''
-        #amarillo 51, verde 163, blanco 180-240, rojo 347 
-        lectura=0
-        for i in range(10):
-            lectura=self.colorSensor.hsv().h+lectura
-            wait(10)
-        lectura=lectura/10
-        print(lectura)
-
-        if lectura > 300 and lectura < 360:
-            print("red")
-            self.hub.speaker.beep(100, 100)
-            samples.append("red")
-
-        elif lectura > 170 and lectura < 235:
-            print("white")
-            self.hub.speaker.beep(200, 100)
-            samples.append("white")
-
-        elif (lectura > 45 and lectura < 55):
-            print("yellow")
-            self.hub.speaker.beep(300, 100)
-            samples.append("yellow")
-
-        elif lectura > 145 and lectura < 170:
-            print("green")
-            self.hub.speaker.beep(400, 100)
-            samples.append("green")
-
-        else:
-            print("blank")
-            self.hub.speaker.beep(500, 100)
-            self.hub.speaker.beep(500, 100)
-            samples.append("blank")
-        '''
-
         h_total = 0
         s_total = 0
         v_total = 0
