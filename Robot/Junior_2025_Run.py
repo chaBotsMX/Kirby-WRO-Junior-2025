@@ -15,6 +15,7 @@ takeWaterTanks()
 goToBox()
 leaveWaterTanks()
 
+goToSamples()
 readSamples()
 drone()
 
