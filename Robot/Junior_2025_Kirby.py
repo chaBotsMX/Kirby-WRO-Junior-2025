@@ -13,10 +13,10 @@ VALUE_BLACK = 5
 VALUE_WHITE = 36
 VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 
-KP_FORWARD = 6.5 #6
+KP_FORWARD = 8 #6
 KD_FORWARD = 0.01
 
-KP_TURNING = 11       #12
+KP_TURNING = 12       #12
 KD_TURNING = 0.5
 
 samples = []
@@ -69,11 +69,13 @@ class Kirby:
     def getAngle(self, heading):
         return (heading + 180) % 360 - 180
 
-    def driveDegrees(self, targetDegrees, power, kP = KP_FORWARD, kD = KD_FORWARD):
+    def driveDegrees(self, targetDegrees, power, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle=-1):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
-        targetAngle = self.hub.imu.heading()
+        if targetAngle == -1:
+            targetAngle = self.hub.imu.heading()
+        
         lastError = 0
         watch = StopWatch()
 
@@ -100,9 +102,7 @@ class Kirby:
 
             wait(1)
 
-        self.leftDriveMotor.brake()
-        self.rightDriveMotor.brake()
-        wait(10)
+        self.brake(10)
 
     '''
     def driveDegrees(self, targetDegrees, maxPower, accel=20, basePower = 22, kP=KP_FORWARD, kD=KD_FORWARD):
@@ -169,7 +169,7 @@ class Kirby:
         self.brake(10)
     '''
 
-    def driveDegreesAccelDecel(self, targetDegrees, maxPower, accel=10, basePower=30, kP=KP_FORWARD, kD=KD_FORWARD):
+    def driveDegreesAccelDecel(self, targetDegrees, maxPower, accel=10, basePower=32, kP=KP_FORWARD, kD=KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -337,7 +337,7 @@ class Kirby:
                 break
 
             if abs(error) < 0.1:
-                if(angleDebounce.time() > 100):
+                if(angleDebounce.time() > 200):
                     print("correction made succesfully")
                     break
                 else:
