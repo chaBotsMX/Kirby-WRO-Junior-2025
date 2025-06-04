@@ -169,16 +169,14 @@ class Kirby:
         self.brake(10)
     '''
 
-    def driveDegreesAccelDecel(self, targetDegrees, maxPower, accel=10, basePower=32, kP=KP_FORWARD, kD=KD_FORWARD):
+    def driveDegreesAccelDecel(self, targetDegrees, maxPower, accel=12, basePower=38, kP=KP_FORWARD, kD=KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
-        # Get the initial heading for PD correction
         targetAngle = self.hub.imu.heading()
         lastError = 0
         watch = StopWatch()
 
-        # Direction of movement: 1 for forward, -1 for backward
         direction = 1 if targetDegrees >= 0 else -1
         targetDegrees = abs(targetDegrees)
 
@@ -187,11 +185,9 @@ class Kirby:
         decelRatio = 0.5
         cruiseRatio = 1 - accelRatio - decelRatio
 
-        # Calculate raw accel/decel distances
         accelDistance = targetDegrees * accelRatio
         decelDistance = targetDegrees * decelRatio
 
-        # Minimum distances to ensure effectiveness
         minAccelDistance = 30
         minDecelDistance = 30
 
@@ -389,7 +385,7 @@ class Kirby:
             self.hub.speaker.beep(400, 100)
             samples.append("green")
 
-        elif h_avg < 5 and s_avg < 5 and v_avg < 5:
+        elif (h_avg < 100 or s_avg <= 12) and v_avg < 3:
             print("blank")
             self.hub.speaker.beep(500, 100)
             self.hub.speaker.beep(500, 100)
