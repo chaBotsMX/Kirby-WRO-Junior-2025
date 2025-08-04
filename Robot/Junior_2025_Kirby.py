@@ -13,11 +13,11 @@ VALUE_BLACK = 5
 VALUE_WHITE = 36
 VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 
-KP_FORWARD = 8 #6
-KD_FORWARD = 0.01
+KP_FORWARD = 10
+KD_FORWARD = 0.1
 
-KP_TURNING = 12       #12
-KD_TURNING = 0.5
+KP_TURNING = 8
+KD_TURNING = 0.1
 
 samples = []
 
@@ -41,7 +41,7 @@ frontPositionToSamples = POSITION_TO_RED
 
 class Kirby:
     def __init__(self):
-        self.hub = PrimeHub(top_side=Axis.X, front_side=-Axis.Y)
+        self.hub = PrimeHub()
 
         self.leftDriveMotor = Motor(Port.A, Direction.COUNTERCLOCKWISE)
         self.leftDriveMotor.reset_angle(0)
@@ -69,7 +69,7 @@ class Kirby:
     def getAngle(self, heading):
         return (heading + 180) % 360 - 180
 
-    def driveDegrees(self, targetDegrees, power, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle=-1):
+    def driveDegrees(self, targetDegrees, maxPower, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle = -1, speedControl = True, accel = True):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -79,172 +79,49 @@ class Kirby:
         lastError = 0
         watch = StopWatch()
 
+        minPower = 32
+        accel_distance = targetDegrees * 0.3  # 30% of the total distance for accel/decel
+
         while True:
             currentAngle = self.hub.imu.heading()
             currentDegrees = self.getCurrentPos()
+            distanceRemaining = targetDegrees - currentDegrees
 
+            print("currDeg ", currentDegrees)
+
+            if distanceRemaining <= 0:
+                break
+
+            #Heading PD
             error = targetAngle - currentAngle
-            errorDegrees = targetDegrees - currentDegrees
-
             dt = watch.time() / 1000
             derivative = (error - lastError) / dt if dt > 0 else 0
-            watch.reset()
-
             correction = (error * kP) + (derivative * kD)
-
+            watch.reset()
             lastError = error
 
-            self.leftDriveMotor.dc(power + correction)
-            self.rightDriveMotor.dc(power - correction)
+            #Trapezoidal speed control
+            if speedControl == True:
+                if currentDegrees < accel_distance and accel == True:
+                    # Acceleration phase
+                    basePower = minPower + ((currentDegrees / accel_distance) * (maxPower - minPower))
+                elif distanceRemaining < accel_distance:
+                    # Deceleration phase
+                    basePower = minPower + ((distanceRemaining / accel_distance) * (maxPower - minPower))
+                else:
+                    # Cruise phase
+                    basePower = maxPower
 
-            if currentDegrees > targetDegrees:
-                break
+                basePower = max(minPower, min(basePower, maxPower))  # clamp
+
+                self.leftDriveMotor.dc(basePower + correction)
+                self.rightDriveMotor.dc(basePower - correction)
+
+            else:
+                self.leftDriveMotor.dc(maxPower + correction)
+                self.rightDriveMotor.dc(maxPower - correction)
 
             wait(1)
-
-        self.brake(10)
-
-    '''
-    def driveDegrees(self, targetDegrees, maxPower, accel=20, basePower = 22, kP=KP_FORWARD, kD=KD_FORWARD):
-        self.leftDriveMotor.reset_angle(0)
-        self.rightDriveMotor.reset_angle(0)
-
-        # Get the initial heading for PD correction
-        targetAngle = self.hub.imu.heading()
-        lastError = 0
-        watch = StopWatch()
-
-        # (1 for forward, -1 for backward)
-        direction = 1 if targetDegrees >= 0 else -1
-        targetDegrees = abs(targetDegrees)  # Work with positive distance for math
-
-        # Formula: s = v² / (2a), from kinematics
-        accelDistance = decelDistance = (maxPower * maxPower) / (2 * accel)
-
-        cruiseDistance = max(0, targetDegrees - accelDistance - decelDistance)
-
-        while True:
-            currentAngle = self.hub.imu.heading()
-            currentDegrees = abs(self.getCurrentPos())
-            remainingDegrees = targetDegrees - currentDegrees
-
-            print("curr degs", currentDegrees)
-            print("acc dist", accelDistance)
-
-            # speed based on position in the motion profile
-            if currentDegrees < accelDistance:
-                # acceleration: v = sqrt(2as)
-                currentPower = basePower + umath.sqrt(2 * accel * (currentDegrees+1))
-            elif currentDegrees < accelDistance + cruiseDistance:
-                # cruise: constant max power
-                currentPower = maxPower
-            else:
-                # deceleration: v = sqrt(2a * remaining distance)
-                currentPower = basePower + umath.sqrt(2 * accel * max(remainingDegrees, 0))
-
-            currentPower = min(currentPower, maxPower)
-
-            print("curr pow", currentPower)
-
-            # PD control
-            error = self.getAngle(targetAngle - currentAngle)
-            dt = watch.time() / 1000
-            derivative = (error - lastError) / dt if dt > 0 else 0
-            watch.reset()
-
-            correction = (error * kP) + (derivative * kD)
-            lastError = error
-
-            # Apply motor powers, considering direction
-            self.leftDriveMotor.dc(direction * currentPower + correction)
-            self.rightDriveMotor.dc(direction * currentPower - correction)
-
-            # Exit when target distance is reached
-            if currentDegrees >= targetDegrees:
-                break
-
-            wait(1)  # 1 ms delay to prevent overloading the CPU
-
-        # Stop motors
-        self.brake(10)
-    '''
-
-    def driveDegreesAccelDecel(self, targetDegrees, maxPower, accel=12, basePower=38, kP=KP_FORWARD, kD=KD_FORWARD):
-        self.leftDriveMotor.reset_angle(0)
-        self.rightDriveMotor.reset_angle(0)
-
-        targetAngle = self.hub.imu.heading()
-        lastError = 0
-        watch = StopWatch()
-
-        direction = 1 if targetDegrees >= 0 else -1
-        targetDegrees = abs(targetDegrees)
-
-        # Ratios for profile shape
-        accelRatio = 0.3
-        decelRatio = 0.5
-        cruiseRatio = 1 - accelRatio - decelRatio
-
-        accelDistance = targetDegrees * accelRatio
-        decelDistance = targetDegrees * decelRatio
-
-        minAccelDistance = 30
-        minDecelDistance = 30
-
-        accelDistance = max(minAccelDistance, accelDistance)
-        decelDistance = max(minDecelDistance, decelDistance)
-
-        # Scale down if accel+decel > total
-        totalAD = accelDistance + decelDistance
-        if totalAD > targetDegrees:
-            scale = targetDegrees / totalAD
-            accelDistance *= scale
-            decelDistance *= scale
-
-        cruiseDistance = max(0, targetDegrees - accelDistance - decelDistance)
-
-        while True:
-            currentAngle = self.hub.imu.heading()
-            currentDegrees = abs(self.getCurrentPos())
-            remainingDegrees = targetDegrees - currentDegrees
-
-            #print("curr degs", currentDegrees)
-            #print("acc dist", accelDistance)
-
-            # Compute power based on position in motion profile
-            if currentDegrees < accelDistance:
-                # Accelerating: v = basePower + sqrt(2as)
-                currentPower = basePower + umath.sqrt(2 * accel * currentDegrees)
-            elif currentDegrees < accelDistance + cruiseDistance:
-                # Cruising at maxPower
-                currentPower = maxPower
-            else:
-                # Decelerating: v = basePower + sqrt(2a * remaining)
-                currentPower = (basePower-10) + umath.sqrt(2 * accel * max(remainingDegrees, 0))
-
-            # Clamp to max power
-            currentPower = min(currentPower, maxPower)
-
-            #print("curr pow", currentPower)
-
-            # PD correction
-            error = self.getAngle(targetAngle - currentAngle)
-            dt = watch.time() / 1000
-            derivative = (error - lastError) / dt if dt > 0 else 0
-            watch.reset()
-
-            correction = (error * kP) + (derivative * kD)
-            lastError = error
-
-            # Apply power with correction and direction
-            self.leftDriveMotor.dc(direction * currentPower + correction)
-            self.rightDriveMotor.dc(direction * currentPower - correction)
-
-            # Exit condition
-            if currentDegrees >= targetDegrees:
-                break
-
-            wait(1)  # small delay
 
         self.brake(10)
 
@@ -291,16 +168,16 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    def turnInPlace (self, angle, power = 60, kP = KP_TURNING, kD = KD_TURNING, timeLimit=1000):
+    def turnInPlace (self, angle, power, kP = KP_TURNING, kD = KD_TURNING):
         targetAngle = angle
 
         lastError = 0
 
         watch = StopWatch()
-        watch2 = StopWatch()
         angleDebounce = StopWatch()
+        exitTimer = StopWatch()
 
-        time = 0
+        minPower = 32
 
         while True:
             currentAngle = self.hub.imu.heading()
@@ -314,30 +191,32 @@ class Kirby:
 
             correction = max(min(correction, power), -power)
 
+            if abs(correction) < minPower and abs(error) > 1:
+                if correction > 0:
+                    correction = minPower
+                else:
+                    correction = -minPower
+
             lastError = error
 
-            '''
             print("angle", currentAngle)
             print("error", error)
-            print("time", time)
-            '''
+            print("correction", correction)
+            #print("time", angleDebounce.time())
 
             self.leftDriveMotor.dc(correction)
             self.rightDriveMotor.dc(-correction)
 
-            #if abs(error) < 3:
-                #kP *= 1.05
-
-            if watch2.time() > timeLimit:
-                print("time limit exceeded", watch2.time())
-                break
-
-            if abs(error) < 0.1:
-                if(angleDebounce.time() > 200):
-                    print("correction made succesfully")
+            if exitTimer.time() > 3000:
+                print("safe exit")
+                break;
+            
+            if abs(error) < 1:
+                if(angleDebounce.time() > 400):
+                    print("succesfull turn")
                     break
-                else:
-                    angleDebounce.reset()
+            else:
+                angleDebounce.reset()
 
             wait(1)
 
