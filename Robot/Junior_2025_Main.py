@@ -2,7 +2,8 @@ from Junior_2025_Kirby import *
 
 kirby = Kirby()
 
-BLACK = 14 #valor de reflexion en linea
+BLACK = 12 #valor de reflexion en linea
+WHITE = 59
 
 MAX_SPEED = 95 #velocidad maxima
 MIN_SPEED = 50 #velocidad minima
@@ -42,106 +43,54 @@ def checkLeftButton():
         print("white: ", MAX_LIGHT)
 
 #inicio del recorrido
-def start():    
-    kirby.driveDegreesAccelDecel(470, MID_SPEED)
-    kirby.driveUntilReflection(BLACK, MIN_SPEED) #detectar linea 2
-    kirby.driveDegreesAccelDecel(100, MID_SPEED)
-    
-    kirby.turnInPlace(NORTH) #90 grados a la izquierda(norte)
-    
-    kirby.driveDegrees(250, -MID_SPEED)
-    kirby.driveTime(500, -MID_SPEED) #chocar con pared
+def start():
+    kirby.driveTime(400, -90)
+    kirby.hub.imu.reset_heading(EAST) #reset imu
 
-    kirby.hub.imu.reset_heading(NORTH) #resetear angulo
-    wait(100)
+    kirby.moveFrontMotorDegrees(80, 500)
 
-    kirby.driveDegreesAccelDecel(650, MAX_SPEED)
-    kirby.driveUntilReflection(BLACK, MIN_SPEED) #detectar linea 4
-    kirby.driveDegreesAccelDecel(100, MID_SPEED)
-
-def rover():
-    kirby.turnInPlace(EAST) #girar hacia el este
-
-    kirby.driveDegrees(120, MID_SPEED)#adelante
-    kirby.moveFrontMotorDegrees(130, 700) #bajar mecanismo adelante
-
-def takeWaterTanks():
-    kirby.driveDegrees(120, -MID_SPEED) #atras
-    kirby.moveFrontMotorDegrees(0,700) #regresar mecanismo frente
-
-    kirby.turnInPlace(NORTH) #girar al norte
-
-    kirby.driveUntilReflection(BLACK, -MIN_SPEED) #linea 4
-    wait(50)
-
-    kirby.driveDegrees(40, MIN_SPEED) #adelante
-
-    kirby.turnInPlace(EAST) #girar al este
-    kirby.brake(50)
-    kirby.driveDegrees(240, -MID_SPEED) #atras
-    wait(50)
-
-    kirby.moveBackMotorTime(900, 700) #bajar mecanismo atras
-    kirby.backMotor.brake()
-    wait(50)
-
-    kirby.driveTime(500, -MAX_SPEED) #recoger agua
-    kirby.driveDegrees(70, MIN_SPEED) #adelante
-    
-    kirby.driveTime(400, -MID_SPEED) #recoger segunda agua
-    kirby.driveDegrees(125, MID_SPEED) #adelante
-    wait(100)
-
-def goToBox():
-    kirby.moveBackMotorDegrees(60, 150) #subir mecanismo atras
+    kirby.driveDegrees(280, 90, accel=False)
+    kirby.driveUntilReflection(BLACK, 40)
+    kirby.driveDegrees(80, 90)
 
     kirby.turnInPlace(NORTH)
-    kirby.brake(50)
+    kirby.driveDegrees(140, 90)
+    kirby.driveUntilReflection(BLACK, 40)
+    kirby.driveDegrees(42, 50, speedControl=False)
 
-    kirby.driveDegreesAccelDecel(600, MAX_SPEED) #adelante
-    kirby.driveUntilReflection(BLACK, MIN_SPEED) #linea 6
-    kirby.driveDegrees(220, -MID_SPEED) #atras #200
+def rover():
+    kirby.turnInPlace(EAST)
+    kirby.moveBackMotorDegrees(-40, 500)
+    kirby.driveDegrees(90, 90)
+    kirby.moveBackMotorDegrees(0, 900)
+    kirby.driveDegrees(-200, 90, targetAngle=EAST)
 
-    kirby.turnInPlace(-179) #oeste
-    kirby.brake(50)
+def takeWaterTanks():
+    #kirby.moveBackMotorDegrees(-210, 600)
+    #kirby.moveBackMotorDegrees(-190, 400)
+    kirby.moveFrontMotorDegrees(0, 500)
+    kirby.moveBackMotorTime(700, -500)
+    kirby.driveTime(500, -90, targetAngle=EAST)
+    kirby.driveDegrees(40, 80, targetAngle=EAST, speedControl=False)
+    kirby.driveTime(600, -90, targetAngle=EAST)
+    kirby.moveBackMotorDegrees(-185, 400)
+    kirby.driveDegrees(65, 50, targetAngle=EAST, speedControl=False)
+    kirby.brake(400)
 
-    kirby.driveUntilReflection(BLACK, -MIN_SPEED) #atras hasta negro
-    kirby.brake(30)
-    
-    #kirby.moveFrontMotorTime(650, 700) #bajar mecanismo frente
-    kirby.moveFrontMotorDegrees(175, 700)
-
-
-    kirby.driveDegrees(270, MIN_SPEED) #adelante
-    #kirby.moveFrontMotorDegrees(60, 100) #subir mecanismo frente
-    kirby.moveFrontMotorTime(1100, -100)
-    kirby.driveTime(250, MID_SPEED) #adelante tiempo
+def goToBox():
+    kirby.turnInPlace(NORTH, power=60)
+    kirby.driveDegrees(300, 90)
+    kirby.driveUntilReflection(BLACK, 40)
+    kirby.driveDegrees(50, 50, speedControl=False)
+    kirby.turnInPlace(-WEST, power=60)
     
 def leaveWaterTanks():
-    kirby.driveUntilReflection(BLACK, -MIN_SPEED) #atras hasta linea 5
-    wait(10)
-
-    kirby.driveDegrees(130, MID_SPEED) #adelante
-    wait(10)
-
-    kirby.turnInPlace(NORTH) #norte
-
-    kirby.driveUntilReflection(BLACK, MIN_SPEED) #adelante linea 6
-    wait(10)
-    
-    kirby.driveDegrees(35, -MIN_SPEED) #atras
-
-    kirby.turnInPlace(-180) #oeste
-
-    kirby.moveFrontMotorDegrees(165, 700) #bajar mecanismo frente
-    kirby.driveDegrees(80, MIN_SPEED) #adelante
-    kirby.driveTime(300, MIN_SPEED) #adelante
-
-    kirby.moveBackMotorDegrees(90, 80) #bajar mecanismo atras
-    wait(100)
-
-    kirby.moveBackMotorDegrees(0, 600) #subir mecanismo atras
-    wait(500)
+    kirby.driveTime(500, 50)
+    kirby.driveDegrees(-10, 40)
+    kirby.moveFrontMotorDegrees(80, 500)
+    kirby.frontMotor.brake()
+    kirby.driveTime(600, 50)
+    kirby.moveBackMotorDegrees(-25, 240)
 
 def goToSamples():
     kirby.driveDegrees(400, -MAX_SPEED) #atras
@@ -301,7 +250,7 @@ def takeSecondSamples():
     print(posGreen)
     print(posWhite)
 
-    spacingDegrees = 167
+    spacingDegrees = 165
 
     #si el verde es antes del blanco
     if posGreen < posWhite:

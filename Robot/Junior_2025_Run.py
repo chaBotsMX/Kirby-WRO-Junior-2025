@@ -10,24 +10,8 @@ timer = StopWatch()
 
 start()
 rover()
-
 takeWaterTanks()
 goToBox()
 leaveWaterTanks()
 
-goToSamples()
-readSamples()
-drone()
-
-takeFirstSamples()
-returnToWall()
-takeSecondSamples()
-
-alignToWall()
-dropFirstamples()
-goToDropSecondSamples()
-dropSecondSamples()
-
-parking()
-
-print("Tiempo:", timer.time() / 1000, "s")
+print("time:", timer.time() / 1000, "s")

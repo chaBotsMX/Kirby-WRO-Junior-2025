@@ -19,6 +19,8 @@ KD_FORWARD = 0.1
 KP_TURNING = 8
 KD_TURNING = 0.1
 
+DEGREES_PER_MM = 1.836398895222424634189340071693
+
 samples = []
 
 DETECTION_INTERVAL = 900
@@ -69,7 +71,10 @@ class Kirby:
     def getAngle(self, heading):
         return (heading + 180) % 360 - 180
 
-    def driveDegrees(self, targetDegrees, maxPower, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle = -1, speedControl = True, accel = True):
+    def getDegreesFromMilis(self, mm):
+        return int(mm * DEGREES_PER_MM)
+
+    def driveDegrees(self, distance, maxPower, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle = -1, speedControl = True, accel = True, decel = True):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -79,15 +84,17 @@ class Kirby:
         lastError = 0
         watch = StopWatch()
 
-        minPower = 32
+        direction = 1 if distance >= 0 else -1
+
+        targetDegrees = abs(self.getDegreesFromMilis(distance))
+
+        minPower = 35
         accel_distance = targetDegrees * 0.3  # 30% of the total distance for accel/decel
 
         while True:
             currentAngle = self.hub.imu.heading()
             currentDegrees = self.getCurrentPos()
             distanceRemaining = targetDegrees - currentDegrees
-
-            print("currDeg ", currentDegrees)
 
             if distanceRemaining <= 0:
                 break
@@ -105,7 +112,7 @@ class Kirby:
                 if currentDegrees < accel_distance and accel == True:
                     # Acceleration phase
                     basePower = minPower + ((currentDegrees / accel_distance) * (maxPower - minPower))
-                elif distanceRemaining < accel_distance:
+                elif distanceRemaining < accel_distance and decel == True:
                     # Deceleration phase
                     basePower = minPower + ((distanceRemaining / accel_distance) * (maxPower - minPower))
                 else:
@@ -114,24 +121,53 @@ class Kirby:
 
                 basePower = max(minPower, min(basePower, maxPower))  # clamp
 
-                self.leftDriveMotor.dc(basePower + correction)
-                self.rightDriveMotor.dc(basePower - correction)
+                self.leftDriveMotor.dc(direction * basePower + correction)
+                self.rightDriveMotor.dc(direction * basePower - correction)
 
             else:
-                self.leftDriveMotor.dc(maxPower + correction)
-                self.rightDriveMotor.dc(maxPower - correction)
+                self.leftDriveMotor.dc(direction * maxPower + correction)
+                self.rightDriveMotor.dc(direction * maxPower - correction)
 
             wait(1)
 
         self.brake(10)
 
-    def driveTime(self, time, power):
-        self.leftDriveMotor.dc(power)
-        self.rightDriveMotor.dc(power)
+    def driveTime(self, time, power, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle = -1):
+        self.leftDriveMotor.reset_angle(0)
+        self.rightDriveMotor.reset_angle(0)
 
-        wait(time)
+        if targetAngle == -1:
+            targetAngle = self.hub.imu.heading()
+    
+        lastError = 0
+        watch = StopWatch()
+
+        timer = StopWatch()
+
+        while True:
+            currentAngle = self.hub.imu.heading()
+            currentReflection = self.lineSensor.reflection()
+
+            error = targetAngle - currentAngle
+
+            dt = watch.time() / 1000
+            derivative = (error - lastError) / dt if dt > 0 else 0
+            watch.reset()
+
+            correction = (error * kP) + (derivative * kD)
+
+            lastError = error
+
+            self.leftDriveMotor.dc(power + correction)
+            self.rightDriveMotor.dc(power - correction)
+
+            if timer.time() > time:
+                break
+
+            wait(1)
 
         self.brake(10)
+        wait(10)
 
     def driveUntilReflection(self, targetReflection, power, kP = KP_FORWARD, kD = KD_FORWARD):
         self.leftDriveMotor.reset_angle(0)
@@ -159,16 +195,21 @@ class Kirby:
             self.leftDriveMotor.dc(power + correction)
             self.rightDriveMotor.dc(power - correction)
 
-            if currentReflection < targetReflection:
-                self.hub.speaker.beep(400, 200)
-                break
+            if targetReflection < 50:
+                if currentReflection < targetReflection:
+                    self.hub.speaker.beep(100, 200)
+                    break
+            else:
+                if currentReflection > targetReflection:
+                    self.hub.speaker.beep(100, 200)
+                    break
 
             wait(1)
 
         self.brake(10)
         wait(10)
 
-    def turnInPlace (self, angle, power, kP = KP_TURNING, kD = KD_TURNING):
+    def turnInPlace (self, angle, power = 75, kP = KP_TURNING, kD = KD_TURNING):
         targetAngle = angle
 
         lastError = 0
@@ -199,9 +240,9 @@ class Kirby:
 
             lastError = error
 
-            print("angle", currentAngle)
-            print("error", error)
-            print("correction", correction)
+            #print("angle", currentAngle)
+            #print("error", error)
+            #print("correction", correction)
             #print("time", angleDebounce.time())
 
             self.leftDriveMotor.dc(correction)
@@ -212,7 +253,7 @@ class Kirby:
                 break;
             
             if abs(error) < 1:
-                if(angleDebounce.time() > 400):
+                if(angleDebounce.time() > 200):
                     print("succesfull turn")
                     break
             else:
