@@ -8,7 +8,9 @@ wait(10)
 
 timer = StopWatch()
 
-start()
+kirby.hub.imu.reset_heading(-WEST) #reset imu
+
+drone()
 rover()
 takeWaterTanks()
 goToBox()

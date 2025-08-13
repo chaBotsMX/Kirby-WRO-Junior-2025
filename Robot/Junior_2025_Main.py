@@ -2,7 +2,7 @@ from Junior_2025_Kirby import *
 
 kirby = Kirby()
 
-BLACK = 12 #valor de reflexion en linea
+BLACK = 15 #valor de reflexion en linea
 WHITE = 59
 
 MAX_SPEED = 95 #velocidad maxima
@@ -21,12 +21,10 @@ def checkBluetoothButton():
         kirby.hub.speaker.beep(500, 500)
         wait(200)
         while True:
-            print("Line Sensor:", kirby.lineSensor.reflection())
-            #print("Color sensor:", kirby.colorSensor.color())
+            #print("Line Sensor:", kirby.lineSensor.reflection())
             #print("color sensor: ", kirby.colorSensor.hsv())
-            #print("heading: ", kirby.getAngle(kirby.hub.imu.heading()))
-            print("battery voltage", kirby.hub.battery.voltage())
-            #kirby.hub.display.text(str(round(kirby.hub.battery.voltage()/1000, 2)))
+            print("heading: ", kirby.getAngle(kirby.hub.imu.heading()))
+            #print("battery voltage", kirby.hub.battery.voltage())
 
 #accion de boton izquierdo (calibrar sensor linea)
 def checkLeftButton():
@@ -58,6 +56,22 @@ def start():
     kirby.driveUntilReflection(BLACK, 40)
     kirby.driveDegrees(42, 50, speedControl=False)
 
+def drone():    
+    kirby.driveDegrees(-650, 90)
+    kirby.moveBackMotorTime(800, -500)
+    kirby.driveDegrees(600, 90)
+    
+    kirby.turnInPlace(-EAST)
+    kirby.moveBackMotorDegrees(0, 400)
+
+    kirby.driveUntilReflection(BLACK, 40)
+    kirby.driveDegrees(80, 90)
+
+    kirby.turnInPlace(NORTH)
+    kirby.driveDegrees(140, 90)
+    kirby.driveUntilReflection(BLACK, 40)
+    kirby.driveDegrees(36, 50)
+
 def rover():
     kirby.turnInPlace(EAST)
     kirby.moveBackMotorDegrees(-40, 500)
@@ -68,8 +82,9 @@ def rover():
 def takeWaterTanks():
     #kirby.moveBackMotorDegrees(-210, 600)
     #kirby.moveBackMotorDegrees(-190, 400)
-    kirby.moveFrontMotorDegrees(0, 500)
+    kirby.moveFrontMotorDegrees(EAST, 500)
     kirby.moveBackMotorTime(700, -500)
+    kirby.backMotor.brake()
     kirby.driveTime(500, -90, targetAngle=EAST)
     kirby.driveDegrees(40, 80, targetAngle=EAST, speedControl=False)
     kirby.driveTime(600, -90, targetAngle=EAST)
@@ -79,18 +94,22 @@ def takeWaterTanks():
 
 def goToBox():
     kirby.turnInPlace(NORTH, power=60)
-    kirby.driveDegrees(300, 90)
+    kirby.driveDegrees(290, 90)
     kirby.driveUntilReflection(BLACK, 40)
-    kirby.driveDegrees(50, 50, speedControl=False)
+    kirby.driveDegrees(40, 50)
     kirby.turnInPlace(-WEST, power=60)
     
 def leaveWaterTanks():
-    kirby.driveTime(500, 50)
-    kirby.driveDegrees(-10, 40)
-    kirby.moveFrontMotorDegrees(80, 500)
-    kirby.frontMotor.brake()
-    kirby.driveTime(600, 50)
-    kirby.moveBackMotorDegrees(-25, 240)
+    kirby.driveDegrees(-40, 60)
+    kirby.brake(400)
+    #kirby.driveDegrees(130, 85, decel=False)
+    kirby.driveTime(1000, 90)
+    
+    #kirby.driveDegrees(-10, 50, speedControl=False)
+    #kirby.moveFrontMotorDegrees(80, 600)
+    #kirby.frontMotor.brake()
+    #kirby.driveTime(400, 50)
+    kirby.moveBackMotorDegrees(-35, 240)
 
 def goToSamples():
     kirby.driveDegrees(400, -MAX_SPEED) #atras
@@ -124,7 +143,7 @@ def readSamples():
         kirby.driveDegrees(160, MIN_SPEED, kP=10, targetAngle=91) #adelante
         kirby.brake(60)
 
-def drone():
+def droneOLD():
     kirby.moveFrontMotorDegrees(0,500) #subir mecanismo frente
     kirby.driveDegrees(70, MID_SPEED) #adelante
 

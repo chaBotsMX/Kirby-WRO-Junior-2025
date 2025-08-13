@@ -16,7 +16,7 @@ VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
 KP_FORWARD = 10
 KD_FORWARD = 0.1
 
-KP_TURNING = 8
+KP_TURNING = 7
 KD_TURNING = 0.1
 
 DEGREES_PER_MM = 1.836398895222424634189340071693
@@ -74,7 +74,7 @@ class Kirby:
     def getDegreesFromMilis(self, mm):
         return int(mm * DEGREES_PER_MM)
 
-    def driveDegrees(self, distance, maxPower, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle = -1, speedControl = True, accel = True, decel = True):
+    def driveDegrees(self, distance, maxPower, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle = -1, speedControl = True, accel = True, decel = True, scanColors = False):
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -128,9 +128,21 @@ class Kirby:
                 self.leftDriveMotor.dc(direction * maxPower + correction)
                 self.rightDriveMotor.dc(direction * maxPower - correction)
 
-            wait(1)
+            print("pos ", currentDegrees)
+
+            if scanColors == True and currentDegrees > 400:
+                space = currentDegrees - 400
+                print("space ", space)
+                if space < 900 and ((space % 180 > 0 and space % 180 < 16) or (space % 180 < 180 and space % 180 > 164) or (space < 20)):
+                    print("READINGGGGGGGGGG")
+                    detectedColor = self.scanCurrentColor(20)
+                    samples.append(detectedColor)
+                    print("color ", detectedColor)
+
+            #wait(1)
 
         self.brake(10)
+        print(samples)
 
     def driveTime(self, time, power, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle = -1):
         self.leftDriveMotor.reset_angle(0)
@@ -268,6 +280,45 @@ class Kirby:
         self.leftDriveMotor.brake()
         self.rightDriveMotor.brake()
         wait(time)
+
+    def scanCurrentColor(self, iterations):
+        h_total = 0
+        s_total = 0
+        v_total = 0
+
+        for i in range(iterations):
+            h = self.colorSensor.hsv().h
+            s = self.colorSensor.hsv().s
+            v = self.colorSensor.hsv().v
+
+            h_total += h
+            s_total += s
+            v_total += v
+            wait(1)
+
+        h_avg = h_total / iterations
+        s_avg = s_total / iterations
+        v_avg = v_total / iterations
+
+        print("H ", h_avg, " S ", s_avg, " V ", v_avg)
+
+        if (h_avg >= 330 or h_avg <= 30) and s_avg > 20:
+            return("red")
+            #print("red")
+            #self.hub.speaker.beep(100, 100)
+            #samples.append("red")
+
+        elif 40 <= h_avg <= 70 and s_avg > 30:
+            return("yellow")
+
+        elif 100 <= h_avg <= 170 and s_avg > 30:
+            return("green")
+
+        elif (h_avg < 50 or s_avg <= 12) and v_avg < 2:
+            return("blank")
+
+        else:
+            return("white")
 
     def determineSamples(self):
         h_total = 0
