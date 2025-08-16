@@ -128,7 +128,7 @@ class Kirby:
                 self.leftDriveMotor.dc(direction * maxPower + correction)
                 self.rightDriveMotor.dc(direction * maxPower - correction)
 
-            print("pos ", currentDegrees)
+            #print("pos ", currentDegrees)
 
             if scanColors == True and currentDegrees > 400:
                 space = currentDegrees - 400
@@ -221,52 +221,40 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    def turnInPlace (self, angle, power = 75, kP = KP_TURNING, kD = KD_TURNING):
-        targetAngle = angle
-
+    def turnInPlace(self, targetAngle, power=75, reverse=False, kP=KP_TURNING, kD=KD_TURNING):
         lastError = 0
-
         watch = StopWatch()
         angleDebounce = StopWatch()
         exitTimer = StopWatch()
-
         minPower = 32
 
         while True:
             currentAngle = self.hub.imu.heading()
-            error = targetAngle - currentAngle
+
+            error = (targetAngle - currentAngle + 180) % 360 - 180
 
             dt = watch.time() / 1000
-            derivative = (error - lastError) /dt if dt > 0 else 0
+            derivative = (error - lastError) / dt if dt > 0 else 0
             watch.reset()
+            lastError = error
 
             correction = (error * kP) + (kD * derivative)
-
             correction = max(min(correction, power), -power)
 
             if abs(correction) < minPower and abs(error) > 1:
-                if correction > 0:
-                    correction = minPower
-                else:
-                    correction = -minPower
+                correction = minPower if correction > 0 else -minPower
 
-            lastError = error
-
-            #print("angle", currentAngle)
-            #print("error", error)
-            #print("correction", correction)
-            #print("time", angleDebounce.time())
-
+            # Apply correction normally
             self.leftDriveMotor.dc(correction)
             self.rightDriveMotor.dc(-correction)
 
+            # Exit conditions
             if exitTimer.time() > 3000:
                 print("safe exit")
-                break;
-            
+                break
             if abs(error) < 1:
-                if(angleDebounce.time() > 200):
-                    print("succesfull turn")
+                if angleDebounce.time() > 200:
+                    print("successful turn")
                     break
             else:
                 angleDebounce.reset()

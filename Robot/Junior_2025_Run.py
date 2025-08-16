@@ -8,12 +8,6 @@ wait(10)
 
 timer = StopWatch()
 
-kirby.hub.imu.reset_heading(-WEST) #reset imu
-
-drone()
-rover()
-takeWaterTanks()
-goToBox()
-leaveWaterTanks()
+kirby.turnInPlace(90)
 
 print("time:", timer.time() / 1000, "s")

@@ -72,6 +72,18 @@ def drone():
     kirby.driveUntilReflection(BLACK, 40)
     kirby.driveDegrees(36, 50)
 
+def drone2():
+    kirby.moveFrontMotorDegrees(40, 500)
+    kirby.driveDegrees(730, 90)
+    
+    kirby.moveFrontMotorDegrees(-10, 800)
+    kirby.driveDegrees(-500, 90)
+    
+    kirby.turnInPlace(WEST, reverse=True)
+    kirby.moveFrontMotorDegrees(40, 500)
+    kirby.driveDegrees(-100, 90)
+
+
 def rover():
     kirby.turnInPlace(EAST)
     kirby.moveBackMotorDegrees(-40, 500)
