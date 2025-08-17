@@ -40,68 +40,42 @@ def checkLeftButton():
         print("black: ", MIN_LIGHT)
         print("white: ", MAX_LIGHT)
 
-#inicio del recorrido
-def start():
-    kirby.driveTime(400, -90)
-    kirby.hub.imu.reset_heading(EAST) #reset imu
-
-    kirby.moveFrontMotorDegrees(80, 500)
-
-    kirby.driveDegrees(280, 90, accel=False)
-    kirby.driveUntilReflection(BLACK, 40)
-    kirby.driveDegrees(80, 90)
-
-    kirby.turnInPlace(NORTH)
-    kirby.driveDegrees(140, 90)
-    kirby.driveUntilReflection(BLACK, 40)
-    kirby.driveDegrees(42, 50, speedControl=False)
-
-def drone():    
-    kirby.driveDegrees(-650, 90)
-    kirby.moveBackMotorTime(800, -500)
-    kirby.driveDegrees(600, 90)
-    
-    kirby.turnInPlace(-EAST)
-    kirby.moveBackMotorDegrees(0, 400)
-
-    kirby.driveUntilReflection(BLACK, 40)
-    kirby.driveDegrees(80, 90)
-
-    kirby.turnInPlace(NORTH)
-    kirby.driveDegrees(140, 90)
-    kirby.driveUntilReflection(BLACK, 40)
-    kirby.driveDegrees(36, 50)
-
-def drone2():
+def drone():
     kirby.moveFrontMotorDegrees(40, 500)
     kirby.driveDegrees(730, 90)
     
     kirby.moveFrontMotorDegrees(-10, 800)
-    kirby.driveDegrees(-500, 90)
+    kirby.driveDegrees(-400, 90)
     
-    kirby.turnInPlace(WEST, reverse=True)
-    kirby.moveFrontMotorDegrees(40, 500)
-    kirby.driveDegrees(-100, 90)
+    kirby.turnInPlace(-179)
+    kirby.moveFrontMotorDegrees(60, 500)
+    kirby.driveDegrees(-90, 60)
 
+def goToRover():
+    kirby.driveUntilReflection(BLACK, -40)
+
+    kirby.turnInPlace(NORTH)
+    kirby.driveDegrees(190, 90)
+    kirby.driveUntilReflection(BLACK, 40)
+    kirby.driveDegrees(32, 50)
 
 def rover():
     kirby.turnInPlace(EAST)
-    kirby.moveBackMotorDegrees(-40, 500)
-    kirby.driveDegrees(90, 90)
-    kirby.moveBackMotorDegrees(0, 900)
-    kirby.driveDegrees(-200, 90, targetAngle=EAST)
+    #kirby.driveDegrees(10, 50)
+    kirby.moveFrontMotorDegrees(30, 800)
+    kirby.driveDegrees(-190, 90, targetAngle=EAST)
 
 def takeWaterTanks():
-    #kirby.moveBackMotorDegrees(-210, 600)
-    #kirby.moveBackMotorDegrees(-190, 400)
-    kirby.moveFrontMotorDegrees(EAST, 500)
-    kirby.moveBackMotorTime(700, -500)
+    kirby.moveBackMotorDegrees(-200, 600)
     kirby.backMotor.brake()
+
     kirby.driveTime(500, -90, targetAngle=EAST)
     kirby.driveDegrees(40, 80, targetAngle=EAST, speedControl=False)
     kirby.driveTime(600, -90, targetAngle=EAST)
-    kirby.moveBackMotorDegrees(-185, 400)
-    kirby.driveDegrees(65, 50, targetAngle=EAST, speedControl=False)
+
+    #kirby.moveBackMotorDegrees(-185, 400)
+
+    kirby.driveDegrees(100, 50, targetAngle=EAST, speedControl=False)
     kirby.brake(400)
 
 def goToBox():
@@ -109,37 +83,28 @@ def goToBox():
     kirby.driveDegrees(290, 90)
     kirby.driveUntilReflection(BLACK, 40)
     kirby.driveDegrees(40, 50)
+    kirby.moveFrontMotorDegrees(0, 400)
     kirby.turnInPlace(-WEST, power=60)
     
 def leaveWaterTanks():
-    kirby.driveDegrees(-40, 60)
-    kirby.brake(400)
-    #kirby.driveDegrees(130, 85, decel=False)
-    kirby.driveTime(1000, 90)
-    
-    #kirby.driveDegrees(-10, 50, speedControl=False)
-    #kirby.moveFrontMotorDegrees(80, 600)
-    #kirby.frontMotor.brake()
-    #kirby.driveTime(400, 50)
-    kirby.moveBackMotorDegrees(-35, 240)
+    kirby.driveTime(400, 40)
+    kirby.driveDegrees(-5, 50)
+
+    kirby.moveFrontMotorDegrees(60, 500)
+    kirby.frontMotor.brake()
+
+    kirby.driveTime(700, 60)
+
+    kirby.moveBackMotorDegrees(-30, 200)
 
 def goToSamples():
-    kirby.driveDegrees(400, -MAX_SPEED) #atras
-    kirby.turnInPlace(NORTH) #norte
-
-    kirby.driveDegrees(70, MAX_SPEED) #adelante
-    kirby.turnInPlace(EAST) #este
-    
-    kirby.driveDegreesAccelDecel(650, MAX_SPEED) #adelante
-    kirby.driveUntilReflection(BLACK, MIN_SPEED) #linea 7
-    kirby.driveDegreesAccelDecel(160, MID_SPEED) #adelante
-    
-    kirby.turnInPlace(SOUTH) #sur
-
-    kirby.driveDegrees(40, -MIN_SPEED) #atras
-    kirby.driveTime(700, -MIN_SPEED) #atras para pared
-    kirby.hub.imu.reset_heading(SOUTH) #reset imu
-    kirby.brake(200)
+    kirby.turnInPlace(172)
+    kirby.driveDegrees(-600, 90)
+    kirby.turnInPlace(WEST)
+    kirby.driveUntilReflection(BLACK, -40)
+    kirby.driveDegrees(-20, 90)
+    kirby.turnInPlace(SOUTH)
+    kirby.driveTime(500, -70)
 
 def readSamples():
     kirby.driveDegreesAccelDecel(530, MID_SPEED, kP=10) #adelante

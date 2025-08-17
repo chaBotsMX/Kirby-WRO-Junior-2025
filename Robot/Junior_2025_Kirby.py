@@ -221,7 +221,7 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    def turnInPlace(self, targetAngle, power=75, reverse=False, kP=KP_TURNING, kD=KD_TURNING):
+    def turnInPlace(self, targetAngle, power=75, kP=KP_TURNING, kD=KD_TURNING):
         lastError = 0
         watch = StopWatch()
         angleDebounce = StopWatch()

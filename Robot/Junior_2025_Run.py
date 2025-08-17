@@ -8,6 +8,12 @@ wait(10)
 
 timer = StopWatch()
 
-kirby.turnInPlace(90)
+drone()
+goToRover()
+rover()
+takeWaterTanks()
+goToBox()
+leaveWaterTanks()
+goToSamples()
 
 print("time:", timer.time() / 1000, "s")
