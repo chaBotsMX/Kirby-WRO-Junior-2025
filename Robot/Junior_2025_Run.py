@@ -8,12 +8,10 @@ wait(10)
 
 timer = StopWatch()
 
-drone()
-goToRover()
-rover()
-takeWaterTanks()
-goToBox()
-leaveWaterTanks()
+kirby.hub.imu.reset_heading(180)
+
 goToSamples()
+readSamples()
+print(samples)
 
 print("time:", timer.time() / 1000, "s")

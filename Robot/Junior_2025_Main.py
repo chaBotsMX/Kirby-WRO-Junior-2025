@@ -95,30 +95,20 @@ def leaveWaterTanks():
 
     kirby.driveTime(700, 60)
 
-    kirby.moveBackMotorDegrees(-30, 200)
+    kirby.moveBackMotorDegrees(-20, 200)
 
-def goToSamples():
     kirby.turnInPlace(172)
     kirby.driveDegrees(-600, 90)
     kirby.turnInPlace(WEST)
+
+def goToSamples():
     kirby.driveUntilReflection(BLACK, -40)
     kirby.driveDegrees(-20, 90)
     kirby.turnInPlace(SOUTH)
     kirby.driveTime(500, -70)
 
 def readSamples():
-    kirby.driveDegreesAccelDecel(530, MID_SPEED, kP=10) #adelante
-    #kirby.driveDegrees(110, MIN_SPEED) #adelante
-    #kirby.turnInPlace(SOUTH)
-    kirby.brake(100)
-
-    for i in range(6):
-        print(kirby.colorSensor.hsv())
-        kirby.determineSamples() #detectar samples
-
-        #kirby.driveDegrees(155, ((MIN_SPEED + MID_SPEED) / 2), kP=10) #adelante
-        kirby.driveDegrees(160, MIN_SPEED, kP=10, targetAngle=91) #adelante
-        kirby.brake(60)
+    kirby.driveAndScan(950, 90, ratio=0.2, scanningDistance=500)
 
 def droneOLD():
     kirby.moveFrontMotorDegrees(0,500) #subir mecanismo frente

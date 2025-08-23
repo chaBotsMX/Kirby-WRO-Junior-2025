@@ -74,7 +74,10 @@ class Kirby:
     def getDegreesFromMilis(self, mm):
         return int(mm * DEGREES_PER_MM)
 
-    def driveDegrees(self, distance, maxPower, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle = -1, speedControl = True, accel = True, decel = True, scanColors = False):
+    def driveDegrees(self, distance, maxPower, targetAngle = -1, speedControl = True, ratio = 0.3, accel = True, decel = True, scanColors = False):
+        kP = KP_FORWARD
+        kD = KD_FORWARD
+
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -89,7 +92,7 @@ class Kirby:
         targetDegrees = abs(self.getDegreesFromMilis(distance))
 
         minPower = 35
-        accel_distance = targetDegrees * 0.3  # 30% of the total distance for accel/decel
+        accel_distance = targetDegrees * ratio  # 30% of the total distance for accel/decel
 
         while True:
             currentAngle = self.hub.imu.heading()
@@ -144,7 +147,10 @@ class Kirby:
         self.brake(10)
         print(samples)
 
-    def driveTime(self, time, power, kP = KP_FORWARD, kD = KD_FORWARD, targetAngle = -1):
+    def driveTime(self, time, power, targetAngle = -1):
+        kP = KP_FORWARD
+        kD = KD_FORWARD
+
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -181,7 +187,10 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    def driveUntilReflection(self, targetReflection, power, kP = KP_FORWARD, kD = KD_FORWARD):
+    def driveUntilReflection(self, targetReflection, power):
+        kP = KP_FORWARD
+        kD = KD_FORWARD
+
         self.leftDriveMotor.reset_angle(0)
         self.rightDriveMotor.reset_angle(0)
 
@@ -221,7 +230,79 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    def turnInPlace(self, targetAngle, power=75, kP=KP_TURNING, kD=KD_TURNING):
+    def driveAndScan(self, distance, maxPower, ratio, targetAngle = -1, distanceToFirstDetection = 410, scanningDistance = 400):
+        kP = KP_FORWARD
+        kD = KD_FORWARD
+
+        distanceBetweenSamples = 175
+
+        self.leftDriveMotor.reset_angle(0)
+        self.rightDriveMotor.reset_angle(0)
+
+        if targetAngle == -1:
+            targetAngle = self.hub.imu.heading()
+        
+        lastError = 0
+        watch = StopWatch()
+
+        direction = 1 if distance >= 0 else -1
+
+        targetDegrees = abs(self.getDegreesFromMilis(distance))
+        scanningDistance = abs(self.getDegreesFromMilis(scanningDistance))
+
+        minPower = 35
+        accel_distance = targetDegrees * ratio
+
+        while True:
+            currentAngle = self.hub.imu.heading()
+            currentDegrees = self.getCurrentPos()
+            distanceRemaining = targetDegrees - currentDegrees
+
+            #end condition
+            if distanceRemaining <= 0:
+                break
+
+            #scanning
+            if currentDegrees >= distanceToFirstDetection:
+                space = (currentDegrees - distanceToFirstDetection)
+
+                if space % distanceBetweenSamples <= 10:
+                    detectedColor = self.scanCurrentColor(10)
+                    samples.append(detectedColor)
+                    self.hub.speaker.beep(1000, 100)
+                    print(detectedColor)
+                
+                if space >= scanningDistance:
+                    break
+
+
+            #Heading PD
+            error = targetAngle - currentAngle
+            dt = watch.time() / 1000
+            derivative = (error - lastError) / dt if dt > 0 else 0
+            correction = (error * kP) + (derivative * kD)
+            watch.reset()
+            lastError = error
+
+            #accel decel
+            if currentDegrees < accel_distance:
+                basePower = minPower + ((currentDegrees / accel_distance) * (maxPower - minPower))
+            elif distanceRemaining < accel_distance:
+                basePower = minPower + ((distanceRemaining / accel_distance) * (maxPower - minPower))
+            else:
+                basePower = maxPower
+
+            basePower = max(minPower, min(basePower, maxPower))  # clamp
+
+            self.leftDriveMotor.dc(direction * basePower + correction)
+            self.rightDriveMotor.dc(direction * basePower - correction)
+
+        self.brake(10)
+
+    def turnInPlace(self, targetAngle, power=75):
+        kP=KP_TURNING
+        kD=KD_TURNING
+
         lastError = 0
         watch = StopWatch()
         angleDebounce = StopWatch()
@@ -307,54 +388,6 @@ class Kirby:
 
         else:
             return("white")
-
-    def determineSamples(self):
-        h_total = 0
-        s_total = 0
-        v_total = 0
-
-        for i in range(10):
-            h = self.colorSensor.hsv().h
-            s = self.colorSensor.hsv().s
-            v = self.colorSensor.hsv().v
-
-            h_total += h
-            s_total += s
-            v_total += v
-            wait(10)
-
-        h_avg = h_total / 10
-        s_avg = s_total / 10
-        v_avg = v_total / 10
-
-        print("HSV Avg:", h_avg, s_avg, v_avg)
-
-        if (h_avg >= 330 or h_avg <= 30) and s_avg > 20:
-            print("red")
-            self.hub.speaker.beep(100, 100)
-            samples.append("red")
-
-        elif 40 <= h_avg <= 70 and s_avg > 30:
-            print("yellow")
-            self.hub.speaker.beep(300, 100)
-            samples.append("yellow")
-
-        elif 100 <= h_avg <= 170 and s_avg > 30:
-            print("green")
-            self.hub.speaker.beep(400, 100)
-            samples.append("green")
-
-        elif (h_avg < 50 or s_avg <= 12) and v_avg < 2:
-            print("blank")
-            self.hub.speaker.beep(500, 100)
-            self.hub.speaker.beep(500, 100)
-            samples.append("blank")
-
-        else:
-            print("white")
-            self.hub.speaker.beep(200, 100)
-            samples.append("white")
-
 
     def moveLeftDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
         self.leftDriveMotor.run_angle(speed, degrees, then, wait)
