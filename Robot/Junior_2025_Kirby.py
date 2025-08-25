@@ -1,3 +1,7 @@
+# Junior_2025_Kirby.py
+# 24/08/2025 for WRO RoboMission Junior team chaBots Kirby
+# Alfonso De Anda
+
 from pybricks.hubs import PrimeHub
 from pybricks.parameters import Direction, Port, Axis, Side, Stop, Button, Color, Icon
 from pybricks.pupdevices import ColorSensor, Motor
@@ -74,7 +78,7 @@ class Kirby:
     def getDegreesFromMilis(self, mm):
         return int(mm * DEGREES_PER_MM)
 
-    def driveDegrees(self, distance, maxPower, targetAngle = -1, speedControl = True, ratio = 0.3, accel = True, decel = True, scanColors = False):
+    def driveDegrees(self, distance, maxPower, targetAngle = -1, speedControl = True, ratio = 0.3, accel = True, decel = True):
         kP = KP_FORWARD
         kD = KD_FORWARD
 
@@ -131,21 +135,10 @@ class Kirby:
                 self.leftDriveMotor.dc(direction * maxPower + correction)
                 self.rightDriveMotor.dc(direction * maxPower - correction)
 
-            #print("pos ", currentDegrees)
-
-            if scanColors == True and currentDegrees > 400:
-                space = currentDegrees - 400
-                print("space ", space)
-                if space < 900 and ((space % 180 > 0 and space % 180 < 16) or (space % 180 < 180 and space % 180 > 164) or (space < 20)):
-                    print("READINGGGGGGGGGG")
-                    detectedColor = self.scanCurrentColor(20)
-                    samples.append(detectedColor)
-                    print("color ", detectedColor)
 
             #wait(1)
 
         self.brake(10)
-        print(samples)
 
     def driveTime(self, time, power, targetAngle = -1):
         kP = KP_FORWARD
@@ -187,7 +180,7 @@ class Kirby:
         self.brake(10)
         wait(10)
 
-    def driveUntilReflection(self, targetReflection, power):
+    def driveUntilReflection(self, targetReflection, power, sensor="line"):
         kP = KP_FORWARD
         kD = KD_FORWARD
 
@@ -201,6 +194,8 @@ class Kirby:
         while True:
             currentAngle = self.hub.imu.heading()
             currentReflection = self.lineSensor.reflection()
+            if sensor=="color":
+                currentReflection = self.colorSensor.reflection()
 
             error = targetAngle - currentAngle
             errorReflection = targetReflection - currentReflection
@@ -216,7 +211,7 @@ class Kirby:
             self.leftDriveMotor.dc(power + correction)
             self.rightDriveMotor.dc(power - correction)
 
-            if targetReflection < 50:
+            if targetReflection < 50 and sensor=="line":
                 if currentReflection < targetReflection:
                     self.hub.speaker.beep(100, 200)
                     break
@@ -267,7 +262,7 @@ class Kirby:
                 space = (currentDegrees - distanceToFirstDetection)
 
                 if space % distanceBetweenSamples <= 10:
-                    detectedColor = self.scanCurrentColor(10)
+                    detectedColor = self.scanCurrentColor(8)
                     samples.append(detectedColor)
                     self.hub.speaker.beep(1000, 100)
                     print(detectedColor)
@@ -299,7 +294,7 @@ class Kirby:
 
         self.brake(10)
 
-    def turnInPlace(self, targetAngle, power=75):
+    def turnInPlace(self, targetAngle, power=75, oneWheel = "no"):
         kP=KP_TURNING
         kD=KD_TURNING
 
@@ -326,15 +321,20 @@ class Kirby:
                 correction = minPower if correction > 0 else -minPower
 
             # Apply correction normally
-            self.leftDriveMotor.dc(correction)
-            self.rightDriveMotor.dc(-correction)
+            if oneWheel == "left":
+                self.leftDriveMotor.dc(correction)
+            elif oneWheel == "right":
+                self.rightDriveMotor.dc(-correction)
+            else:
+                self.leftDriveMotor.dc(correction)
+                self.rightDriveMotor.dc(-correction)
 
             # Exit conditions
             if exitTimer.time() > 3000:
                 print("safe exit")
                 break
             if abs(error) < 1:
-                if angleDebounce.time() > 200:
+                if angleDebounce.time() > 180:
                     print("successful turn")
                     break
             else:
@@ -342,8 +342,7 @@ class Kirby:
 
             wait(1)
 
-        self.brake(10)
-        wait(10)
+        self.brake(5)
 
     def brake(self, time):
         self.leftDriveMotor.brake()
@@ -383,7 +382,8 @@ class Kirby:
         elif 100 <= h_avg <= 170 and s_avg > 30:
             return("green")
 
-        elif (h_avg < 50 or s_avg <= 12) and v_avg < 2:
+        #elif (h_avg < 50 or s_avg <= 12) and v_avg < 2:
+        elif v_avg < 2:
             return("blank")
 
         else:

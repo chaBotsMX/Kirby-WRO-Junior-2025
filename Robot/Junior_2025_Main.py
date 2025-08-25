@@ -1,8 +1,12 @@
+# Junior_2025_Main.py
+# 24/08/2025 for WRO RoboMission Junior team chaBots Kirby
+# Alfonso De Anda
+
 from Junior_2025_Kirby import *
 
 kirby = Kirby()
 
-BLACK = 15 #valor de reflexion en linea
+BLACK = 17 #valor de reflexion en linea
 WHITE = 59
 
 MAX_SPEED = 95 #velocidad maxima
@@ -95,8 +99,9 @@ def leaveWaterTanks():
 
     kirby.driveTime(700, 60)
 
-    kirby.moveBackMotorDegrees(-20, 200)
+    kirby.moveBackMotorDegrees(-55, 300)
 
+    kirby.driveDegrees(-20, 40)
     kirby.turnInPlace(172)
     kirby.driveDegrees(-600, 90)
     kirby.turnInPlace(WEST)
@@ -105,106 +110,93 @@ def goToSamples():
     kirby.driveUntilReflection(BLACK, -40)
     kirby.driveDegrees(-20, 90)
     kirby.turnInPlace(SOUTH)
-    kirby.driveTime(500, -70)
-
-def readSamples():
-    kirby.driveAndScan(950, 90, ratio=0.2, scanningDistance=500)
-
-def droneOLD():
-    kirby.moveFrontMotorDegrees(0,500) #subir mecanismo frente
-    kirby.driveDegrees(70, MID_SPEED) #adelante
-
-    kirby.turnInPlace(180) #oeste
-
-    kirby.moveBackMotorDegrees(20, 700) #abrir garra
-    kirby.moveFrontMotorDegrees(130, 500) #bajar mecanismo frente
-
-    kirby.driveDegrees(50, MID_SPEED) #adelante
-    kirby.driveDegreesAccelDecel(1600, MAX_SPEED, basePower=45) #adelante
-    #kirby.driveDegrees(200, MID_SPEED) #adelante
-
-    kirby.moveFrontMotorDegrees(0,700) #subir mecanismo frente
-
-    #kirby.driveDegrees(300, -MID_SPEED) #atras
-    kirby.driveDegreesAccelDecel(1675, -MAX_SPEED) #atras
-    #kirby.driveDegrees(230, -MID_SPEED) #atras
-
-    kirby.turnInPlace(270) #norte
-    kirby.driveTime(500, -MID_SPEED) #pared
-
-
-#funcion para generalizar el agarre de primeros samples
-def grabRedYellowSample(pos):
-    global frontPositionToSamples
-
-    kirby.driveDegreesAccelDecel(168 * pos, MID_SPEED) #adelante n posiciones
-
-    kirby.turnInPlace(180) #este
-
-    kirby.moveFrontMotorDegrees(frontPositionToSamples, 300) #mover motor delantero x grados
-
-    kirby.driveDegrees(120, MIN_SPEED) #adelante
-    kirby.moveFrontMotorDegrees(20, 700) #subir motor delantero
-    kirby.driveDegrees(105, -MID_SPEED) #atras
-
-    #kirby.turnInPlace(270) #norte
-    #kirby.brake(100)
-
-def takeFirstSamples():
-    global isRedFirst, frontPositionToSamples, POSITION_TO_RED, POSITION_TO_YELLOW
-    kirby.driveDegreesAccelDecel(480, MID_SPEED) #adelante 480
-
-    samples.reverse() #se cambia el orden de la lista de samples
-
-    #se guardan las posiciones de los samples
-    posRed = samples.index("red")
-    posYellow = samples.index("yellow")
-    print(posRed)
-    print(posYellow)
-
-    #si el rojo es primero que el amarillo
-    if posRed < posYellow:
-        isRedFirst = True #se guarda
-        #recoger rojo
-        frontPositionToSamples = POSITION_TO_RED
-        grabRedYellowSample(posRed)
-
-        kirby.turnInPlace(270) #norte
-        kirby.brake(100)
-
-        #recoger amarillo
-        frontPositionToSamples = POSITION_TO_YELLOW
-        grabRedYellowSample(posYellow - posRed) #posicion de diferencia
-
-        kirby.turnInPlace(SOUTH) #sur
-        kirby.brake(100)
-
-        kirby.driveDegreesAccelDecel((161 * (5 - posYellow)) * -1, MAX_SPEED) #avanzar hasta la ultima posicion
-
-    #si el amarillo es primero que el rojo
-    else:
-        isRedFirst = False #se guarda
-
-        frontPositionToSamples = POSITION_TO_YELLOW
-        grabRedYellowSample(posYellow) #recoger sample amarillo primero
-
-        kirby.turnInPlace(270) #norte
-        kirby.brake(100)
-
-        frontPositionToSamples = POSITION_TO_RED
-        grabRedYellowSample(posRed - posYellow)
-
-        kirby.turnInPlace(SOUTH) #norte
-        kirby.brake(100)
-
-        kirby.driveDegreesAccelDecel((161 * (5 - posRed)) * -1, MAX_SPEED) #avanzar hasta la ultima posicion
-
-def returnToWall():
-    kirby.driveDegrees(550, -MAX_SPEED) #atras
-    kirby.driveTime(300, -MID_SPEED) #pared
+    kirby.driveTime(550, -70)
     kirby.hub.imu.reset_heading(SOUTH) #reset imu
 
-    kirby.moveFrontMotorDegrees(15, 700) #subir motor de frente
+def readSamples():
+    kirby.driveAndScan(900, 90, ratio=0.2, scanningDistance=490)
+    kirby.brake(100)
+    #print(kirby.colorSensor.reflection())
+    #kirby.driveUntilReflection(2, -40, sensor="color")
+    #print(kirby.colorSensor.reflection())
+    #kirby.driveDegrees(-85, 40)
+
+def grabSample(order):
+    degreesToSample = 0
+    if order == 0:
+        kirby.turnInPlace(10)
+        kirby.moveFrontMotorDegrees(120, 200)
+        kirby.driveDegrees(-35, 60)
+
+        kirby.moveFrontMotorDegrees(0, 200)
+
+        kirby.driveDegrees(18, 70)
+        kirby.turnInPlace(SOUTH)
+    elif order == 1:
+        kirby.turnInPlace(-5, power=85, oneWheel="right")
+        #kirby.turnInPlace(45, oneWheel="right")
+        #kirby.turnInPlace(-10)
+        kirby.moveFrontMotorDegrees(120, 200)
+        kirby.driveDegrees(-158, 60)
+
+        kirby.moveFrontMotorDegrees(0, 200)
+
+        kirby.driveDegrees(158, 70)
+        kirby.turnInPlace(SOUTH, power=95, oneWheel="right")
+        #kirby.turnInPlace(45)
+        #kirby.turnInPlace(SOUTH, oneWheel="right")
+        #kirby.turnInPlace(SOUTH)
+
+    elif order == 2:
+        kirby.turnInPlace(20)
+        kirby.moveFrontMotorDegrees(120, 200)
+        kirby.driveDegrees(-85, 50)
+
+        kirby.moveFrontMotorDegrees(0, 200)
+
+        kirby.driveDegrees(80, 70)
+        kirby.turnInPlace(SOUTH)
+
+def takeFirstSamples():
+    samples.reverse()
+    whitePosition = samples.index("white")
+    greenPosition = samples.index("green")
+
+    isWhiteFirst = whitePosition < greenPosition
+
+    perfectComb = greenPosition - whitePosition == 2
+
+    if isWhiteFirst:
+        kirby.driveDegrees(-85 - (94 * whitePosition), 80)
+        kirby.brake(50)
+
+        if perfectComb:
+            print("PERFECT COMB!!1!!!!11")
+            grabSample(2)
+            kirby.driveDegrees(94 * (whitePosition - 5), 90)
+        else:
+            grabSample(0)
+            kirby.driveDegrees(94 * (whitePosition - greenPosition), 80)
+            kirby.brake(50)
+            grabSample(1)
+            kirby.driveDegrees(94 * (greenPosition - 5), 90)
+        
+    else:
+        kirby.driveDegrees(-85 - (94 * greenPosition), 80)
+        kirby.brake(50)
+        grabSample(1)
+        kirby.driveDegrees(94 * (greenPosition - whitePosition), 80)
+        kirby.brake(50)
+        grabSample(0)
+        kirby.driveDegrees(94 * (whitePosition - 5), 90)
+
+def scoreFirstSamples():
+    kirby.brake(80)
+    kirby.turnInPlace(180, power=90, oneWheel="right")
+    kirby.driveDegrees(-440, 90)
+    kirby.driveUntilReflection(BLACK, -40)
+    kirby.driveDegrees(-140, 50)
+    kirby.moveFrontMotorDegrees(110, 125)
 
 #generalizar verde y blanco
 def grabGreenWhiteSample():
