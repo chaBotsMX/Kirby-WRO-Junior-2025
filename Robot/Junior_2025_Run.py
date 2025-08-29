@@ -26,5 +26,8 @@ readSamples()
 print(samples)
 takeFirstSamples()
 scoreFirstSamples()
+takeSecondSamples()
+scoreSecondSamples()
+parking()
 
 print("time:", timer.time() / 1000, "s")
