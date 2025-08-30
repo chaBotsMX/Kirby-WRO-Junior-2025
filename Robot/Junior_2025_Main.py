@@ -57,6 +57,7 @@ def drone():
 
 def goToRover():
     kirby.driveUntilReflection(BLACK, -40)
+    kirby.driveDegrees(-10, 40)
 
     kirby.turnInPlace(NORTH)
     kirby.driveDegrees(190, 90)
@@ -91,24 +92,26 @@ def goToBox():
     kirby.turnInPlace(-WEST, power=60)
     
 def leaveWaterTanks():
-    kirby.driveTime(400, 40)
-    kirby.driveDegrees(-5, 50)
+    #kirby.driveTime(400, 40)
+    kirby.driveDegrees(15, 50)
 
     kirby.moveFrontMotorDegrees(60, 500)
     kirby.frontMotor.brake()
 
     kirby.driveTime(700, 60)
 
-    kirby.moveBackMotorDegrees(-55, 300)
+    kirby.moveBackMotorDegrees(-50, 300)
 
     kirby.driveDegrees(-20, 40)
     kirby.turnInPlace(172)
-    kirby.driveDegrees(-600, 90)
+    kirby.moveBackMotorDegrees(-70, 400)
+    kirby.driveDegrees(-650, 90)
     kirby.turnInPlace(WEST)
+    kirby.driveDegrees(-30, 90)
 
 def goToSamples():
     kirby.driveUntilReflection(BLACK, -40)
-    kirby.moveBackMotorDegrees(-70, 300)
+    #kirby.moveBackMotorDegrees(-70, 300)
     kirby.driveDegrees(-20, 90)
     kirby.turnInPlace(SOUTH)
     kirby.driveTime(550, -70)
@@ -212,14 +215,17 @@ def scoreFirstSamples():
     kirby.driveDegrees(-440, 90)
     kirby.driveUntilReflection(BLACK, -40)
     kirby.driveDegrees(-140, 50)
+    #kirby.turnInPlace(-170)
     kirby.moveFrontMotorDegrees(110, 125)
+    #kirby.turnInPlace(WEST)
 
 def takeSecondSamples():
-    kirby.driveDegrees(700, 95, ratio=0.2)
-    kirby.turnInPlace(SOUTH, power=90, oneWheel="right")
+    kirby.driveDegrees(790, 95, ratio=0.2)
+    #kirby.turnInPlace(SOUTH, power=90, oneWheel="right")
+    kirby.turnInPlace(SOUTH)
     kirby.brake(80)
-    kirby.driveDegrees(-30, 40)
-    kirby.brake(100)
+    kirby.driveTime(700, -70)
+    kirby.hub.imu.reset_heading(SOUTH) #reset imu
 
     samples.reverse()
     redPosition = samples.index("red")
@@ -231,38 +237,43 @@ def takeSecondSamples():
 
     if isRedFirst:
         if perfectComb:
-            kirby.driveDegrees(92 * yellowPosition, 80)
+            kirby.driveDegrees(230 + (92 * yellowPosition), 80)
+            #kirby.driveUntilReflection(20, 80, sensor="color")
             print("PERFECT COMB!!1!!!!11")
             grabSample("whiteAndGreen")
-            kirby.driveDegrees(92 * (5 - yellowPosition), 70)
+            kirby.driveDegrees(140 + (92 * (5 - yellowPosition)), 70)
 
         else:
-            kirby.driveDegrees(92 * redPosition, 80)
+            kirby.driveDegrees(230 + (92 * redPosition), 80)
+            #kirby.driveUntilReflection(20, 80, sensor="color")
             kirby.brake(50)
 
             grabSample("red")
             kirby.driveDegrees(92 * (yellowPosition - redPosition), 80)
+            #kirby.driveUntilReflection(20, 80, sensor="color")
             kirby.brake(50)
             grabSample("yellow")
-            kirby.driveDegrees(92 * (5 - yellowPosition), 70)
+            kirby.driveDegrees(140 + (92 * (5 - yellowPosition)), 70)
         
     else:
-        kirby.driveDegrees(92 * yellowPosition, 80)
+        kirby.driveDegrees(230 + (92 * yellowPosition), 80)
+        #kirby.driveUntilReflection(20, 80, sensor="color")
         kirby.brake(50)
 
         grabSample("yellow")
 
         kirby.driveDegrees(92 * (redPosition - yellowPosition), 80)
+        #kirby.driveUntilReflection(20, 80, sensor="color")
         kirby.brake(50)
 
         grabSample("red")
 
-        kirby.driveDegrees(92 * (5 - redPosition), 70)
+        kirby.driveDegrees(140 + (92 * (5 - redPosition)), 70)
 
 def scoreSecondSamples():
-    kirby.driveDegrees(130, 90)
+    #kirby.driveDegrees(130, 90)
     kirby.turnInPlace(WEST)
-    kirby.driveDegrees(-450, 90)
+    kirby.driveDegrees(-530, 90)
     kirby.driveUntilReflection(BLACK, -40)
     kirby.driveDegrees(-140, 50)
     kirby.moveFrontMotorDegrees(110, 125)
@@ -270,6 +281,6 @@ def scoreSecondSamples():
 def parking():
     kirby.driveDegrees(350, 90)
     kirby.turnInPlace(NORTH, power=90, oneWheel="left")
-    kirby.driveDegrees(155, 60)
+    kirby.driveDegrees(160, 80)
     kirby.turnInPlace(EAST, power=90, oneWheel="left")
     kirby.driveDegrees(450, 95, decel=False)

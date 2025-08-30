@@ -21,6 +21,7 @@ takeWaterTanks()
 goToBox()
 leaveWaterTanks()
 
+
 goToSamples()
 readSamples()
 print(samples)
