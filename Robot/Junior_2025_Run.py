@@ -21,7 +21,6 @@ takeWaterTanks()
 goToBox()
 leaveWaterTanks()
 
-
 goToSamples()
 readSamples()
 print(samples)
@@ -29,6 +28,6 @@ takeFirstSamples()
 scoreFirstSamples()
 takeSecondSamples()
 scoreSecondSamples()
-parking()
+#parking()
 
 print("time:", timer.time() / 1000, "s")

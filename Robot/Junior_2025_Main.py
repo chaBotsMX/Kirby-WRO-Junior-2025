@@ -57,7 +57,7 @@ def drone():
 
 def goToRover():
     kirby.driveUntilReflection(BLACK, -40)
-    kirby.driveDegrees(-10, 40)
+    kirby.driveDegrees(-7, 40)
 
     kirby.turnInPlace(NORTH)
     kirby.driveDegrees(190, 90)
@@ -92,22 +92,22 @@ def goToBox():
     kirby.turnInPlace(-WEST, power=60)
     
 def leaveWaterTanks():
-    #kirby.driveTime(400, 40)
-    kirby.driveDegrees(15, 50)
+    kirby.driveTime(380, 40)
+    kirby.driveDegrees(-6, 40)
 
     kirby.moveFrontMotorDegrees(60, 500)
     kirby.frontMotor.brake()
 
     kirby.driveTime(700, 60)
 
-    kirby.moveBackMotorDegrees(-50, 300)
+    kirby.moveBackMotorDegrees(-50, 350)
+    kirby.brake(100)
 
-    kirby.driveDegrees(-20, 40)
+    kirby.driveDegrees(-40, 40)
     kirby.turnInPlace(172)
     kirby.moveBackMotorDegrees(-70, 400)
     kirby.driveDegrees(-650, 90)
     kirby.turnInPlace(WEST)
-    kirby.driveDegrees(-30, 90)
 
 def goToSamples():
     kirby.driveUntilReflection(BLACK, -40)
@@ -132,7 +132,7 @@ def grabSample(sampleColor):
         kirby.moveFrontMotorDegrees(120, 200)
         kirby.driveDegrees(-35, 60)
 
-        kirby.moveFrontMotorDegrees(0, 200)
+        kirby.moveFrontMotorDegrees(10, 200)
 
         kirby.driveDegrees(18, 70)
         kirby.turnInPlace(SOUTH)
@@ -144,7 +144,7 @@ def grabSample(sampleColor):
         kirby.moveFrontMotorDegrees(120, 200)
         kirby.driveDegrees(-150, 60)
 
-        kirby.moveFrontMotorDegrees(0, 200)
+        kirby.moveFrontMotorDegrees(10, 200)
 
         kirby.driveDegrees(150, 70)
         kirby.turnInPlace(SOUTH, power=95, oneWheel="right")
@@ -157,7 +157,7 @@ def grabSample(sampleColor):
         kirby.moveFrontMotorDegrees(120, 200)
         kirby.driveDegrees(-85, 50)
 
-        kirby.moveFrontMotorDegrees(0, 200)
+        kirby.moveFrontMotorDegrees(10, 200)
 
         kirby.driveDegrees(80, 70)
         kirby.turnInPlace(SOUTH)
@@ -168,7 +168,7 @@ def grabSample(sampleColor):
 
         kirby.moveFrontMotorDegrees(120, 200)
         kirby.driveDegrees(-70, 50)
-        kirby.moveFrontMotorDegrees(0, 200)
+        kirby.moveFrontMotorDegrees(10, 200)
         kirby.driveDegrees(70, 50)
         kirby.turnInPlace(SOUTH)
 
@@ -241,7 +241,7 @@ def takeSecondSamples():
             #kirby.driveUntilReflection(20, 80, sensor="color")
             print("PERFECT COMB!!1!!!!11")
             grabSample("whiteAndGreen")
-            kirby.driveDegrees(140 + (92 * (5 - yellowPosition)), 70)
+            kirby.driveDegrees(150 + (92 * (5 - yellowPosition)), 70)
 
         else:
             kirby.driveDegrees(230 + (92 * redPosition), 80)
@@ -253,7 +253,7 @@ def takeSecondSamples():
             #kirby.driveUntilReflection(20, 80, sensor="color")
             kirby.brake(50)
             grabSample("yellow")
-            kirby.driveDegrees(140 + (92 * (5 - yellowPosition)), 70)
+            kirby.driveDegrees(150 + (92 * (5 - yellowPosition)), 70)
         
     else:
         kirby.driveDegrees(230 + (92 * yellowPosition), 80)
@@ -268,7 +268,7 @@ def takeSecondSamples():
 
         grabSample("red")
 
-        kirby.driveDegrees(140 + (92 * (5 - redPosition)), 70)
+        kirby.driveDegrees(150 + (92 * (5 - redPosition)), 70)
 
 def scoreSecondSamples():
     #kirby.driveDegrees(130, 90)

@@ -335,7 +335,7 @@ class Kirby:
                 break
             if abs(error) < 1:
                 if angleDebounce.time() > 180:
-                    print("successful turn")
+                    #print("successful turn")
                     break
             else:
                 angleDebounce.reset()
