@@ -57,18 +57,19 @@ def drone():
 
 def goToRover():
     kirby.driveUntilReflection(BLACK, -40)
-    kirby.driveDegrees(-7, 40)
+    kirby.driveDegrees(-10, 40)
 
     kirby.turnInPlace(NORTH)
-    kirby.driveDegrees(190, 90)
+    kirby.driveDegrees(185, 90)
     kirby.driveUntilReflection(BLACK, 40)
     kirby.driveDegrees(32, 50)
 
 def rover():
-    kirby.turnInPlace(EAST)
+    kirby.turnInPlace(EAST, power=85)
+    #kirby.waitUntilButton()
     #kirby.driveDegrees(10, 50)
-    kirby.moveFrontMotorDegrees(30, 800)
-    kirby.driveDegrees(-190, 90, targetAngle=EAST)
+    kirby.moveFrontMotorDegrees(32, 800)
+    kirby.driveDegrees(-195, 90, targetAngle=EAST)
 
 def takeWaterTanks():
     kirby.moveBackMotorDegrees(-200, 600)
@@ -92,7 +93,7 @@ def goToBox():
     kirby.turnInPlace(-WEST, power=60)
     
 def leaveWaterTanks():
-    kirby.driveTime(380, 40)
+    kirby.driveTime(360, 40)
     kirby.driveDegrees(-6, 40)
 
     kirby.moveFrontMotorDegrees(60, 500)
@@ -100,8 +101,8 @@ def leaveWaterTanks():
 
     kirby.driveTime(700, 60)
 
-    kirby.moveBackMotorDegrees(-50, 350)
-    kirby.brake(100)
+    kirby.moveBackMotorDegrees(-50, 300)
+    kirby.brake(150)
 
     kirby.driveDegrees(-40, 40)
     kirby.turnInPlace(172)
@@ -114,7 +115,7 @@ def goToSamples():
     #kirby.moveBackMotorDegrees(-70, 300)
     kirby.driveDegrees(-20, 90)
     kirby.turnInPlace(SOUTH)
-    kirby.driveTime(550, -70)
+    kirby.driveTime(500, -70)
     kirby.hub.imu.reset_heading(SOUTH) #reset imu
 
 def readSamples():
@@ -209,8 +210,8 @@ def takeFirstSamples():
 
 def scoreFirstSamples():
     kirby.brake(80)
-    kirby.driveDegrees(20, 50)
-    kirby.brake(80)
+    kirby.driveDegrees(30, 40)
+    kirby.brake(120)
     kirby.turnInPlace(180, power=90, oneWheel="right")
     kirby.driveDegrees(-440, 90)
     kirby.driveUntilReflection(BLACK, -40)
@@ -224,7 +225,7 @@ def takeSecondSamples():
     #kirby.turnInPlace(SOUTH, power=90, oneWheel="right")
     kirby.turnInPlace(SOUTH)
     kirby.brake(80)
-    kirby.driveTime(700, -70)
+    kirby.driveTime(770, -70)
     kirby.hub.imu.reset_heading(SOUTH) #reset imu
 
     samples.reverse()
@@ -241,7 +242,7 @@ def takeSecondSamples():
             #kirby.driveUntilReflection(20, 80, sensor="color")
             print("PERFECT COMB!!1!!!!11")
             grabSample("whiteAndGreen")
-            kirby.driveDegrees(150 + (92 * (5 - yellowPosition)), 70)
+            kirby.driveDegrees(162 + (92 * (5 - yellowPosition)), 70)
 
         else:
             kirby.driveDegrees(230 + (92 * redPosition), 80)
@@ -253,7 +254,7 @@ def takeSecondSamples():
             #kirby.driveUntilReflection(20, 80, sensor="color")
             kirby.brake(50)
             grabSample("yellow")
-            kirby.driveDegrees(150 + (92 * (5 - yellowPosition)), 70)
+            kirby.driveDegrees(162 + (92 * (5 - yellowPosition)), 70)
         
     else:
         kirby.driveDegrees(230 + (92 * yellowPosition), 80)
@@ -268,19 +269,24 @@ def takeSecondSamples():
 
         grabSample("red")
 
-        kirby.driveDegrees(150 + (92 * (5 - redPosition)), 70)
+        kirby.driveDegrees(162 + (92 * (5 - redPosition)), 70)
 
 def scoreSecondSamples():
     #kirby.driveDegrees(130, 90)
     kirby.turnInPlace(WEST)
     kirby.driveDegrees(-530, 90)
     kirby.driveUntilReflection(BLACK, -40)
-    kirby.driveDegrees(-140, 50)
+    kirby.driveDegrees(-150, 50)
     kirby.moveFrontMotorDegrees(110, 125)
 
 def parking():
-    kirby.driveDegrees(350, 90)
-    kirby.turnInPlace(NORTH, power=90, oneWheel="left")
-    kirby.driveDegrees(160, 80)
-    kirby.turnInPlace(EAST, power=90, oneWheel="left")
-    kirby.driveDegrees(450, 95, decel=False)
+    kirby.driveDegrees(450, 90)
+    #kirby.turnInPlace(NORTH, power=90, oneWheel="left")
+    kirby.turnInPlace(NORTH)
+    kirby.driveTime(750, -70)
+    kirby.hub.imu.reset_heading(NORTH) #reset imu
+    kirby.driveDegrees(430, 80)
+    kirby.turnInPlace(EAST, power=95, oneWheel="left")
+    #kirby.waitUntilButton()
+    #kirby.driveDegrees(450, 95, decel=False)
+    kirby.driveTime(1000, 95)

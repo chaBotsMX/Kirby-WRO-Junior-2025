@@ -6,7 +6,7 @@ from pybricks.hubs import PrimeHub
 from pybricks.parameters import Direction, Port, Axis, Side, Stop, Button, Color, Icon
 from pybricks.pupdevices import ColorSensor, Motor
 from pybricks.robotics import DriveBase
-from pybricks.tools import wait, StopWatch
+from pybricks.tools import wait, StopWatch, multitask, run_task
 
 import umath
 
@@ -388,6 +388,10 @@ class Kirby:
 
         else:
             return("white")
+
+    def waitUntilButton(self):
+        while not Button.LEFT in self.hub.buttons.pressed():
+            self.brake(0)            
 
     def moveLeftDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
         self.leftDriveMotor.run_angle(speed, degrees, then, wait)
