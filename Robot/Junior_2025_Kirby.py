@@ -294,7 +294,7 @@ class Kirby:
 
         self.brake(10)
 
-    def turnInPlace(self, targetAngle, power=75, oneWheel = "no"):
+    def turnInPlace(self, targetAngle, power=85, oneWheel = "no"):
         kP=KP_TURNING
         kD=KD_TURNING
 
