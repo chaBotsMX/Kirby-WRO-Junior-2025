@@ -1,5 +1,5 @@
 # Junior_2025_Kirby.py
-# 24/08/2025 for WRO RoboMission Junior team chaBots Kirby
+# 05/09/2025 for WRO RoboMission Junior team chaBots Kirby
 # Alfonso De Anda
 
 from pybricks.hubs import PrimeHub
@@ -294,7 +294,7 @@ class Kirby:
 
         self.brake(10)
 
-    def turnInPlace(self, targetAngle, power=85, oneWheel = "no"):
+    def turnInPlace(self, targetAngle, power=80, oneWheel = "no"):
         kP=KP_TURNING
         kD=KD_TURNING
 

@@ -1,5 +1,5 @@
 # Junior_2025_Main.py
-# 24/08/2025 for WRO RoboMission Junior team chaBots Kirby
+# 05/09/2025 for WRO RoboMission Junior team chaBots Kirby
 # Alfonso De Anda
 
 from Junior_2025_Kirby import *
@@ -67,7 +67,6 @@ def goToRover():
 def rover():
     kirby.turnInPlace(EAST, power=85)
     #kirby.waitUntilButton()
-    #kirby.driveDegrees(10, 50)
     kirby.moveFrontMotorDegrees(32, 800) #down for drone
     kirby.driveDegrees(-195, 90, targetAngle=EAST)
 
@@ -78,8 +77,6 @@ def takeWaterTanks():
     kirby.driveTime(500, -90, targetAngle=EAST)
     kirby.driveDegrees(40, 80, targetAngle=EAST, speedControl=False)
     kirby.driveTime(600, -90, targetAngle=EAST)
-
-    #kirby.moveBackMotorDegrees(-185, 400)
 
     kirby.driveDegrees(100, 50, targetAngle=EAST, speedControl=False)
     kirby.brake(400)
@@ -113,8 +110,6 @@ def leaveWaterTanks():
 def goToSamples():
     kirby.driveUntilReflection(BLACK, -40)
     kirby.driveDegrees-(20, 60)
-    #kirby.driveDegrees(-70, 40)
-    #kirby.driveDegrees(25, 40)
     kirby.turnInPlace(SOUTH)
     kirby.driveTime(500, -70)
     kirby.hub.imu.reset_heading(SOUTH) #reset imu
@@ -122,10 +117,6 @@ def goToSamples():
 def readSamples():
     kirby.driveAndScan(900, 90, ratio=0.2, scanningDistance=490)
     kirby.brake(100)
-    #print(kirby.colorSensor.reflection())
-    #kirby.driveUntilReflection(2, -40, sensor="color")
-    #print(kirby.colorSensor.reflection())
-    #kirby.driveDegrees(-85, 40)
 
 def grabSample(sampleColor):
     degreesToSample = 0
@@ -141,8 +132,6 @@ def grabSample(sampleColor):
 
     elif (sampleColor == "green") or (sampleColor == "red"):
         kirby.turnInPlace(-5, power=85, oneWheel="right")
-        #kirby.turnInPlace(45, oneWheel="right")
-        #kirby.turnInPlace(-10)
         kirby.moveFrontMotorDegrees(120, 200)
         kirby.driveDegrees(-150, 60)
 
@@ -150,9 +139,6 @@ def grabSample(sampleColor):
 
         kirby.driveDegrees(150, 70)
         kirby.turnInPlace(SOUTH, power=95, oneWheel="right")
-        #kirby.turnInPlace(45)
-        #kirby.turnInPlace(SOUTH, oneWheel="right")
-        #kirby.turnInPlace(SOUTH)
 
     elif sampleColor == "whiteAndGreen":
         kirby.turnInPlace(20)
@@ -217,13 +203,10 @@ def scoreFirstSamples():
     kirby.driveDegrees(-440, 95)
     kirby.driveUntilReflection(BLACK, -40) #white green line
     kirby.driveDegrees(-140, 50)
-    #kirby.turnInPlace(-170)
     kirby.moveFrontMotorDegrees(110, 125)
-    #kirby.turnInPlace(WEST)
 
 def takeSecondSamples():
     kirby.driveDegrees(790, 95, ratio=0.3)
-    #kirby.turnInPlace(SOUTH, power=90, oneWheel="right")
     kirby.turnInPlace(SOUTH)
     kirby.brake(80)
     kirby.driveTime(770, -70)
@@ -240,32 +223,27 @@ def takeSecondSamples():
     if isRedFirst:
         if perfectComb:
             kirby.driveDegrees(230 + (92 * yellowPosition), 80)
-            #kirby.driveUntilReflection(20, 80, sensor="color")
             print("PERFECT COMB!!1!!!!11")
             grabSample("whiteAndGreen")
             kirby.driveDegrees(162 + (92 * (5 - yellowPosition)), 70)
 
         else:
             kirby.driveDegrees(230 + (92 * redPosition), 80)
-            #kirby.driveUntilReflection(20, 80, sensor="color")
             kirby.brake(50)
 
             grabSample("red")
             kirby.driveDegrees(92 * (yellowPosition - redPosition), 80)
-            #kirby.driveUntilReflection(20, 80, sensor="color")
             kirby.brake(50)
             grabSample("yellow")
             kirby.driveDegrees(162 + (92 * (5 - yellowPosition)), 70)
         
     else:
         kirby.driveDegrees(230 + (92 * yellowPosition), 80)
-        #kirby.driveUntilReflection(20, 80, sensor="color")
         kirby.brake(50)
 
         grabSample("yellow")
 
         kirby.driveDegrees(92 * (redPosition - yellowPosition), 80)
-        #kirby.driveUntilReflection(20, 80, sensor="color")
         kirby.brake(50)
 
         grabSample("red")
@@ -273,7 +251,6 @@ def takeSecondSamples():
         kirby.driveDegrees(162 + (92 * (5 - redPosition)), 70)
 
 def scoreSecondSamples():
-    #kirby.driveDegrees(130, 90)
     kirby.turnInPlace(WEST)
     kirby.driveDegrees(-530, 95)
     kirby.driveUntilReflection(BLACK, -40) #yellow red line

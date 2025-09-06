@@ -2,7 +2,8 @@
 # 24/08/2025 for WRO RoboMission Junior team chaBots Kirby
 # Alfonso De Anda
 
-from Junior_2025_Main import *
+#from Junior_2025_Main import *
+from Junior_2025_National import *
 
 checkBluetoothButton()
 checkLeftButton()
@@ -11,8 +12,6 @@ print(kirby.hub.battery.voltage(), "mv") #bateria de kirby en miliVolts
 wait(10)
 
 timer = StopWatch()
-
-#kirby.hub.imu.reset_heading(180)
 
 drone()
 goToRover()
@@ -28,7 +27,6 @@ takeFirstSamples()
 scoreFirstSamples()
 takeSecondSamples()
 scoreSecondSamples()
-#surpriseRule()
 parking()
 
 print("time:", timer.time() / 1000, "s")
