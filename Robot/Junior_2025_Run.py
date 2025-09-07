@@ -13,6 +13,11 @@ wait(10)
 
 timer = StopWatch()
 
+kirby.hub.speaker.beep(1000, 100)
+
+kirby.driveTime(650, -70)
+kirby.hub.imu.reset_heading(EAST)
+
 drone()
 goToRover()
 rover()

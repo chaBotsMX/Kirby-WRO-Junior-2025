@@ -294,7 +294,7 @@ class Kirby:
 
         self.brake(10)
 
-    def turnInPlace(self, targetAngle, power=80, oneWheel = "no"):
+    def turnInPlace(self, targetAngle, power=75, oneWheel = "no"):
         kP=KP_TURNING
         kD=KD_TURNING
 
@@ -334,7 +334,7 @@ class Kirby:
                 print("safe exit")
                 break
             if abs(error) < 1:
-                if angleDebounce.time() > 180:
+                if angleDebounce.time() > 200:
                     #print("successful turn")
                     break
             else:
@@ -390,7 +390,7 @@ class Kirby:
             return("white")
 
     def waitUntilButton(self):
-        while not Button.LEFT in self.hub.buttons.pressed():
+        while not Button.RIGHT in self.hub.buttons.pressed():
             self.brake(0)            
 
     def moveLeftDriveMotorDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
