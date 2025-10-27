@@ -1,4 +1,4 @@
-from Junior_2025_National import *
+""" from Junior_2025_National import *
 
 checkBluetoothButton()
 checkLeftButton()
@@ -10,7 +10,7 @@ timer = StopWatch()
 #<Honore_villanueva>
 #chaBots_Kirby
 #frontmotor "arriba"=(700,700)
-"""
+
 NORTH = -90
       =-45
 EAST  = 0
@@ -19,8 +19,6 @@ SOUTH = 90
       = 135
 WEST  = 180
       = 225
-
-""" 
 
 print("go")
 #kirby.hub.speaker.beep(1000,100)
@@ -160,4 +158,4 @@ kirby.turnInPlace(WEST)
 kirby.driveDegrees(-850,MID_SPEED)
 
 
-print("time:", timer.time() / 1000, "s")
+print("time:", timer.time() / 1000, "s") """

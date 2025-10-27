@@ -1,4 +1,4 @@
-# Junior_2025_Main.py
+""" # Junior_2025_National.py
 # 05/09/2025 for WRO RoboMission Junior team chaBots Kirby
 # Alfonso De Anda
 
@@ -6,7 +6,7 @@ from Junior_2025_Kirby import *
 
 kirby = Kirby()
 
-BLACK = 17 #valor de reflexion en linea
+BLACK = 22 #valor de reflexion en linea
 WHITE = 59
 
 MAX_SPEED = 95 #velocidad maxima
@@ -25,9 +25,9 @@ def checkBluetoothButton():
         kirby.hub.speaker.beep(500, 500)
         wait(200)
         while True:
-            #print("Line Sensor:", kirby.lineSensor.reflection())
+            print("Line Sensor:", kirby.lineSensor.reflection())
             #print("color sensor: ", kirby.colorSensor.hsv())
-            print("heading: ", kirby.getAngle(kirby.hub.imu.heading()))
+            #print("heading: ", kirby.getAngle(kirby.hub.imu.heading()))
             #print("battery voltage", kirby.hub.battery.voltage())
 
 #accion de boton izquierdo (calibrar sensor linea)
@@ -46,18 +46,22 @@ def checkLeftButton():
 
 def drone():
     kirby.moveFrontMotorDegrees(40, 500) #up for drone
-    kirby.driveDegrees(730, 90)
+    kirby.driveDegrees(810, 90)
     
     kirby.moveFrontMotorDegrees(-10, 800) #grab drone
-    kirby.driveDegrees(-400, 90)
+    kirby.driveDegrees(-410, 90)
     
-    kirby.turnInPlace(-179) #west
+    #kirby.turnInPlace(-179) #west
+    kirby.turnInPlace(-145)
+    kirby.driveDegrees(110, 40)
     kirby.moveFrontMotorDegrees(60, 500)
+    kirby.driveDegrees(-106, 40)
+    kirby.turnInPlace(WEST)
     kirby.driveDegrees(-90, 60)
 
 def goToRover():
     kirby.driveUntilReflection(BLACK, -40)
-    kirby.driveDegrees(-10, 40)
+    kirby.driveDegrees(-13, 40)
 
     kirby.turnInPlace(NORTH)
     kirby.driveDegrees(185, 90, accel=False)
@@ -86,12 +90,12 @@ def goToBox():
     kirby.driveDegrees(290, 90)
     kirby.driveUntilReflection(BLACK, 40) #water line
     kirby.driveDegrees(40, 50)
-    kirby.moveFrontMotorDegrees(0, 400)
+    kirby.moveFrontMotorDegrees(0, 600)
     kirby.turnInPlace(-WEST, power=60)
     
 def leaveWaterTanks():
-    kirby.driveTime(360, 40) #align
-    kirby.driveDegrees(-7, 40)
+    kirby.driveTime(360, 35) #align
+    kirby.driveDegrees(-6, 36)
 
     kirby.moveFrontMotorDegrees(60, 500)
     kirby.frontMotor.brake()
@@ -102,14 +106,14 @@ def leaveWaterTanks():
     kirby.brake(150)
 
     kirby.driveDegrees(-40, 40)
-    kirby.turnInPlace(172)
+    kirby.turnInPlace(174)
     kirby.moveBackMotorDegrees(-70, 400) #safe position
-    kirby.driveDegrees(-625, 90)
+    kirby.driveDegrees(-590, 90)
     kirby.turnInPlace(WEST)
 
 def goToSamples():
     kirby.driveUntilReflection(BLACK, -40)
-    kirby.driveDegrees-(20, 60)
+    kirby.driveDegrees(-20, 60)
     kirby.turnInPlace(SOUTH)
     kirby.driveTime(500, -70)
     kirby.hub.imu.reset_heading(SOUTH) #reset imu
@@ -123,7 +127,7 @@ def grabSample(sampleColor):
     if (sampleColor == "white") or (sampleColor == "yellow"):
         kirby.turnInPlace(10)
         kirby.moveFrontMotorDegrees(120, 200) #down for sample
-        kirby.driveDegrees(-35, 60)
+        kirby.driveDegrees(-35, 50)
 
         kirby.moveFrontMotorDegrees(10, 200) #up for sample
 
@@ -133,7 +137,7 @@ def grabSample(sampleColor):
     elif (sampleColor == "green") or (sampleColor == "red"):
         kirby.turnInPlace(-5, power=85, oneWheel="right")
         kirby.moveFrontMotorDegrees(120, 200)
-        kirby.driveDegrees(-150, 60)
+        kirby.driveDegrees(-150, 50)
 
         kirby.moveFrontMotorDegrees(10, 200)
 
@@ -141,13 +145,13 @@ def grabSample(sampleColor):
         kirby.turnInPlace(SOUTH, power=95, oneWheel="right")
 
     elif sampleColor == "whiteAndGreen":
-        kirby.turnInPlace(20)
+        kirby.turnInPlace(15)
         kirby.moveFrontMotorDegrees(120, 200)
-        kirby.driveDegrees(-85, 50)
+        kirby.driveDegrees(-77, 45)
 
         kirby.moveFrontMotorDegrees(10, 200)
 
-        kirby.driveDegrees(80, 70)
+        kirby.driveDegrees(77, 70)
         kirby.turnInPlace(SOUTH)
 
     elif sampleColor == "yellowLast":
@@ -184,7 +188,7 @@ def takeFirstSamples():
             kirby.driveDegrees(94 * (whitePosition - greenPosition), 80)
             kirby.brake(50)
             grabSample("green")
-            kirby.driveDegrees(94 * (greenPosition - 5), 65, ratio=0.4)
+            kirby.driveDegrees(94 * (greenPosition - 5), 60, ratio=0.4)
         
     else:
         kirby.driveDegrees(-85 - (94 * greenPosition), 80)
@@ -193,22 +197,25 @@ def takeFirstSamples():
         kirby.driveDegrees(94 * (greenPosition - whitePosition), 80)
         kirby.brake(50)
         grabSample("white")
-        kirby.driveDegrees(94 * (whitePosition - 5), 65, ratio=0.4)
+        kirby.driveDegrees(94 * (whitePosition - 5), 60, ratio=0.4)
 
 def scoreFirstSamples():
-    kirby.brake(80)
-    kirby.driveDegrees(30, 40)
+    kirby.brake(120)
+    kirby.driveDegrees(45, 40)
     kirby.brake(120)
     kirby.turnInPlace(180, power=90, oneWheel="right")
     kirby.driveDegrees(-440, 95)
     kirby.driveUntilReflection(BLACK, -40) #white green line
     kirby.driveDegrees(-140, 50)
+    #kirby.turnInPlace(-170)
     kirby.moveFrontMotorDegrees(110, 125)
+    #kirby.turnInPlace(WEST)
 
 def takeSecondSamples():
     kirby.driveDegrees(790, 95, ratio=0.3)
     kirby.turnInPlace(SOUTH)
     kirby.brake(80)
+    kirby.moveFrontMotorDegrees(60, 300)
     kirby.driveTime(770, -70)
     kirby.hub.imu.reset_heading(SOUTH) #reset imu
 
@@ -222,7 +229,7 @@ def takeSecondSamples():
 
     if isRedFirst:
         if perfectComb:
-            kirby.driveDegrees(230 + (92 * yellowPosition), 80)
+            kirby.driveDegrees(230 + (92 * yellowPosition), 70)
             print("PERFECT COMB!!1!!!!11")
             grabSample("whiteAndGreen")
             kirby.driveDegrees(162 + (92 * (5 - yellowPosition)), 70)
@@ -268,10 +275,11 @@ def surpriseRule():
 def parking():
     kirby.driveDegrees(450, 95)
     kirby.turnInPlace(NORTH)
+    kirby.moveFrontMotorDegrees(60, 300)
     kirby.driveTime(750, -70)
     kirby.hub.imu.reset_heading(NORTH) #reset imu
     kirby.driveDegrees(430, 90, ratio=0.4)
     kirby.turnInPlace(EAST, power=95, oneWheel="left")
     #kirby.waitUntilButton()
     kirby.driveTime(1000, 95)
-    kirby.turnInPlace(-20)
+    kirby.turnInPlace(-20) """

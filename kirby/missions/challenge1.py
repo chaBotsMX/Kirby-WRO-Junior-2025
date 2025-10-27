@@ -1,4 +1,4 @@
-from Junior_2025_Main import *
+""" from Junior_2025_Main import *
 
 
 checkBluetoothButton()
@@ -67,3 +67,4 @@ kirby.driveDegrees(240,MID_SPEED)
 
 
 print("time:", timer.time() / 1000, "s")
+ """

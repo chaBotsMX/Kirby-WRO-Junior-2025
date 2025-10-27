@@ -1,4 +1,4 @@
-# Junior_2025_Run.py
+""" # Junior_2025_Run.py
 # 24/08/2025 for WRO RoboMission Junior team chaBots Kirby
 # Alfonso De Anda
 
@@ -34,4 +34,4 @@ takeSecondSamples()
 scoreSecondSamples()
 parking()
 
-print("time:", timer.time() / 1000, "s")
+print("time:", timer.time() / 1000, "s") """
