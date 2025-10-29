@@ -2,7 +2,7 @@ from pybricks.tools import StopWatch, wait
 from pybricks.parameters import Stop
 
 from utils.pd import PDControl
-from utils.constants import KP_FORWARD, KD_FORWARD, KP_TURNING, KD_TURNING, DEGREES_PER_MM
+from utils.constants import kPForward, kDForward, kPTurning, kDTurning, kDegreesInMM, kMinPower
 
 class DriveSystem:
     def __init__(self, hub, left_motor, right_motor, line_sensor=None, color_sensor = None):
@@ -17,15 +17,15 @@ class DriveSystem:
         self.lineSensor = line_sensor
         self.colorSensor = color_sensor
 
-        self.straight_pid = PDControl(KP_FORWARD, KD_FORWARD)
-        self.turn_pid = PDControl(KP_TURNING, KD_TURNING)
+        self.straight_pid = PDControl(kPForward, kDForward)
+        self.turn_pid = PDControl(kPTurning, kDTurning)
 
     def getCurrentPos(self):
         pos = (abs(self.left.angle()) + abs(self.right.angle())) / 2
         return pos
     
     def getDegreesFromMilis(self, mm):
-        return int(mm * DEGREES_PER_MM)
+        return int(mm * kDegreesInMM)
     
     def resetAngles(self):
         self.left.reset_angle(0)
@@ -48,8 +48,9 @@ class DriveSystem:
 
         direction = 1 if distance >= 0 else -1
 
-        minPower = 35
         accel_distance = targetDegrees * ratio  # 30% of the total distance for accel/decel
+
+        minPower = kMinPower
 
         distanceRemaining = targetDegrees
 
@@ -66,18 +67,21 @@ class DriveSystem:
             if speedControl == True:
                 if currentDegrees < accel_distance and accel == True:
                     # Acceleration phase
-                    basePower = minPower + ((currentDegrees / accel_distance) * (maxPower - minPower))
+                    basePower = kMinPower + ((currentDegrees / accel_distance) * (maxPower - kMinPower))
                 elif distanceRemaining < accel_distance and decel == True:
                     # Deceleration phase
-                    basePower = minPower + ((distanceRemaining / accel_distance) * (maxPower - minPower))
+                    basePower = kMinPower + ((distanceRemaining / accel_distance) * (maxPower - kMinPower))
                 else:
                     # Cruise phase
                     basePower = maxPower
 
-                basePower = max(minPower, min(basePower, maxPower))  # clamp
+                basePower = max(kMinPower, min(basePower, maxPower))  # clamp
 
-                self.left.dc(direction * basePower + correction)
-                self.right.dc(direction * basePower - correction)
+                leftPower = direction * basePower + correction
+                rightPower = direction * basePower - correction
+
+                self.left.dc(leftPower)
+                self.right.dc(rightPower)
 
             else:
                 self.left.dc(direction * maxPower + correction)
@@ -104,8 +108,11 @@ class DriveSystem:
 
             correction = self.straight_pid.compute(error)
 
-            self.left.dc(power + correction)
-            self.right.dc(power - correction)
+            left = power + correction
+            right = power - correction
+            
+            self.left.dc(left)
+            self.right.dc(right)
 
         self.brake(10)
 
@@ -145,7 +152,6 @@ class DriveSystem:
         self.turn_pid.reset()
         angleDebounce = StopWatch()
         exitTimer = StopWatch()
-        minPower = 32
 
         while True:
             currentAngle = self.hub.imu.heading()
@@ -160,15 +166,15 @@ class DriveSystem:
             if exitTimer.time() > 3000:
                 print("safe exit")
                 break
-            if abs(error) < 1:
+            if abs(error) < 0.8:
                 if angleDebounce.time() > 200:
-                    #print("successful turn")
+                    print("successful turn")
                     break
             else:
                 angleDebounce.reset()
 
-            if abs(correction) < minPower and abs(error) > 1:
-                correction = minPower if correction > 0 else -minPower
+            if abs(correction) < kMinPower and abs(error) > 1:
+                correction = kMinPower if correction > 0 else -kMinPower
 
             # Apply correction normally
             if oneWheel == "left":
