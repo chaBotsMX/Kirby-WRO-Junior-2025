@@ -2,5 +2,5 @@ from robot import Robot
 
 kirby = Robot()
 
-def mission1():
-    kirby.drive.straightDistance(10000, 50)
+def testMission():
+    kirby.drive.straightTime(50000, 50)

@@ -1,5 +1,5 @@
-from missions.mainDayOne import mission1
+from missions.mainDayOne import testMission
 
-print("i work!")
+print("Start")
 
-mission1()
+testMission()
