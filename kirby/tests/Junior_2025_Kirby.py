@@ -1,4 +1,4 @@
-# Junior_2025_Kirby.py
+""" # Junior_2025_Kirby.py
 # 05/09/2025 for WRO RoboMission Junior team chaBots Kirby
 # Alfonso De Anda
 
@@ -51,19 +51,15 @@ class Kirby:
 
         self.leftDriveMotor = Motor(Port.A, Direction.COUNTERCLOCKWISE)
         self.leftDriveMotor.reset_angle(0)
-        #self.leftDriveMotor.control.limits()
 
         self.rightDriveMotor = Motor(Port.E, Direction.CLOCKWISE)
         self.rightDriveMotor.reset_angle(0)
-        #self.rightDriveMotor.control.limits()
 
         self.backMotor = Motor(Port.B, Direction.CLOCKWISE)
         self.backMotor.reset_angle(0)
-        #self.backMotor.control.limits()
 
         self.frontMotor = Motor(Port.D, Direction.CLOCKWISE)
         self.frontMotor.reset_angle(0)
-        #self.frontMotor.control.limits()
 
         self.lineSensor = ColorSensor(Port.C)
         self.colorSensor = ColorSensor(Port.F)
@@ -418,4 +414,4 @@ class Kirby:
         self.frontMotor.run_target(speed, degrees, then, wait)
 
     def moveFrontMotorTime(self, time, speed, then = Stop.HOLD, wait = True):
-        self.frontMotor.run_time(speed, time, then, wait)
+        self.frontMotor.run_time(speed, time, then, wait) """
