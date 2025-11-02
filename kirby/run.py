@@ -1,3 +1,9 @@
+# run.py
+# 11/02/25 - chaBots Kirby
+# Alfonso De Anda
+
+# Robot run
+
 from missions.mainDayOne import testMission, initialize, startToRover, grabWater, goToWaterBox
 from pybricks.tools import StopWatch
 
@@ -7,7 +13,7 @@ runTimer = StopWatch()
 
 #testMission()
 
-initialize()
+initialize() # pre run mandatories
 
 startToRover()
 grabWater()

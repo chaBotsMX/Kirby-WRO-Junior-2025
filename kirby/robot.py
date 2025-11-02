@@ -1,3 +1,9 @@
+# robot.py
+# 11/02/25 - chaBots Kirby
+# Alfonso De Anda
+
+# Robot container, initializes inputs/outputs and objects
+
 from pybricks.hubs import PrimeHub
 from pybricks.parameters import Direction, Port
 from pybricks.pupdevices import ColorSensor, Motor

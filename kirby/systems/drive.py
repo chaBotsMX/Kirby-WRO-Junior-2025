@@ -1,3 +1,9 @@
+# run.py
+# 10/02/25 - chaBots Kirby
+# Alfonso De Anda
+
+# Stores all of the methods used for accurate driving in a class
+
 from pybricks.tools import StopWatch, wait
 from pybricks.parameters import Stop
 
@@ -6,6 +12,7 @@ from utils.constants import kPForward, kDForward, kPTurning, kDTurning, kPLine, 
 
 class DriveSystem:
     def __init__(self, hub, left_motor, right_motor, line_sensor=None, color_sensor = None):
+        # Initialize motors and sensors
         self.hub = hub
 
         self.left = left_motor
@@ -17,31 +24,39 @@ class DriveSystem:
         self.lineSensor = line_sensor
         self.colorSensor = color_sensor
 
+        # Declare PD controllers
+
         self.straight_pid = PDControl(kPForward, kDForward)
         self.turn_pid = PDControl(kPTurning, kDTurning)
         self.line_pid = PDControl(kPLine, kDLine)
 
+    # Returns average of position of the drive motors in degrees
     def getCurrentPos(self):
         pos = (abs(self.left.angle()) + abs(self.right.angle())) / 2
         return pos
     
+    # Converts millimiters to degrees
     def getDegreesFromMilis(self, mm):
         return int(mm * kDegreesInMM)
     
+    # Resets drive motors encoders
     def resetAngles(self):
         self.left.reset_angle(0)
         self.right.reset_angle(0)
 
+    # Stop driving by time
     def brake(self, time):
         self.left.brake()
         self.right.brake()
         wait(time)
     
+    # Method for straight driving using PD correction for heading and motion profile for speed control
     def straightDistance(self, distance, maxPower, targetAngle = -1, speedControl = True, ratio = 0.3, accel = True, decel = True):
         self.straight_pid.reset()
     
         self.resetAngles()
 
+        # If there is not an specific heading, calculate error with the starting heading (default)
         if targetAngle == -1:
             targetAngle = self.hub.imu.heading()
 
@@ -50,8 +65,6 @@ class DriveSystem:
         direction = 1 if distance >= 0 else -1
 
         accel_distance = targetDegrees * ratio  # 30% of the total distance for accel/decel
-
-        minPower = kMinPower
 
         distanceRemaining = targetDegrees
 
@@ -92,6 +105,7 @@ class DriveSystem:
 
         self.brake(10)
 
+    # PD heading correction by ms
     def straightTime(self, time, power, targetAngle = -1):
         self.resetAngles()
 
@@ -117,6 +131,7 @@ class DriveSystem:
 
         self.brake(10)
 
+    # PD heading until black line detected
     def straightUntilReflection(self, targetReflection, power, sensor="line"):
         self.resetAngles()
 
@@ -149,6 +164,7 @@ class DriveSystem:
 
         self.brake(10)
 
+    # Line following
     def trackLineDistance(self, distance, basePower, side=None):
         self.resetAngles()
         self.line_pid.reset()
@@ -162,7 +178,6 @@ class DriveSystem:
             elif side == "left": direction = -1
 
         while abs(self.getCurrentPos()) < targetDegrees:
-            # Smooth reflection reading (optional)
             currentReflection = self.lineSensor.reflection()
 
             # Compute PID correction
@@ -184,6 +199,7 @@ class DriveSystem:
 
         self.brake(10)
 
+    # PD turning method, use oneWheel parameter to specify the desired wheel to rotate
     def turnToAngle(self, targetAngle, power=75, oneWheel = "no"):
         self.turn_pid.reset()
         angleDebounce = StopWatch()
@@ -224,6 +240,8 @@ class DriveSystem:
             wait(1)
 
         self.brake(5)
+
+    # Individual motor control
 
     def leftDegrees(self, degrees, speed, then = Stop.HOLD, wait = True):
         self.left.run_angle(speed, degrees, then, wait)

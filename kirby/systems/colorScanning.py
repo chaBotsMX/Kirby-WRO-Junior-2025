@@ -1,3 +1,9 @@
+# colorScanning.py
+# 08/02/25 - chaBots Kirby
+# Alfonso De Anda
+
+# Methods for accurate color scanning using hsv
+
 from pybricks.tools import wait
 
 class ColorScanSystem:

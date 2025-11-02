@@ -1,3 +1,9 @@
+# constants.py
+# 08/02/25 - chaBots Kirby
+# Alfonso De Anda
+
+# Stores global constant values
+
 kReflectionBlack = 15
 kReflectionWhite = 79
 kReflectionAvg = 35

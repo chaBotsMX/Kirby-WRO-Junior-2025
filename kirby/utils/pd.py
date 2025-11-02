@@ -1,3 +1,9 @@
+# pd.py
+# 08/02/25 - chaBots Kirby
+# Alfonso De Anda
+
+# Class for PD controllers
+
 from pybricks.tools import StopWatch
 
 class PDControl:
