@@ -2,7 +2,7 @@ from pybricks.tools import StopWatch, wait
 from pybricks.parameters import Stop
 
 from utils.pd import PDControl
-from utils.constants import kPForward, kDForward, kPTurning, kDTurning, kDegreesInMM, kMinPower
+from utils.constants import kPForward, kDForward, kPTurning, kDTurning, kPLine, kDLine, kDegreesInMM, kMinPower, kReflectionBlack, kReflectionWhite, kReflectionAvg
 
 class DriveSystem:
     def __init__(self, hub, left_motor, right_motor, line_sensor=None, color_sensor = None):
@@ -19,6 +19,7 @@ class DriveSystem:
 
         self.straight_pid = PDControl(kPForward, kDForward)
         self.turn_pid = PDControl(kPTurning, kDTurning)
+        self.line_pid = PDControl(kPLine, kDLine)
 
     def getCurrentPos(self):
         pos = (abs(self.left.angle()) + abs(self.right.angle())) / 2
@@ -145,6 +146,41 @@ class DriveSystem:
                 if currentReflection > targetReflection:
                     self.hub.speaker.beep(100, 200)
                     break
+
+        self.brake(10)
+
+    def trackLineDistance(self, distance, basePower, side=None):
+        self.resetAngles()
+        self.line_pid.reset()
+
+        targetReflection = kReflectionAvg
+        targetDegrees = abs(self.getDegreesFromMilis(distance))
+
+        direction = 0
+        if side is not None:
+            if side == "right": direction = 1
+            elif side == "left": direction = -1
+
+        while abs(self.getCurrentPos()) < targetDegrees:
+            # Smooth reflection reading (optional)
+            currentReflection = self.lineSensor.reflection()
+
+            # Compute PID correction
+            error = targetReflection - currentReflection
+            correction = self.line_pid.compute(error)
+
+            # Compute left/right motor power
+            leftPower = basePower + correction * direction
+            rightPower = basePower - correction * direction
+
+            # Normalize to avoid exceeding ±100 and preserve ratios
+            maxVal = max(abs(leftPower), abs(rightPower), 100)
+            leftPower = (leftPower / maxVal) * 100
+            rightPower = (rightPower / maxVal) * 100
+
+            # Apply motor power
+            self.left.dc(leftPower)
+            self.right.dc(rightPower)
 
         self.brake(10)
 
