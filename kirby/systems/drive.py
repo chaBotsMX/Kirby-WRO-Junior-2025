@@ -199,11 +199,11 @@ class DriveSystem:
             correction = max(min(correction, power), -power)
 
             # Exit conditions
-            if exitTimer.time() > 3000:
+            if exitTimer.time() > 2000:
                 print("safe exit")
                 break
-            if abs(error) < 0.8:
-                if angleDebounce.time() > 200:
+            if abs(error) < 1:
+                if angleDebounce.time() > 150:
                     print("successful turn")
                     break
             else:

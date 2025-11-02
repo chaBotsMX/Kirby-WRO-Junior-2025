@@ -1,4 +1,4 @@
-kReflectionBlack = 14
+kReflectionBlack = 15
 kReflectionWhite = 79
 kReflectionAvg = 35
 
@@ -14,3 +14,5 @@ kDLine = 0.2
 kDegreesInMM = 1.836398895222424634189340071693
 
 kMinPower = 16
+
+kBackMotorWaterPosition = 190
