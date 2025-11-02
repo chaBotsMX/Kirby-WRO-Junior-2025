@@ -1,3 +1,9 @@
+# robot.py
+# 11/02/25 - chaBots Kirby
+# Alfonso De Anda
+
+# Robot container, initializes inputs/outputs and objects
+
 from pybricks.hubs import PrimeHub
 from pybricks.parameters import Direction, Port
 from pybricks.pupdevices import ColorSensor, Motor
@@ -13,7 +19,7 @@ class Robot:
         self.left_drive_motor = Motor(Port.A, Direction.COUNTERCLOCKWISE)
         self.right_drive_motor = Motor(Port.E, Direction.CLOCKWISE)
         
-        self.back_motor = Motor(Port.B, Direction.CLOCKWISE)
+        self.back_motor = Motor(Port.B, Direction.COUNTERCLOCKWISE)
         self.front_motor = Motor(Port.D, Direction.CLOCKWISE)
 
         self.line_sensor = ColorSensor(Port.C)

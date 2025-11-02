@@ -1,11 +1,24 @@
-VALUE_BLACK = 5
-VALUE_WHITE = 36
-VALUE_LINE = (VALUE_BLACK + VALUE_WHITE) / 2
+# constants.py
+# 08/02/25 - chaBots Kirby
+# Alfonso De Anda
 
-KP_FORWARD = 10
-KD_FORWARD = 0.1
+# Stores global constant values
 
-KP_TURNING = 7
-KD_TURNING = 0.1
+kReflectionBlack = 15
+kReflectionWhite = 79
+kReflectionAvg = 35
 
-DEGREES_PER_MM = 1.836398895222424634189340071693
+kPForward = 11
+kDForward = 0.2
+
+kPTurning = 5.5
+kDTurning = 0.2
+
+kPLine = 0.7
+kDLine = 0.2
+
+kDegreesInMM = 1.836398895222424634189340071693
+
+kMinPower = 16
+
+kBackMotorWaterPosition = 190

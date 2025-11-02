@@ -1,3 +1,9 @@
+# pd.py
+# 08/02/25 - chaBots Kirby
+# Alfonso De Anda
+
+# Class for PD controllers
+
 from pybricks.tools import StopWatch
 
 class PDControl:
@@ -27,9 +33,14 @@ class PDControl:
         self.timer.reset()
         self.last_error = error
 
-        if self.min_output is not None:
-            output = max(self.min_output, output)
+        # Apply min output properly (with sign)
+        if self.min_output is not None and abs(output) > 0:
+            if abs(output) < self.min_output:
+                output = self.min_output * (1 if output > 0 else -1)
+
+        # Apply max output
         if self.max_output is not None:
-            output = min(self.max_output, output)
+            if abs(output) > self.max_output:
+                output = self.max_output * (1 if output > 0 else -1)
 
         return output

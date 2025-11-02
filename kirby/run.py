@@ -1,5 +1,22 @@
-from missions.mainDayOne import testMission
+# run.py
+# 11/02/25 - chaBots Kirby
+# Alfonso De Anda
+
+# Robot run
+
+from missions.mainDayOne import testMission, initialize, startToRover, grabWater, goToWaterBox
+from pybricks.tools import StopWatch
 
 print("Start")
 
-testMission()
+runTimer = StopWatch()
+
+#testMission()
+
+initialize() # pre run mandatories
+
+startToRover()
+grabWater()
+goToWaterBox()
+
+print("time:", runTimer.time() / 1000, "s")
