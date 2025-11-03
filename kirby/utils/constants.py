@@ -5,7 +5,7 @@
 # Stores global constant values
 
 kReflectionBlack = 15
-kReflectionWhite = 79
+kReflectionWhite = 75
 kReflectionAvg = 35
 
 kPForward = 11
@@ -22,3 +22,7 @@ kDegreesInMM = 1.836398895222424634189340071693
 kMinPower = 16
 
 kBackMotorWaterPosition = 190
+
+kDegreesBetweenSamples = 174
+
+kDegreesToStartScanning = 487

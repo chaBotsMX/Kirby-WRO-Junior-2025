@@ -8,7 +8,8 @@ from pybricks.tools import StopWatch, wait
 from pybricks.parameters import Stop
 
 from utils.pd import PDControl
-from utils.constants import kPForward, kDForward, kPTurning, kDTurning, kPLine, kDLine, kDegreesInMM, kMinPower, kReflectionBlack, kReflectionWhite, kReflectionAvg
+from utils.constants import kPForward, kDForward, kPTurning, kDTurning, kPLine, kDLine, kDegreesInMM, kMinPower, kReflectionBlack, kReflectionWhite, kReflectionAvg, kDegreesBetweenSamples, kDegreesToStartScanning
+from systems.colorScanning import ColorScanSystem
 
 class DriveSystem:
     def __init__(self, hub, left_motor, right_motor, line_sensor=None, color_sensor = None):
@@ -23,6 +24,8 @@ class DriveSystem:
 
         self.lineSensor = line_sensor
         self.colorSensor = color_sensor
+
+        self.colorScan = ColorScanSystem(color_sensor)
 
         # Declare PD controllers
 
@@ -198,6 +201,65 @@ class DriveSystem:
             self.right.dc(rightPower)
 
         self.brake(10)
+
+    def driveAndScan(self, distance, maxPower, scanningDistance = 500):
+        self.resetAngles()
+        self.straight_pid.reset()
+        
+        targetAngle = -90 #self.hub.imu.heading()
+        
+        direction = 1 if distance >= 0 else -1
+
+        targetDegrees = abs(self.getDegreesFromMilis(distance))
+        scanningDistance = abs(self.getDegreesFromMilis(scanningDistance))
+
+        ratio = 0.2
+        accel_distance = targetDegrees * ratio
+
+        samplesPositions = []
+
+        while True:
+            currentAngle = self.hub.imu.heading()
+            currentDegrees = self.getCurrentPos()
+            distanceRemaining = targetDegrees - currentDegrees
+
+            #end condition
+            if distanceRemaining <= 0:
+                break
+
+            #scanning
+            if currentDegrees >= kDegreesToStartScanning:
+                distanceDetecting = (currentDegrees - kDegreesToStartScanning)
+
+                if distanceDetecting % kDegreesBetweenSamples <= 10:
+                    detectedColor = self.colorScan.scanCurrentColor(5)
+                    samplesPositions.append(detectedColor)
+
+                    self.hub.speaker.beep(1000, 100)
+                    print(detectedColor)
+                
+                if distanceDetecting >= scanningDistance:
+                    break
+
+            #Heading PD
+            error = targetAngle - currentAngle
+            correction = self.straight_pid.compute(error)
+
+            #accel decel
+            if currentDegrees < accel_distance:
+                basePower = kMinPower + ((currentDegrees / accel_distance) * (maxPower - kMinPower))
+            elif distanceRemaining < accel_distance:
+                basePower = kMinPower + ((distanceRemaining / accel_distance) * (maxPower - kMinPower))
+            else:
+                basePower = maxPower
+
+            basePower = max(kMinPower, min(basePower, maxPower))  # clamp
+
+            self.left.dc(direction * basePower + correction)
+            self.right.dc(direction * basePower - correction)
+
+        self.brake(10)
+        return samplesPositions
 
     # PD turning method, use oneWheel parameter to specify the desired wheel to rotate
     def turnToAngle(self, targetAngle, power=75, oneWheel = "no"):

@@ -5,9 +5,11 @@
 # Routine for robot run on first day challenge
 
 from robot import Robot
-from utils.constants import kReflectionBlack, kBackMotorWaterPosition
+from utils.constants import kReflectionBlack, kBackMotorWaterPosition, kReflectionWhite
 
 kirby = Robot()
+
+samplesPositions = []
 
 # for tests only
 def testMission():
@@ -44,7 +46,7 @@ def grabWater():
     
     kirby.mechanisms.moveBackMotorDegrees(170, 300)
 
-def goToWaterBox():
+def scoreWater():
     kirby.drive.turnToAngle(-90, power=40)
     kirby.drive.straightDistance(400, 85)
     kirby.drive.turnToAngle(-180, power=35)
@@ -53,4 +55,27 @@ def goToWaterBox():
     kirby.drive.straightTime(500, 40)
     kirby.drive.brake(200)
 
-    kirby.mechanisms.moveBackMotorDegrees(70, 200)
+    kirby.mechanisms.moveBackMotorDegrees(75, 200)
+    kirby.drive.brake(500)
+
+def waterSample():
+    kirby.drive.straightDistance(-100, 80)
+    kirby.drive.turnToAngle(160)
+    kirby.drive.straightDistance(-170, 80)
+    kirby.drive.turnToAngle(180)
+    kirby.drive.straightDistance(-460, 80)
+    #kirby.drive.straightUntilReflection(kReflectionWhite, -20)
+
+    kirby.mechanisms.moveBackMotorDegrees(kBackMotorWaterPosition, 300)
+    kirby.drive.turnToAngle(-90, oneWheel="right")
+    kirby.mechanisms.moveBackMotorDegrees(0, 500)
+    kirby.drive.straightTime(600, 40)
+
+def scoreSampleAndDrone():
+    """ kirby.drive.turnToAngle(-90, oneWheel="right")
+    kirby.mechanisms.moveBackMotorDegrees(0, 500)
+    kirby.drive.straightTime(600, 40) """
+    samplesPositions = kirby.drive.driveAndScan(-840, 60)
+    kirby.drive.turnToAngle(0, oneWheel="right")
+    kirby.drive.straightDistance(-800, 90)
+    kirby.drive.turnToAngle(20)
