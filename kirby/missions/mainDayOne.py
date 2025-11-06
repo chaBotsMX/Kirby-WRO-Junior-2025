@@ -21,11 +21,11 @@ def initialize():
     print(kirby.hub.battery.voltage(), "mv")
 
 def startToRover():
-    kirby.drive.straightTime(400, -50)
+    kirby.drive.straightTime(350, -45)
     kirby.hub.imu.reset_heading(0) #choca y resetea imu
 
     kirby.drive.turnToAngle(-32, oneWheel="right")
-    kirby.drive.straightDistance(410, 80)
+    kirby.drive.straightDistance(400, 80)
     kirby.drive.straightUntilReflection(kReflectionBlack, 30)
     kirby.drive.straightDistance(60, 30) #align
 
@@ -35,47 +35,59 @@ def startToRover():
     kirby.mechanisms.moveBackMotorDegrees(0, 500)
 
 def grabWater():
-    kirby.drive.straightDistance(-180, 80, targetAngle=0)
+    kirby.drive.straightDistance(-190, 80, targetAngle=0)
     kirby.mechanisms.moveBackMotorDegrees(kBackMotorWaterPosition, 400)
 
     kirby.drive.straightTime(400, -70, targetAngle=0)
-    kirby.drive.straightDistance(35, 60, targetAngle=0) #primer pelota
+    kirby.drive.straightDistance(25, 60, targetAngle=0) #primer pelota
     kirby.drive.brake(100)
     kirby.drive.straightTime(500, -70, targetAngle=0)
-    kirby.drive.straightDistance(95, 50, targetAngle=0) #segunda pelota
+    kirby.drive.straightDistance(80, 50, targetAngle=0) #segunda pelota
     
     kirby.mechanisms.moveBackMotorDegrees(170, 300)
 
 def scoreWater():
     kirby.drive.turnToAngle(-90, power=40)
-    kirby.drive.straightDistance(400, 85)
+    kirby.drive.straightDistance(420, 75)
     kirby.drive.turnToAngle(-180, power=35)
-    #kirby.drive.brake(500)
-    #kirby.drive.straightDistance(145, 75)
-    kirby.drive.straightTime(500, 40)
-    kirby.drive.brake(200)
 
-    kirby.mechanisms.moveBackMotorDegrees(75, 200)
-    kirby.drive.brake(500)
+    #kirby.drive.brake(500)
+
+    #kirby.mechanisms.moveBackMotorDegrees(170, 400) #test
+    #kirby.drive.brake(500) #test
+
+    kirby.drive.straightTime(600, 35, targetAngle=-180)
+    #kirby.drive.brake(400)
+
+    kirby.mechanisms.moveBackMotorDegrees(100, 200)
+    kirby.mechanisms.moveBackMotorTime(400, -300)
+    kirby.drive.brake(300)
 
 def waterSample():
     kirby.drive.straightDistance(-100, 80)
     kirby.drive.turnToAngle(160)
-    kirby.drive.straightDistance(-170, 80)
+    kirby.drive.straightDistance(-160, 80)
     kirby.drive.turnToAngle(180)
     kirby.drive.straightDistance(-460, 80)
     #kirby.drive.straightUntilReflection(kReflectionWhite, -20)
 
-    kirby.mechanisms.moveBackMotorDegrees(kBackMotorWaterPosition, 300)
-    kirby.drive.turnToAngle(-90, oneWheel="right")
-    kirby.mechanisms.moveBackMotorDegrees(0, 500)
-    kirby.drive.straightTime(600, 40)
+    kirby.mechanisms.moveBackMotorDegrees(kBackMotorWaterPosition, 500)
+    kirby.drive.turnToAngle(-100, oneWheel="right")
+    kirby.drive.turnToAngle(-90)
+    kirby.mechanisms.moveBackMotorDegrees(0, 700)
+    kirby.drive.straightTime(600, 50)
+    kirby.hub.imu.reset_heading(-90) #choca y resetea imu
 
 def scoreSampleAndDrone():
     """ kirby.drive.turnToAngle(-90, oneWheel="right")
     kirby.mechanisms.moveBackMotorDegrees(0, 500)
     kirby.drive.straightTime(600, 40) """
-    samplesPositions = kirby.drive.driveAndScan(-840, 60)
+    samplesPositions = kirby.drive.driveAndScan(-750, 60)
     kirby.drive.turnToAngle(0, oneWheel="right")
-    kirby.drive.straightDistance(-800, 90)
-    kirby.drive.turnToAngle(20)
+    kirby.drive.straightDistance(-840, 90)
+    #kirby.drive.turnToAngle(20)
+
+def whiteGreenSamples():
+    kirby.drive.straightDistance(900, 80)
+    kirby.drive.turnToAngle(-90)
+    kirby.drive.straightTime(500, -40)
