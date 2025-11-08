@@ -4,17 +4,14 @@
 
 # Robot run
 
-from missions.mainDayOne import testMission, initialize, startToRover, grabWater, scoreWater, waterSample, scoreSampleAndDrone, whiteGreenSamples
+from missions.secondDay0811 import todoaki
+
 from pybricks.tools import StopWatch
 
 print("Start")
 
 runTimer = StopWatch()
 
-#testMission()
-
-initialize() # pre run mandatories
-
-
+todoaki()
 
 print("time:", runTimer.time() / 1000, "s")
