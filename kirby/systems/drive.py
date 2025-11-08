@@ -67,7 +67,8 @@ class DriveSystem:
 
         direction = 1 if distance >= 0 else -1
 
-        accel_distance = targetDegrees * ratio  # 30% of the total distance for accel/decel
+        accel_distance = targetDegrees * ratio
+        decel_distance = targetDegrees * (ratio + 0.1)
 
         distanceRemaining = targetDegrees
 
@@ -85,9 +86,9 @@ class DriveSystem:
                 if currentDegrees < accel_distance and accel == True:
                     # Acceleration phase
                     basePower = kMinPower + ((currentDegrees / accel_distance) * (maxPower - kMinPower))
-                elif distanceRemaining < accel_distance and decel == True:
+                elif distanceRemaining < decel_distance and decel == True:
                     # Deceleration phase
-                    basePower = kMinPower + ((distanceRemaining / accel_distance) * (maxPower - kMinPower))
+                    basePower = kMinPower + ((distanceRemaining / decel_distance) * (maxPower - kMinPower))
                 else:
                     # Cruise phase
                     basePower = maxPower

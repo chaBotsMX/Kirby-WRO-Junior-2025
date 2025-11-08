@@ -5,7 +5,7 @@
 # Routine for robot run on first day challenge
 
 from robot import Robot
-from utils.constants import kReflectionBlack, kBackMotorWaterPosition, kReflectionWhite
+from utils.constants import *
 
 kirby = Robot()
 
@@ -13,11 +13,13 @@ samplesPositions = []
 
 # for tests only
 def testMission():
-    print(kirby.hub.battery.voltage(), "mv")
+    kirby.drive.straightDistance(100, 50)
+"""     print(kirby.hub.battery.voltage(), "mv")
     while True:
-        print(kirby.back_motor.angle())
+        print(kirby.front_motor.angle()) """
     
 def initialize():
+    kirby.hub.imu.reset_heading(-90) #0
     print(kirby.hub.battery.voltage(), "mv")
 
 def startToRover():
@@ -87,7 +89,34 @@ def scoreSampleAndDrone():
     kirby.drive.straightDistance(-840, 90)
     #kirby.drive.turnToAngle(20)
 
-def whiteGreenSamples():
     kirby.drive.straightDistance(900, 80)
     kirby.drive.turnToAngle(-90)
     kirby.drive.straightTime(500, -40)
+
+def grabLeftSample():
+    kirby.drive.turnToAngle(-180)
+    kirby.mechanisms.moveBackMotorDegrees(170, 400)
+    kirby.drive.straightDistance(50, 40)
+    kirby.mechanisms.moveBackMotorDegrees(120, 300)
+    kirby.drive.straightDistance(-50, 40)
+    kirby.drive.turnToAngle(-90, power=55)
+
+def grabRightSample():
+    kirby.drive.turnToAngle(-180)
+    kirby.mechanisms.moveFrontMotorDegrees(100, 400)
+    kirby.drive.straightDistance(50, 40)
+    kirby.mechanisms.moveFrontMotorDegrees(60, 300)
+    kirby.drive.straightDistance(-50, 40)
+    kirby.drive.turnToAngle(-90, power=55)
+    
+def whiteGreenSamples():
+    samplesPositions.reverse()
+    wP = 6 #samplesPositions.index("white")
+    gP = 5 #samplesPositions.index("green")
+
+    closestPosition = min(wP, gP)
+
+    wallToFirstSample = kDistanceWallToWhiteSample if closestPosition == wP else kDistanceWallToGreenSample
+
+    kirby.drive.straightDistance(wallToFirstSample + (kDistanceBetweenSamples * closestPosition), 60)
+    grabLeftSample() if closestPosition == wP else grabRightSample()

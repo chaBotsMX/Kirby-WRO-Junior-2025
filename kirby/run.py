@@ -15,13 +15,11 @@ runTimer = StopWatch()
 
 initialize() # pre run mandatories
 
-#scoreWater()
-
-startToRover()
+""" startToRover()
 grabWater()
 scoreWater()
 waterSample()
-scoreSampleAndDrone()
+scoreSampleAndDrone() """
 whiteGreenSamples()
 
 print("time:", runTimer.time() / 1000, "s")
