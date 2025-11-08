@@ -6,7 +6,7 @@
             "type": "debugpy",
             "request": "launch",
             "module": "pybricksdev",
-            "args": ["run", "ble", "--name", "Kirby", "${file}"],
+            "args": ["run", "ble", "${file}"],
         }
     ]
 }

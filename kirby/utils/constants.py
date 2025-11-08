@@ -8,18 +8,18 @@ kReflectionBlack = 15
 kReflectionWhite = 75
 kReflectionAvg = 35
 
-kPForward = 11
-kDForward = 0.2
+kPForward = 10
+kDForward = 0.1
 
-kPTurning = 5.5
-kDTurning = 0.2
+kPTurning = 7
+kDTurning = 0.1
 
-kPLine = 0.7
+kPLine = 0.6
 kDLine = 0.2
 
 kDegreesInMM = 1.836398895222424634189340071693
 
-kMinPower = 15
+kMinPower = 35
 
 kBackMotorWaterPosition = 190
 
