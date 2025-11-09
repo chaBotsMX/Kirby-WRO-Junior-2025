@@ -94,29 +94,50 @@ def scoreSampleAndDrone():
     kirby.drive.straightTime(500, -40)
 
 def grabLeftSample():
-    kirby.drive.turnToAngle(-180)
+    kirby.drive.turnToAngle(-180, power=60)
     kirby.mechanisms.moveBackMotorDegrees(170, 400)
     kirby.drive.straightDistance(50, 40)
     kirby.mechanisms.moveBackMotorDegrees(120, 300)
-    kirby.drive.straightDistance(-50, 40)
+    kirby.drive.straightDistance(-70, 40)
     kirby.drive.turnToAngle(-90, power=55)
 
 def grabRightSample():
-    kirby.drive.turnToAngle(-180)
-    kirby.mechanisms.moveFrontMotorDegrees(100, 400)
+    kirby.drive.turnToAngle(-180, power=60)
+    kirby.mechanisms.moveFrontMotorDegrees(95, 200)
     kirby.drive.straightDistance(50, 40)
     kirby.mechanisms.moveFrontMotorDegrees(60, 300)
-    kirby.drive.straightDistance(-50, 40)
+    kirby.drive.straightDistance(-70, 40)
     kirby.drive.turnToAngle(-90, power=55)
     
 def whiteGreenSamples():
     samplesPositions.reverse()
-    wP = 6 #samplesPositions.index("white")
-    gP = 5 #samplesPositions.index("green")
+    wP = 3 #samplesPositions.index("white")
+    gP = 0 #samplesPositions.index("green")
 
     closestPosition = min(wP, gP)
 
     wallToFirstSample = kDistanceWallToWhiteSample if closestPosition == wP else kDistanceWallToGreenSample
 
-    kirby.drive.straightDistance(wallToFirstSample + (kDistanceBetweenSamples * closestPosition), 60)
+    wallToClosestSample = wallToFirstSample + (kDistanceBetweenSamples * closestPosition)
+    kirby.drive.straightDistance(wallToClosestSample, 60)
     grabLeftSample() if closestPosition == wP else grabRightSample()
+    distanceDiffBetweenSamples = -160 if closestPosition == wP else 160
+    distanceToNextSample = kDistanceBetweenSamples * abs(wP - gP) + distanceDiffBetweenSamples
+    powerForSecondSample = abs(distanceToNextSample * 0.15) if distanceToNextSample > 30 else 30
+    kirby.drive.straightDistance(distanceToNextSample, powerForSecondSample)
+    grabRightSample() if closestPosition == wP else grabLeftSample()
+    distanceToLast = kDistanceBetweenSamples * (5 - gP) + 160 if closestPosition == wP else kDistanceBetweenSamples * (5 - wP)
+    kirby.drive.straightDistance(distanceToLast, distanceToLast * 0.15)
+
+def scoreWhiteGreenSamples():
+    kirby.drive.turnToAngle(0, power=65)
+    kirby.drive.straightDistance(350, 80)
+    kirby.drive.straightUntilReflection(kReflectionBlack, 30)
+
+    kirby.mechanisms.moveBackMotorDegrees(185, 200, wait=False)
+    kirby.mechanisms.moveFrontMotorDegrees(105, 200, wait=False)
+
+    kirby.drive.trackLineDistance(200, 40, side="left")
+    kirby.drive.straightDistance(80, 40)
+
+    kirby.drive.straightDistance(-300, 60)

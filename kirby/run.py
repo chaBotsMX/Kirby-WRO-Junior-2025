@@ -4,7 +4,7 @@
 
 # Robot run
 
-from missions.mainDayOne import testMission, initialize, startToRover, grabWater, scoreWater, waterSample, scoreSampleAndDrone, whiteGreenSamples
+from missions.mainDayOne import testMission, initialize, startToRover, grabWater, scoreWater, waterSample, scoreSampleAndDrone, whiteGreenSamples, scoreWhiteGreenSamples
 from pybricks.tools import StopWatch
 
 print("Start")
@@ -21,5 +21,6 @@ scoreWater()
 waterSample()
 scoreSampleAndDrone() """
 whiteGreenSamples()
+scoreWhiteGreenSamples()
 
 print("time:", runTimer.time() / 1000, "s")

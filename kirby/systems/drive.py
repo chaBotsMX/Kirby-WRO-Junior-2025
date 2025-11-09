@@ -68,7 +68,7 @@ class DriveSystem:
         direction = 1 if distance >= 0 else -1
 
         accel_distance = targetDegrees * ratio
-        decel_distance = targetDegrees * (ratio + 0.1)
+        decel_distance = targetDegrees * ratio if direction == 1 else targetDegrees * 0.6
 
         distanceRemaining = targetDegrees
 
@@ -82,13 +82,13 @@ class DriveSystem:
             correction = self.straight_pid.compute(error)
 
             #Trapezoidal speed control
-            if speedControl == True:
+            if speedControl == True and distance != 0:
                 if currentDegrees < accel_distance and accel == True:
                     # Acceleration phase
-                    basePower = kMinPower + ((currentDegrees / accel_distance) * (maxPower - kMinPower))
+                    basePower = kMinPower + ((currentDegrees / accel_distance) * (maxPower - (kMinPower-3)))
                 elif distanceRemaining < decel_distance and decel == True:
                     # Deceleration phase
-                    basePower = kMinPower + ((distanceRemaining / decel_distance) * (maxPower - kMinPower))
+                    basePower = kMinPower + ((distanceRemaining / decel_distance) * (maxPower - (kMinPower-3)))
                 else:
                     # Cruise phase
                     basePower = maxPower
@@ -281,7 +281,7 @@ class DriveSystem:
             if exitTimer.time() > 2000:
                 print("safe exit")
                 break
-            if abs(error) < 1:
+            if abs(error) < 0.9:
                 if angleDebounce.time() > 150:
                     print("successful turn")
                     break
