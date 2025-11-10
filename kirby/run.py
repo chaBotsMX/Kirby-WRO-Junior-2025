@@ -15,11 +15,11 @@ runTimer = StopWatch()
 
 initialize() # pre run mandatories
 
-""" startToRover()
+startToRover()
 grabWater()
 scoreWater()
 waterSample()
-scoreSampleAndDrone() """
+scoreSampleAndDrone()
 whiteGreenSamples()
 scoreWhiteGreenSamples()
 

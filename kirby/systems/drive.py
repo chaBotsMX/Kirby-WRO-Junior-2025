@@ -263,7 +263,7 @@ class DriveSystem:
         return samplesPositions
 
     # PD turning method, use oneWheel parameter to specify the desired wheel to rotate
-    def turnToAngle(self, targetAngle, power=75, oneWheel = "no"):
+    def turnToAngle(self, targetAngle, power=75, oneWheel = "no", safeExitTime=1800):
         self.turn_pid.reset()
         angleDebounce = StopWatch()
         exitTimer = StopWatch()
@@ -278,11 +278,11 @@ class DriveSystem:
             correction = max(min(correction, power), -power)
 
             # Exit conditions
-            if exitTimer.time() > 2000:
+            if exitTimer.time() > safeExitTime:
                 print("safe exit")
                 break
             if abs(error) < 0.9:
-                if angleDebounce.time() > 150:
+                if angleDebounce.time() > 180:
                     print("successful turn")
                     break
             else:
