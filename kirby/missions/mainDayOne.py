@@ -27,7 +27,9 @@ def startToRover():
     kirby.drive.straightTime(350, -45)
     kirby.hub.imu.reset_heading(0) #choca y resetea imu
 
-    kirby.drive.turnToAngle(-33, power=85, oneWheel="right", safeExitTime=700)
+    kirby.drive.straightDistance(35, 40)
+    kirby.drive.turnToAngle(-35, safeExitTime=700)
+    #kirby.drive.turnToAngle(-33, power=85, oneWheel="right", safeExitTime=700)
     kirby.drive.straightDistance(400, 80)
     kirby.drive.straightUntilReflection(kReflectionBlack, 30)
     kirby.drive.straightDistance(60, 30) #align
@@ -59,25 +61,28 @@ def scoreWater():
     #kirby.mechanisms.moveBackMotorDegrees(170, 400) #test
     #kirby.drive.brake(500) #test
 
-    kirby.drive.straightTime(600, 35, targetAngle=-180)
+    kirby.drive.straightTime(580, 34, targetAngle=-180)
     #kirby.drive.brake(400)
 
     kirby.mechanisms.moveBackMotorDegrees(100, 200)
-    kirby.drive.brake(100)
-    kirby.mechanisms.moveBackMotorTime(400, -300)
+    kirby.drive.brake(200)
+    kirby.mechanisms.moveBackMotorTime(400, -330)
     kirby.drive.brake(300)
 
 def waterSample():
-    kirby.drive.straightDistance(-100, 80, targetAngle=-180)
+    kirby.drive.straightDistance(-120, 80, targetAngle=-180)
     kirby.drive.turnToAngle(160)
-    kirby.drive.straightDistance(-90, 70)
-    kirby.drive.turnToAngle(180)
+    kirby.mechanisms.moveBackMotorDegrees(180, 300)
+    kirby.drive.straightDistance(-110, 70)
+    #kirby.drive.turnToAngle(-160)
+    kirby.drive.turnToAngle(-180)
     kirby.drive.straightDistance(-550, 80)
 
     #kirby.mechanisms.moveBackMotorDegrees(kBackMotorWaterPosition, 500)
-    kirby.drive.turnToAngle(-88, power=90, oneWheel="right", safeExitTime=1500)
+    kirby.drive.turnToAngle(-86, power=95, oneWheel="right", safeExitTime=1500)
+    kirby.mechanisms.moveBackMotorDegrees(0, 400)
     #kirby.drive.turnToAngle(-90, power=80, safeExitTime=400)
-    kirby.mechanisms.moveBackMotorDegrees(0, 700)
+    #kirby.mechanisms.moveBackMotorDegrees(0, 700)
     kirby.drive.straightTime(600, 50)
     kirby.hub.imu.reset_heading(-90) #choca y resetea imu
 
@@ -88,7 +93,7 @@ def scoreSampleAndDrone():
     kirby.drive.straightTime(600, 40) """
     samplesPositions = kirby.drive.driveAndScan(-750, 60)
     print(samplesPositions)
-    kirby.drive.turnToAngle(0, power=85, oneWheel="right", safeExitTime=1000)
+    kirby.drive.turnToAngle(0, power=92, oneWheel="right", safeExitTime=1000)
     kirby.drive.straightDistance(-820, 90)
 
     kirby.drive.straightDistance(950, 90)
