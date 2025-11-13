@@ -207,7 +207,7 @@ class DriveSystem:
         self.resetAngles()
         self.straight_pid.reset()
         
-        targetAngle = -90 #self.hub.imu.heading()
+        targetAngle = 90 #self.hub.imu.heading()
         
         direction = 1 if distance >= 0 else -1
 
@@ -263,7 +263,7 @@ class DriveSystem:
         return samplesPositions
 
     # PD turning method, use oneWheel parameter to specify the desired wheel to rotate
-    def turnToAngle(self, targetAngle, power=75, oneWheel = "no", safeExitTime=1800):
+    def turnToAngle(self, targetAngle, power=75, oneWheel = "no", safeExitTime=1000):
         self.turn_pid.reset()
         angleDebounce = StopWatch()
         exitTimer = StopWatch()
@@ -281,8 +281,8 @@ class DriveSystem:
             if exitTimer.time() > safeExitTime:
                 print("safe exit")
                 break
-            if abs(error) < 0.9:
-                if angleDebounce.time() > 180:
+            if abs(error) < 0.95:
+                if angleDebounce.time() > 160:
                     print("successful turn")
                     break
             else:

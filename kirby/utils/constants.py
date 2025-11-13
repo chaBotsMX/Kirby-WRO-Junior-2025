@@ -9,7 +9,7 @@ kReflectionWhite = 75
 kReflectionAvg = 35
 
 kPForward = 11
-kDForward = 0.2
+kDForward = 0.1
 
 kPTurning = 5.5
 kDTurning = 0.2
@@ -25,8 +25,11 @@ kBackMotorWaterPosition = 190
 
 kDegreesBetweenSamples = 174
 
-kDegreesToStartScanning = 487
+kDegreesToStartScanning = 340
 
 kDistanceWallToWhiteSample = 350
 kDistanceWallToGreenSample = 186
 kDistanceBetweenSamples = 95
+
+kDistanceWallToYellowSample = 130
+kDistanceWallToRedSample = 320
