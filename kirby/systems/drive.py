@@ -203,7 +203,7 @@ class DriveSystem:
 
         self.brake(10)
 
-    def driveAndScan(self, distance, maxPower, scanningDistance = 500):
+    def driveAndScan(self, distance, maxPower, scanningDistance = 560):
         self.resetAngles()
         self.straight_pid.reset()
         

@@ -53,7 +53,7 @@ def grabWater():
 
 def scoreWater():
     kirby.drive.turnToAngle(-90, power=40)
-    kirby.drive.straightDistance(425, 75)
+    kirby.drive.straightDistance(420, 75)
     kirby.drive.turnToAngle(-180, power=35)
 
     #kirby.drive.brake(500)
@@ -64,7 +64,7 @@ def scoreWater():
     kirby.drive.straightTime(580, 34, targetAngle=-180)
     #kirby.drive.brake(400)
 
-    kirby.mechanisms.moveBackMotorDegrees(100, 200)
+    kirby.mechanisms.moveBackMotorDegrees(100, 180)
     kirby.drive.brake(200)
     kirby.mechanisms.moveBackMotorTime(400, -330)
     kirby.drive.brake(300)
@@ -72,9 +72,9 @@ def scoreWater():
 def waterSample():
     kirby.drive.straightDistance(-50, 80, targetAngle=-180)
     kirby.drive.turnToAngle(-20)
-    kirby.drive.straightDistance(60, 60)
+    kirby.drive.straightDistance(80, 60)
     kirby.drive.turnToAngle(0)
-    kirby.drive.straightDistance(350, 80)
+    kirby.drive.straightDistance(350, 80, targetAngle=0)
     kirby.drive.straightUntilReflection(kReflectionBlack, 30)
     kirby.drive.straightDistance(110, 45)
 
@@ -84,9 +84,9 @@ def waterSample():
 
 def scoreSampleAndDrone():
     global samplesPositions
-    samplesPositions = kirby.drive.driveAndScan(900, 60)
+    samplesPositions = kirby.drive.driveAndScan(950, 60)
     print(samplesPositions)
-    kirby.drive.turnToAngle(180, power=85, oneWheel="left", safeExitTime=600)
+    kirby.drive.turnToAngle(180, power=90, oneWheel="left", safeExitTime=600)
     kirby.drive.straightDistance(820, 90, targetAngle=180)
 
     kirby.drive.straightDistance(-940, 90, targetAngle=180)
@@ -97,7 +97,7 @@ def scoreSampleAndDrone():
 
 def grabLeftSample(isCurrentWhiteGreen = True):
     direction = 1 if isCurrentWhiteGreen else -1
-    kirby.drive.turnToAngle(-180 * direction, power=60)
+    kirby.drive.turnToAngle(-180 * direction, power=50)
     kirby.mechanisms.moveBackMotorDegrees(170, 400)
     kirby.drive.straightDistance(40, 40)
     kirby.mechanisms.moveBackMotorDegrees(120, 300)
@@ -106,7 +106,7 @@ def grabLeftSample(isCurrentWhiteGreen = True):
 
 def grabRightSample(isCurrentWhiteGreen = True):
     direction = 1 if isCurrentWhiteGreen else -1
-    kirby.drive.turnToAngle(-180 * direction, power=60)
+    kirby.drive.turnToAngle(-180 * direction, power=50)
     kirby.mechanisms.moveFrontMotorDegrees(95, 200)
     kirby.drive.straightDistance(40, 40)
     kirby.mechanisms.moveFrontMotorDegrees(60, 300)
@@ -135,11 +135,11 @@ def whiteGreenSamples():
 
     distanceToLast = kDistanceBetweenSamples * (5 - gP) + 160 if closestPosition == wP else kDistanceBetweenSamples * (5 - wP) #go to the end
     powerForLast = distanceToLast * 0.22
-    if powerForLast > 80: powerForLast = 80
+    if powerForLast > 70: powerForLast = 70
     kirby.drive.straightDistance(distanceToLast, powerForLast) if distanceToLast != 0 else kirby.drive.brake(1) #if robot already in the end dont drive
 
 def scoreWhiteGreenSamples():
-    kirby.drive.turnToAngle(0, power=50)
+    kirby.drive.turnToAngle(0, power=50, safeExitTime=600)
     kirby.drive.straightDistance(340, 80)
     kirby.drive.straightUntilReflection(kReflectionBlack, 30)
 
@@ -150,7 +150,7 @@ def scoreWhiteGreenSamples():
     kirby.drive.straightDistance(80, 40)
 
 def yellowRedSamlpes():
-    kirby.drive.straightDistance(-730, 80)
+    kirby.drive.straightDistance(-720, 80)
     kirby.mechanisms.moveBackMotorDegrees(0, 400, wait=False)
     kirby.mechanisms.moveFrontMotorDegrees(0, 400, wait=False)
     kirby.drive.turnToAngle(90)
@@ -169,9 +169,9 @@ def yellowRedSamlpes():
     kirby.drive.straightDistance(wallToClosestSample, 60)
     grabLeftSample(isCurrentWhiteGreen=False) if closestPosition == yP else grabRightSample(isCurrentWhiteGreen=False) #grab correct sample
 
-    distanceDiffBetweenSamples = 160 if closestPosition == yP else -160 #for difference in distance
+    distanceDiffBetweenSamples = 160 if closestPosition == yP else -155 #for difference in distance
     distanceToNextSample = kDistanceBetweenSamples * abs(yP - rP) + distanceDiffBetweenSamples
-    powerForSecondSample = abs(distanceToNextSample * 0.2) if distanceToNextSample > 30 else 30
+    powerForSecondSample = abs(distanceToNextSample * 0.2) if distanceToNextSample > 30 else 25
     if powerForSecondSample > 85: powerForSecondSample = 85 #clamp
     kirby.drive.straightDistance(distanceToNextSample, powerForSecondSample)
     grabRightSample(isCurrentWhiteGreen=False) if closestPosition == yP else grabLeftSample(isCurrentWhiteGreen=False)
@@ -179,4 +179,21 @@ def yellowRedSamlpes():
     distanceToLast = kDistanceBetweenSamples * (5 - rP) if closestPosition == yP else kDistanceBetweenSamples * (5 - yP) + 160 #go to the end
     powerForLast = distanceToLast * 0.22
     if powerForLast > 80: powerForLast = 80
-    kirby.drive.straightDistance(distanceToLast, powerForLast) if distanceToLast != 0 else kirby.drive.brake(1) #if robot already in the end dont drive
+    kirby.drive.straightDistance(distanceToLast + 60, powerForLast) if distanceToLast != 0 else kirby.drive.brake(1) #if robot already in the end dont drive
+
+def scoreYellowRedSamples():
+    kirby.drive.turnToAngle(0, power=50)
+    kirby.drive.straightDistance(300, 80)
+    kirby.drive.straightUntilReflection(kReflectionBlack, 30)
+
+    kirby.mechanisms.moveBackMotorDegrees(180, 150, wait=False)
+    kirby.mechanisms.moveFrontMotorDegrees(105, 150, wait=False)
+
+    kirby.drive.trackLineDistance(200, 40, side="left")
+    kirby.drive.straightDistance(85, 40)
+
+def park():
+    kirby.drive.straightDistance(-450, 80)
+    kirby.drive.turnToAngle(90)
+    kirby.drive.straightDistance(-220, 50)
+    kirby.drive.turnToAngle(180, power=85, oneWheel="right", safeExitTime=700)

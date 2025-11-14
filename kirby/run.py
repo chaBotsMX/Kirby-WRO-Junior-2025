@@ -23,5 +23,7 @@ scoreSampleAndDrone()
 whiteGreenSamples()
 scoreWhiteGreenSamples()
 yellowRedSamlpes()
+scoreYellowRedSamples()
+park()
 
 print("time:", runTimer.time() / 1000, "s")
