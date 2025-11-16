@@ -36,11 +36,12 @@ def startToRover():
 
     kirby.mechanisms.moveBackMotorDegrees(40, 300) #up for drone
     kirby.drive.turnToAngle(0)
-    kirby.drive.straightDistance(25, 30)
-    kirby.mechanisms.moveBackMotorDegrees(0, 500)
+    kirby.drive.straightDistance(35, 30)
+    #kirby.mechanisms.moveBackMotorDegrees(0, 500)
+    kirby.mechanisms.moveBackMotorTime(500, -350)
 
 def grabWater():
-    kirby.drive.straightDistance(-190, 80, targetAngle=0)
+    kirby.drive.straightDistance(-200, 80, targetAngle=0)
     kirby.mechanisms.moveBackMotorDegrees(kBackMotorWaterPosition, 400)
 
     kirby.drive.straightTime(400, -70, targetAngle=0)
@@ -61,7 +62,7 @@ def scoreWater():
     #kirby.mechanisms.moveBackMotorDegrees(170, 400) #test
     #kirby.drive.brake(500) #test
 
-    kirby.drive.straightTime(580, 34, targetAngle=-180)
+    kirby.drive.straightTime(700, 35, targetAngle=-180)
     #kirby.drive.brake(400)
 
     kirby.mechanisms.moveBackMotorDegrees(100, 180)
@@ -76,7 +77,7 @@ def waterSample():
     kirby.drive.turnToAngle(0)
     kirby.drive.straightDistance(350, 80, targetAngle=0)
     kirby.drive.straightUntilReflection(kReflectionBlack, 30)
-    kirby.drive.straightDistance(110, 45)
+    kirby.drive.straightDistance(115, 45)
 
     kirby.drive.turnToAngle(90, power=95, oneWheel="left", safeExitTime=1500)
     kirby.drive.straightTime(600, -50)
@@ -86,7 +87,7 @@ def scoreSampleAndDrone():
     global samplesPositions
     samplesPositions = kirby.drive.driveAndScan(950, 60)
     print(samplesPositions)
-    kirby.drive.turnToAngle(180, power=90, oneWheel="left", safeExitTime=600)
+    kirby.drive.turnToAngle(180, power=90, oneWheel="left", safeExitTime=800)
     kirby.drive.straightDistance(820, 90, targetAngle=180)
 
     kirby.drive.straightDistance(-940, 90, targetAngle=180)
@@ -99,18 +100,18 @@ def grabLeftSample(isCurrentWhiteGreen = True):
     direction = 1 if isCurrentWhiteGreen else -1
     kirby.drive.turnToAngle(-180 * direction, power=50)
     kirby.mechanisms.moveBackMotorDegrees(170, 400)
-    kirby.drive.straightDistance(40, 40)
+    kirby.drive.straightDistance(40, 40, targetAngle= -180 * direction)
     kirby.mechanisms.moveBackMotorDegrees(120, 300)
-    kirby.drive.straightDistance(-70, 40)
+    kirby.drive.straightDistance(-65, 40)
     kirby.drive.turnToAngle(-90 * direction, power=45)
 
 def grabRightSample(isCurrentWhiteGreen = True):
     direction = 1 if isCurrentWhiteGreen else -1
     kirby.drive.turnToAngle(-180 * direction, power=50)
     kirby.mechanisms.moveFrontMotorDegrees(95, 200)
-    kirby.drive.straightDistance(40, 40)
+    kirby.drive.straightDistance(40, 40, targetAngle= -180 * direction)
     kirby.mechanisms.moveFrontMotorDegrees(60, 300)
-    kirby.drive.straightDistance(-70, 40)
+    kirby.drive.straightDistance(-65, 40)
     kirby.drive.turnToAngle(-90 * direction, power=45)
     
 def whiteGreenSamples():
@@ -135,7 +136,7 @@ def whiteGreenSamples():
 
     distanceToLast = kDistanceBetweenSamples * (5 - gP) + 160 if closestPosition == wP else kDistanceBetweenSamples * (5 - wP) #go to the end
     powerForLast = distanceToLast * 0.22
-    if powerForLast > 70: powerForLast = 70
+    if powerForLast > 65: powerForLast = 65
     kirby.drive.straightDistance(distanceToLast, powerForLast) if distanceToLast != 0 else kirby.drive.brake(1) #if robot already in the end dont drive
 
 def scoreWhiteGreenSamples():
@@ -147,6 +148,8 @@ def scoreWhiteGreenSamples():
     kirby.mechanisms.moveFrontMotorDegrees(105, 150, wait=False)
 
     kirby.drive.trackLineDistance(200, 40, side="left")
+    if kirby.hub.imu.heading() < -7 and kirby.hub.imu.heading() > 7:
+        kirby.drive.turnToAngle(0)
     kirby.drive.straightDistance(80, 40)
 
 def yellowRedSamlpes():
@@ -187,13 +190,16 @@ def scoreYellowRedSamples():
     kirby.drive.straightUntilReflection(kReflectionBlack, 30)
 
     kirby.mechanisms.moveBackMotorDegrees(180, 150, wait=False)
-    kirby.mechanisms.moveFrontMotorDegrees(105, 150, wait=False)
+    kirby.mechanisms.moveFrontMotorDegrees(95, 150, wait=False)
 
     kirby.drive.trackLineDistance(200, 40, side="left")
     kirby.drive.straightDistance(85, 40)
 
 def park():
     kirby.drive.straightDistance(-450, 80)
+    kirby.mechanisms.moveBackMotorDegrees(0, 300, wait=False)
+    kirby.mechanisms.moveFrontMotorDegrees(0, 300, wait=False)
     kirby.drive.turnToAngle(90)
-    kirby.drive.straightDistance(-220, 50)
-    kirby.drive.turnToAngle(180, power=85, oneWheel="right", safeExitTime=700)
+    kirby.drive.straightDistance(-285, 50)
+    kirby.drive.turnToAngle(180, power=85, oneWheel="right", safeExitTime=900)
+    kirby.drive.straightDistance(-600, 90, targetAngle=-176)

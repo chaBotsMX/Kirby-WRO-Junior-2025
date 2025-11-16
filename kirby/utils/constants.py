@@ -27,9 +27,9 @@ kDegreesBetweenSamples = 174
 
 kDegreesToStartScanning = 340
 
-kDistanceWallToWhiteSample = 350
+kDistanceWallToWhiteSample = 348
 kDistanceWallToGreenSample = 186
 kDistanceBetweenSamples = 95
 
 kDistanceWallToYellowSample = 125
-kDistanceWallToRedSample = 310
+kDistanceWallToRedSample = 306
