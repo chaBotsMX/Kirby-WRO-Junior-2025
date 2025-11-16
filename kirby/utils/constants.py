@@ -32,4 +32,4 @@ kDistanceWallToGreenSample = 186
 kDistanceBetweenSamples = 95
 
 kDistanceWallToYellowSample = 125
-kDistanceWallToRedSample = 306
+kDistanceWallToRedSample = 304
