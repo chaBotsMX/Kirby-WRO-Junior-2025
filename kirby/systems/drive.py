@@ -68,7 +68,7 @@ class DriveSystem:
         direction = 1 if distance >= 0 else -1
 
         accel_distance = targetDegrees * ratio
-        decel_distance = targetDegrees * ratio if direction == 1 else targetDegrees * 0.6
+        decel_distance = targetDegrees * ratio if direction == 1 else targetDegrees * 0.45
 
         distanceRemaining = targetDegrees
 
@@ -107,7 +107,7 @@ class DriveSystem:
 
             #wait(1)
 
-        self.brake(10)
+        self.brake(5)
 
     # PD heading correction by ms
     def straightTime(self, time, power, targetAngle = -1):
@@ -133,7 +133,7 @@ class DriveSystem:
             self.left.dc(left)
             self.right.dc(right)
 
-        self.brake(10)
+        self.brake(5)
 
     # PD heading until black line detected
     def straightUntilReflection(self, targetReflection, power, sensor="line"):
@@ -201,7 +201,7 @@ class DriveSystem:
             self.left.dc(leftPower)
             self.right.dc(rightPower)
 
-        self.brake(10)
+        self.brake(5)
 
     def driveAndScan(self, distance, maxPower, scanningDistance = 560):
         self.resetAngles()
@@ -214,8 +214,9 @@ class DriveSystem:
         targetDegrees = abs(self.getDegreesFromMilis(distance))
         scanningDistance = abs(self.getDegreesFromMilis(scanningDistance))
 
-        ratio = 0.2
+        ratio = 0.3
         accel_distance = targetDegrees * ratio
+        decel_distance = targetDegrees * 0.45
 
         samplesPositions = []
 
@@ -249,8 +250,8 @@ class DriveSystem:
             #accel decel
             if currentDegrees < accel_distance:
                 basePower = kMinPower + ((currentDegrees / accel_distance) * (maxPower - kMinPower))
-            elif distanceRemaining < accel_distance:
-                basePower = kMinPower + ((distanceRemaining / accel_distance) * (maxPower - kMinPower))
+            elif distanceRemaining < decel_distance:
+                basePower = kMinPower + ((distanceRemaining / decel_distance) * (maxPower - kMinPower))
             else:
                 basePower = maxPower
 
@@ -259,11 +260,11 @@ class DriveSystem:
             self.left.dc(direction * basePower + correction)
             self.right.dc(direction * basePower - correction)
 
-        self.brake(10)
+        self.brake(5)
         return samplesPositions
 
     # PD turning method, use oneWheel parameter to specify the desired wheel to rotate
-    def turnToAngle(self, targetAngle, power=75, oneWheel = "no", safeExitTime=1000):
+    def turnToAngle(self, targetAngle, power=90, oneWheel = "no", safeExitTime=900):
         self.turn_pid.reset()
         angleDebounce = StopWatch()
         exitTimer = StopWatch()
@@ -282,7 +283,7 @@ class DriveSystem:
                 print("safe exit", self.hub.imu.heading())
                 break
             if abs(error) < 0.95:
-                if angleDebounce.time() > 160:
+                if angleDebounce.time() > 140:
                     print("successful turn", self.hub.imu.heading())
                     break
             else:
@@ -302,7 +303,7 @@ class DriveSystem:
 
             wait(1)
 
-        self.brake(5)
+        self.brake(1)
 
     # Individual motor control
 
