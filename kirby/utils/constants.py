@@ -12,14 +12,14 @@ kPForward = 11
 kDForward = 0.1
 
 kPTurning = 5.5
-kDTurning = 0.2
+kDTurning = 0.25
 
 kPLine = 0.5
 kDLine = 0.2
 
 kDegreesInMM = 1.836398895222424634189340071693
 
-kMinPower = 15
+kMinPower = 16
 
 kBackMotorWaterPosition = 190
 
@@ -31,5 +31,5 @@ kDistanceWallToWhiteSample = 348
 kDistanceWallToGreenSample = 186
 kDistanceBetweenSamples = 95
 
-kDistanceWallToYellowSample = 125
+kDistanceWallToYellowSample = 138
 kDistanceWallToRedSample = 304

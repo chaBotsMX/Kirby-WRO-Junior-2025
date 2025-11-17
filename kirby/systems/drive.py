@@ -279,16 +279,16 @@ class DriveSystem:
 
             # Exit conditions
             if exitTimer.time() > safeExitTime:
-                print("safe exit")
+                print("safe exit", self.hub.imu.heading())
                 break
             if abs(error) < 0.95:
                 if angleDebounce.time() > 160:
-                    print("successful turn")
+                    print("successful turn", self.hub.imu.heading())
                     break
             else:
                 angleDebounce.reset()
-
-            if abs(correction) < kMinPower and abs(error) > 1:
+            
+            if abs(correction) < kMinPower and abs(error) > 0.5:
                 correction = kMinPower if correction > 0 else -kMinPower
 
             # Apply correction normally
