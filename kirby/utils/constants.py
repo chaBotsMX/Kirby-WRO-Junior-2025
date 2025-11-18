@@ -8,7 +8,7 @@ kReflectionBlack = 15
 kReflectionWhite = 75
 kReflectionAvg = 35
 
-kPForward = 11
+kPForward = 4
 kDForward = 0.1
 
 kPTurning = 5.5
@@ -19,7 +19,7 @@ kDLine = 0.2
 
 kDegreesInMM = 1.836398895222424634189340071693
 
-kMinPower = 16
+kMinPower = 18
 
 kBackMotorWaterPosition = 190
 
@@ -32,4 +32,4 @@ kDistanceWallToGreenSample = 186
 kDistanceBetweenSamples = 95
 
 kDistanceWallToYellowSample = 138
-kDistanceWallToRedSample = 304
+kDistanceWallToRedSample = 302

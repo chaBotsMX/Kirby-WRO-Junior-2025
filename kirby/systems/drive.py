@@ -203,11 +203,11 @@ class DriveSystem:
 
         self.brake(5)
 
-    def driveAndScan(self, distance, maxPower, scanningDistance = 560):
+    def driveAndScan(self, distance, maxPower, scanningDistance = 565):
         self.resetAngles()
         self.straight_pid.reset()
         
-        targetAngle = 90 #self.hub.imu.heading()
+        targetAngle = self.hub.imu.heading()
         
         direction = 1 if distance >= 0 else -1
 
@@ -216,7 +216,7 @@ class DriveSystem:
 
         ratio = 0.3
         accel_distance = targetDegrees * ratio
-        decel_distance = targetDegrees * 0.45
+        decel_distance = targetDegrees * 0.35
 
         samplesPositions = []
 
@@ -230,7 +230,7 @@ class DriveSystem:
                 break
 
             #scanning
-            if currentDegrees >= kDegreesToStartScanning:
+            if currentDegrees >= kDegreesToStartScanning and len(samplesPositions) < 6:
                 distanceDetecting = (currentDegrees - kDegreesToStartScanning)
 
                 if distanceDetecting % kDegreesBetweenSamples <= 10:
