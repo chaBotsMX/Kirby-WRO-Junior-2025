@@ -19,7 +19,7 @@ kDLine = 0.2
 
 kDegreesInMM = 1.836398895222424634189340071693
 
-kMinPower = 18
+kMinPower = 19
 
 kBackMotorWaterPosition = 190
 
@@ -28,8 +28,8 @@ kDegreesBetweenSamples = 174
 kDegreesToStartScanning = 340
 
 kDistanceWallToWhiteSample = 348
-kDistanceWallToGreenSample = 186
+kDistanceWallToGreenSample = 182
 kDistanceBetweenSamples = 95
 
-kDistanceWallToYellowSample = 138
-kDistanceWallToRedSample = 302
+kDistanceWallToYellowSample = 139
+kDistanceWallToRedSample = 301

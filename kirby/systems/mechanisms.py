@@ -9,7 +9,7 @@ from pybricks.parameters import Stop
 class MechanismsSystem:
     def __init__(self, front_motor, back_motor):
         self.front = front_motor
-        self.front.reset_angle(0)
+        #self.front.reset_angle(0)
 
         self.back = back_motor
         self.back.reset_angle(0)
