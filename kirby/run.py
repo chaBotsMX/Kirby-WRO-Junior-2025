@@ -4,26 +4,22 @@
 
 # Robot run
 
-from missions.mainDayOne import *
+from missions.secondday2011 import *
 from pybricks.tools import StopWatch
 
 print("Start")
 
 runTimer = StopWatch()
 
-#testMission()
+roberydron()
+blancaAmarilla()
+roja()
+blanca()
+irAInicio()
+dron2()
+blacksamples()
+last()
 
-initialize() # pre run mandatories
 
-startToRover()
-grabWater()
-scoreWater()
-waterSample()
-scoreSampleAndDrone()
-whiteGreenSamples()
-scoreWhiteGreenSamples()
-yellowRedSamlpes()
-scoreYellowRedSamples()
-park()
 
 print("time:", runTimer.time() / 1000, "s")

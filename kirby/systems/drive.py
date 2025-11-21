@@ -5,7 +5,7 @@
 # Stores all of the methods used for accurate driving in a class
 
 from pybricks.tools import StopWatch, wait
-from pybricks.parameters import Stop
+from pybricks.parameters import Stop, Button
 
 from utils.pd import PDControl
 from utils.constants import kPForward, kDForward, kPTurning, kDTurning, kPLine, kDLine, kDegreesInMM, kMinPower, kReflectionBlack, kReflectionWhite, kReflectionAvg, kDegreesBetweenSamples, kDegreesToStartScanning
@@ -52,6 +52,10 @@ class DriveSystem:
         self.left.brake()
         self.right.brake()
         wait(time)
+
+    def waitUntilButton(self):
+        while not Button.LEFT in self.hub.buttons.pressed():
+            self.brake(0)
     
     # Method for straight driving using PD correction for heading and motion profile for speed control
     def straightDistance(self, distance, maxPower, targetAngle = -1, speedControl = True, ratio = 0.3, accel = True, decel = True):
