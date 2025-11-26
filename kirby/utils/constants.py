@@ -4,7 +4,7 @@
 
 # Stores global constant values
 
-kReflectionBlack = 12
+kReflectionBlack = 15
 kReflectionWhite = 85
 kReflectionAvg = 48
 
@@ -27,7 +27,7 @@ kDegreesBetweenSamples = 174
 
 kDegreesToStartScanning = 340
 
-kDistanceWallToWhiteSample = 349
+kDistanceWallToWhiteSample = 352
 kDistanceWallToGreenSample = 184
 kDistanceBetweenSamples = 95
 

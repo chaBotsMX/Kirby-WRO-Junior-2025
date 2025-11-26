@@ -15,8 +15,8 @@ samplesPositions = []
 def testMission():
     print(kirby.hub.battery.voltage(), "mv")
     while True:    
-        #print(kirby.line_sensor.reflection())
-        print(kirby.mechanisms.front.angle())
+        print(kirby.line_sensor.reflection())
+        #print(kirby.mechanisms.front.angle())
     
 def initialize():
     kirby.hub.imu.reset_heading(0) #0
@@ -26,7 +26,7 @@ def startToRover():
     kirby.drive.straightTime(450, -50)
     kirby.hub.imu.reset_heading(0) #choca y resetea imu
 
-    kirby.drive.straightDistance(50, 40)
+    kirby.drive.straightDistance(60, 40)
     kirby.drive.turnToAngle(-35, safeExitTime=700)
     kirby.drive.straightDistance(380, 80)
     kirby.drive.straightUntilReflection(kReflectionBlack, 30)
@@ -34,29 +34,29 @@ def startToRover():
 
     kirby.mechanisms.moveBackMotorDegrees(40, 300, wait=False) #up for drone
     kirby.drive.turnToAngle(0, safeExitTime=700)
-    kirby.drive.straightDistance(35, 40, accel=False)
+    kirby.drive.straightDistance(45, 40, accel=False)
     kirby.mechanisms.moveBackMotorTime(500, -350)
 
 def grabWater():
-    kirby.drive.straightDistance(-200, 95, targetAngle=0)
+    kirby.drive.straightDistance(-210, 95, targetAngle=0)
     kirby.mechanisms.moveBackMotorDegrees(kBackMotorWaterPosition, 400)
 
-    kirby.drive.straightTime(400, -70, targetAngle=0)
+    kirby.drive.straightTime(400, -50, targetAngle=0)
     kirby.drive.straightDistance(25, 60, targetAngle=0) #primer pelota
     kirby.drive.brake(100)
-    kirby.drive.straightTime(500, -70, targetAngle=0)
-    kirby.drive.straightDistance(70, 50, targetAngle=0) #segunda pelota
+    kirby.drive.straightTime(500, -50, targetAngle=0)
+    kirby.drive.straightDistance(75, 45, targetAngle=0) #segunda pelota
     
     kirby.mechanisms.moveBackMotorDegrees(170, 300, wait=False)
 
 def scoreWater():
-    kirby.drive.turnToAngle(-91, power=40)
+    kirby.drive.turnToAngle(-90, power=40)
     kirby.drive.straightDistance(310, 70)
     kirby.drive.straightUntilReflection(kReflectionBlack, 30)
     kirby.drive.straightDistance(60, 35)
     kirby.drive.turnToAngle(-180, power=40)
 
-    kirby.drive.straightTime(750, 35, targetAngle=-180)
+    kirby.drive.straightTime(800, 32, targetAngle=-180)
 
     kirby.mechanisms.moveBackMotorDegrees(100, 180)
     kirby.drive.brake(200)
@@ -238,7 +238,7 @@ def park():
     kirby.drive.straightTime(600, -60)
     kirby.hub.imu.reset_heading(-90)
 
-    kirby.drive.straightDistance(515, 80)
+    kirby.drive.straightDistance(510, 80)
     kirby.drive.turnToAngle(-180)
     print(kirby.hub.imu.heading())
-    kirby.drive.straightDistance(-700, 90)
+    kirby.drive.straightDistance(-720, 90)

@@ -40,6 +40,16 @@ class ColorScanSystem:
 
         elif v_avg < 2:
             return("blank")
+        
+            """
+        elif v_avg < 20:
+            return("black")
+        
+        elif 200 <= h_avg <= 260 and s_avg > 30:
+            return("blue")
+        
+        elif s_avg < 15 and v_avg > 60:
+            return("white") """
 
         else:
             return("white")
